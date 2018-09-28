@@ -1,5 +1,16 @@
-import { PlayingCard } from '@/models/card';
-import { CardSuit } from '@/models/card-suit';
+export interface PlayingCard {
+    readonly name: string;
+    readonly suit: CardSuit;
+    readonly value: number;
+    trumps(card: PlayingCard): boolean;
+}
+
+export enum CardSuit {
+    Spade = "Spade",
+    Heart = "Heart",
+    Diamond = "Diamond",
+    Club = "Club"
+}
 
 function doesTrump(card1: PlayingCard, card2: PlayingCard): boolean {
     if ((card1 === undefined) || (card2 === undefined)) {

@@ -1,20 +1,20 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <!-- <GameSetup /> -->
+    <Game />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
-
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
-export default class App extends Vue {}
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import GameSetup from './components/GameSetup.vue';
+import Game from "./components/Game.vue";
+import CardDeck from "./components/CardDeck.vue";
+import { IGameState, StaticGameState } from '@/logic/models/gamestate';
+export default {
+  name: "App",
+  components: { GameSetup, Game, CardDeck },
+}
 </script>
 
 <style>
@@ -22,8 +22,5 @@ export default class App extends Vue {}
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

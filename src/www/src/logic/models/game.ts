@@ -1,4 +1,4 @@
-import { IPlayer } from '@/logic/player';
+import { IPlayer } from '@/logic/models/player';
 
 export interface IGame {
     readonly players: ReadonlyArray<IPlayer>;
@@ -7,4 +7,8 @@ export interface IGame {
     isOver(): boolean;
 
     determineWinner(): Promise<IPlayer>;
+}
+
+export function gameFactory(): IGame {
+    throw new Error("Not implemented");
 }

@@ -1,7 +1,4 @@
-import { PlayingCard } from '@/models/card';
-import { CardSuit } from '@/models/card-suit';
-import { cardFactory } from '@/logic/card';
-import { CardDeck } from '@/models/card-deck';
+import { cardFactory, PlayingCard, CardSuit } from '@/logic/models/card';
 
 function shuffle(cards: Array<PlayingCard>){
     var currentIndex = cards.length, temporaryValue, randomIndex;
@@ -17,6 +14,12 @@ function shuffle(cards: Array<PlayingCard>){
         cards[currentIndex] = cards[randomIndex];
         cards[randomIndex] = temporaryValue;
     }
+}
+
+export interface CardDeck {
+    shuffle(): void;
+    remainingCards(): number;
+    nextCard(): PlayingCard;
 }
 
 export function deckFactory() : CardDeck {

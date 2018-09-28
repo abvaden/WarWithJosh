@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { cardFactory } from "@/logic/card";
-import { PlayingCard } from "@/models/card";
-import { CardSuit } from '@/models/card-suit';
+import { PlayingCard, cardFactory } from "@/logic/models/card";
+import {  } from "@/logic/models/card";
+import { CardSuit } from '@/logic/models/card';
 
 describe("cardFactory", () => {
     it("should produce cards", () => {
