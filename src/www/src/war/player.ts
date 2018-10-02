@@ -1,7 +1,7 @@
-import { PlayingCard } from '@/logic/models/card';
+import { PlayingCard } from './card';
 
 export interface IPlayer {
-    drawCard(): void;
+    dealCard(card: PlayingCard): void;
     playCard(): Promise<PlayingCard>;
 }
 

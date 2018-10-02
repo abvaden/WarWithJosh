@@ -1,37 +1,46 @@
 <template>
-  <svg class="fullscreenGame" viewBox=0,0,100,100 v-on:onresize="resized"> 
-    <rect x="0" y="0" width="100" height="100" style="fill: rgba(255, 0, 0, .05);"/>
-    <rect x="0" y="0" width="100" height="25" class="player-area"></rect>
-    <text x="50" y="3" alignment-baseline="middle" text-anchor="middle" class="player-name">{{player1_name}}</text>
+  <div class="fullscreenGame">
+    <!-- Player 1 Area -->
+    <div class="player-area player-area-top">
+      <div class="player-name">{{player1_name}}</div>
+      <div class="player-card-area">
+        <div v-for="card in player2_cards" 
+            v-bind:key="card.value" 
+            style="display: inline-block;" 
+            v-bind:class="['card', {'card-disabled': card.disabled}]"
+            v-on:click="cardSelected(card.value)">
+          <h5>{{card.text}}</h5>
+        </div>
+      </div>
+    </div>
 
-    <card v-for="(card, index) in player1_cards" 
-          v-bind:key="index"
-          v-bind:card="card"
-          v-bind:x="cardX(index, true)" 
-          v-bind:y="cardY(index, true)"  
-          height="10" 
-          width="5" 
-          class="playing-card" 
-          v-on:clicked="cardClicked(card)"/>
-      
-    
-    <rect x="0" y="75" width="100" height="25" class="player-area"></rect>
-    <text x="50" y="97.5" alignment-baseline="middle" text-anchor="middle" class="player-name">{{player2_name}}</text>
-  </svg>
+    <!-- Player 2 Area -->
+    <div class="player-area player-area-bottom">
+      <div class="player-card-area">
+        <div v-for="card in player2_cards" 
+            v-bind:key="card.value" 
+            style="display: inline-block;" 
+            v-bind:class="['card', {'card-disabled': card.disabled}]"
+            v-on:click="cardSelected(card.value)">
+          <h5>{{card.text}}</h5>
+        </div>
+      </div>
+      <div class="player-name">{{player2_name}}</div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import Card from "./Card.vue";
-import CardDeck from "./CardDeck.vue";
+import Vue from "vue";
 import { StaticGameState } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { PlayingCard } from '@/logic/models/card';
+import { PlayCardCommand } from '../logic/commands/play-card.command';
 
 let commandPublisher: ICommandPublisher;
 
 export default {
-  components: { Card, CardDeck },
+  components: {  },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -39,17 +48,21 @@ export default {
     return StaticGameState.Game;
   },
   methods: {
-    resized: () => {
-      console.log("Resized");
-    },
-    cardX: (index: number, player1: boolean): number => {
-      return 25 + 15 * index;
-    },
-    cardY: (index: number, player1: boolean): number => {
-      return player1 ? 20 : 100 - 12.5;
-    },
-    cardClicked(card: PlayingCard): void {
-      console.log(card.name);
+    cardSelected: (value: number) => {
+      const cardIndex = StaticGameState.Game.player1_cards.findIndex(x => x.value === value);
+      const cardOption = StaticGameState.Game.player1_cards.find(x => x.value === value);
+      if (cardOption === undefined) {
+        // Card was already disabled and could not be selected
+        return;
+      }
+
+      const newOption = {
+        value: cardOption.value,
+        text: cardOption.text,
+        disabled: true
+      }
+      StaticGameState.Game.player1_cards.splice(cardIndex, 1, newOption);
+      // this.$set(StaticGameState.Game.player1_cards, cardIndex, newOption);
     }
   },
   watch: {
@@ -64,26 +77,90 @@ export default {
   display: block;
   top:0; 
   left:0; 
+  min-height: 100%;
+  margin-bottom: -50px;
   height:100%; 
   width:100%;
+  margin: 0;
   overflow: hidden;
 }
 
-.playing-card {
-
-}
-
 .player-area {
+  position: absolute;
+  display: block; 
+  width: 100%; 
+  left: 0px;
+  background: rgba(0, 0, 0, .1);
+  border-width: 2px;
+  border-style: solid;
   fill: rgba(255, 255, 255, .1);
   border-width: 1;
   border-color: black;
+  height: 20%;
 }
+.player-area-top {
+  top: 0%;
+}
+.player-area-bottom {
+  top: 80%;
+}
+
+.player-card-area {
+  widows: 100%;
+  text-align: center;
+
+}
+
 .player-name {
-  font-size: 5px;
-  fill: #DCE5EB
+  display: block;
+  border-top-width: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  text-align: center;
+  font-size: 50px;
+  fill: rgba(220,229,235, 1);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
-.player-name-top {
+
+
+
+.card {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+
+  height: 100px;
+  width: 50px;
 }
-.player-name-bottom {
+.card:hover {
+  background-color: rgba(0, 0, 0, .1);
+  cursor: pointer;
+}
+
+
+.card-disabled {
+  background: rgba(155, 155, 155, .5);
+  cursor: no-drop;
+}
+.card-disabled:hover {
+  background: rgba(155, 155, 155, .5);
+  cursor: no-drop;
+}
+
+.card > h5 {
+  color: white;
+  text-align: center;
+  vertical-align: middle;
 }
 </style>

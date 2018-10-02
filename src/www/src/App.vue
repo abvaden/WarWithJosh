@@ -9,11 +9,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import GameSetup from './components/GameSetup.vue';
 import Game from "./components/Game.vue";
-import CardDeck from "./components/CardDeck.vue";
 import { IGameState, StaticGameState } from '@/logic/models/gamestate';
 export default {
   name: "App",
-  components: { GameSetup, Game, CardDeck },
+  components: { GameSetup, Game},  
+  data() {
+    return StaticGameState;
+  },
 }
 </script>
 

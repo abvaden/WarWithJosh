@@ -1,4 +1,4 @@
-import { cardFactory, PlayingCard, CardSuit } from '@/logic/models/card';
+import { cardFactory, PlayingCard, CardSuit } from './card';
 
 function shuffle(cards: Array<PlayingCard>){
     var currentIndex = cards.length, temporaryValue, randomIndex;
