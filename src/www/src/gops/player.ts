@@ -26,11 +26,15 @@ function createRandomPlayer(): IPlayer {
             return Promise.resolve();
         },
         nextMove: () => {
-            const number = numbers.shift();
-            if (number === undefined) {
-                return Promise.reject("All numbers played");
-            }
-            return Promise.resolve(number);
+            return new Promise<number>((resolve, reject) => {
+                const number = numbers.shift();
+                if (number === undefined) {
+                    reject("All numbers played");
+                }
+                setTimeout(() => {
+                    resolve(number);
+                }, Math.random() * 3000);
+            });
         }
     };
 }

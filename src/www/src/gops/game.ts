@@ -1,21 +1,32 @@
 import { IPlayer, playerFactory } from './player';
+import { IGame } from '@/logic/models/gamestate';
 
-export async function gameFactory(): Promise<() => void> {
-    const inputs = {
-        player1: await playerFactory(), 
-        player2: await playerFactory()
-    };
+export async function gameFactory(inputs: IGameFactoryInputs): Promise<() => void> {
+    // const inputs = {
+    //     player1: await playerFactory(), 
+    //     player2: await playerFactory(),
+    //     gameCallbacks: {
+
+    //     }
+    // };
     return () => {
         run(inputs);
     };
 }
 
-export interface gameFactoryInputs {
-    
+export interface IGameFactoryInputs {
+    player1: IPlayer,
+    player2: IPlayer,
+    callbacks: IGameCallbacks
+};
+
+export interface IGameCallbacks {
+    afterPointsDecided?: (pointValue: number) => void,
+    afterTrickFinished?: (player1Option: number, player2Option: number, player1Score: number, player2Score: number) => void;
 }
 
-async function run(inputs: {player1: IPlayer, player2: IPlayer}): Promise<{player1: number, player2: number}> {
-    // Start all the players
+async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player2: number}> {
+    // Start the players
     await Promise.all([inputs.player1.start(), inputs.player2.start()]);
 
     const player1 = inputs.player1;
@@ -30,10 +41,14 @@ async function run(inputs: {player1: IPlayer, player2: IPlayer}): Promise<{playe
     // Run all tricks
     for (let i = 0; i < 13; i++) {
         // Deal the points card
-        const dealing = randomElement(well);
-        const pointsValue = dealing.value;
-        well = dealing.numbers;
+        const randomIndex = Math.floor(Math.random() * well.length);
+        const pointsValue = well[randomIndex];
+        well.splice(randomIndex, 1);
 
+        if (inputs.callbacks.afterPointsDecided) {
+            inputs.callbacks.afterPointsDecided(pointsValue);
+        }
+        
         // Players make simultaneous move
         const p1MovePromise = player1.nextMove();
         const p2MovePromise = player2.nextMove();
@@ -41,7 +56,7 @@ async function run(inputs: {player1: IPlayer, player2: IPlayer}): Promise<{playe
         const numbers = await Promise.all([p1MovePromise, p2MovePromise]);
         
         const p1Move = numbers[0];
-        const p2Move = numbers[0];
+        const p2Move = numbers[1];
 
         if (p1Move > p2Move) {
             // Player 1 won the trick
@@ -56,18 +71,10 @@ async function run(inputs: {player1: IPlayer, player2: IPlayer}): Promise<{playe
             score.player2 += halfPoints;
         }
         
-        console.dir(score);
+        if (inputs.callbacks.afterTrickFinished) {
+            inputs.callbacks.afterTrickFinished(p1Move, p2Move, score.player1, score.player2);
+        }
     }
 
     return score;
-}
-
-function randomElement(numbers: Array<number>): {value: number, numbers: Array<number>} {
-    const randomIndex = Math.floor(Math.random() * numbers.length);
-    const value = numbers[randomIndex];
-    const values = numbers.splice(randomIndex, 1);
-    return {
-        value: value,
-        numbers: values
-    };
 }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- <GameSetup /> -->
+    <GameSetup />
     <Game />
   </div>
 </template>

@@ -11,6 +11,15 @@ export interface IGameSetupDialog {
     PlayerCount: number;
 }
 
+export interface IHistoricalPlay {
+    trickNumber: number,
+    trickPoints: number,
+    player1_number: number,
+    player2_number: number,
+    player1_points: number | undefined,
+    player2_points: number | undefined
+};
+
 export interface INumberOption {
     value: number;
     text: string;
@@ -18,28 +27,25 @@ export interface INumberOption {
 }
 
 export interface IGame {
-    player1: IPlayer | undefined;
-    player1_name: string;
+    player1_name: string,
+    player1_points: number | undefined,
     player1_cards: Array<INumberOption>;
-    player2: IPlayer | undefined;
+    player1_hasPlayed: boolean;
+
     player2_name: string;
+    player2_hasPlayed: boolean;
+    player2_points: number | undefined,
     player2_cards: Array<INumberOption>;
-    trickPoints: number | undefined;
+    
+    activeGameId: string,
+    game_loading: boolean,
+    play_history: Array<IHistoricalPlay>,
+    trickPoints: number;
+    remainingTricks: number;
+    hasBegun: boolean;
 }
 
-function playerCards(): Array<INumberOption> {
-    const values = new Array<INumberOption>();
-    for (let i = 1; i <= 13; i++) {
-        const numberOption = {
-            value: i,
-            text: i.toString(),
-            disabled: false
-        };
-        values.push(numberOption);
-    }
 
-    return values;
-}
 
 export const GameState_IOC_Key = Symbol.for("GameState");
 
@@ -50,13 +56,22 @@ export const StaticGameState: IGameState = {
         PlayerCount: 0
     },
     Game: {
-        player1: undefined,
-        player2: undefined,
-        player1_name: "Joshua",
-        player1_cards: playerCards(),
-        player2_name: "Joe User",
-        player2_cards: playerCards(),
-        trickPoints: undefined
+        player1_name: "",
+        player1_points: 0,
+        player1_cards: [],
+        player1_hasPlayed: false,
+
+        player2_name: "",
+        player2_points: 0,
+        player2_cards: [],
+        player2_hasPlayed: false,
+        
+        activeGameId: "",
+        game_loading: false,
+        play_history: [],
+        trickPoints: 0,
+        remainingTricks: 13,
+        hasBegun: false
     }
 };
 

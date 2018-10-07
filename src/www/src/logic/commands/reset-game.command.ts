@@ -1,9 +1,9 @@
 import { ICommand } from '@/logic/commanding';
 
-export const PlayCardCommandName: Symbol = Symbol.for("PlayCardCommand");
+export const ResetGameCommandName: Symbol = Symbol.for("ResetGameCommand");
 
-export class PlayCardCommand implements ICommand {
-    readonly CommandName: Symbol = PlayCardCommandName;
+export class ResetGameCommand implements ICommand {
+    readonly CommandName: Symbol = ResetGameCommandName;
 
     public player1: boolean = false;
     public number: number = 0;

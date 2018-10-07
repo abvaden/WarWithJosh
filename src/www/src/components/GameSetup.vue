@@ -25,6 +25,7 @@ import { StaticGameState } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { OpenDialogCommand } from '@/logic/commands/open-dialog.command';
+import { StartGameCommand } from "../logic/commands/start-game.command";
 
 let commandPublisher: ICommandPublisher;
 
@@ -37,10 +38,15 @@ export default {
   },
   methods: {
     selectPlay: () => {
-      commandPublisher.publish(new OpenDialogCommand());
+      const closeDialogCommand = new OpenDialogCommand();
+
+      commandPublisher.publish(closeDialogCommand);
+
+      const startGameCommand = new StartGameCommand();
+      commandPublisher.publish(startGameCommand);
     },
     selectOption: () => {
-
+      
     }
   }
 }
