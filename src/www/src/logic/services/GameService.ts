@@ -5,6 +5,8 @@ import { playerFactory } from '@/gops/player';
 import { ICommandPublisher, ICommand, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { NextTrickCommand } from '@/logic/commands/next-trick.command';
 import { RecordTrickScoreCommand } from '@/logic/commands/record-trick-score.command';
+import { PlayCardCommand } from '@/logic/commands/play-card.command';
+import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 
 
 @injectable()
@@ -24,8 +26,16 @@ export class GameService implements IGameService {
 
     async startGame(): Promise<void> {
 
-        const player1 = await playerFactory();
-        const player2 = await playerFactory();
+        const player1 = await playerFactory({
+            afterMove: (value: number) => {
+                this.afterPlayerDecided(true, value);
+            }
+        });
+        const player2 = await playerFactory({
+            afterMove: (value: number) => {
+                this.afterPlayerDecided(false, value);
+            }
+        });
         const gameInputs: IGameFactoryInputs = {
             player1: player1,
             player2: player2,
@@ -62,6 +72,17 @@ export class GameService implements IGameService {
         player1Score: number,
         player2Score: number): void {
 
+        const player1PlayCardCommand = new PlayCardCommand();
+        player1PlayCardCommand.player1 = true;
+        player1PlayCardCommand.number = player1Value;
+
+        const player2PlayCardCommand = new PlayCardCommand();
+        player2PlayCardCommand.player1 = false;
+        player2PlayCardCommand.number = player2Value;
+
+        this._commandPublisher.publish(player1PlayCardCommand);
+        this._commandPublisher.publish(player2PlayCardCommand);
+
         this._trickNumber += 1;
         const recordScoreCommand = new RecordTrickScoreCommand();
         recordScoreCommand.trickNumber = this._trickNumber;
@@ -70,5 +91,12 @@ export class GameService implements IGameService {
         recordScoreCommand.player1_value = player1Value;
         recordScoreCommand.player2_value = player2Value;
         this._commandPublisher.publish(recordScoreCommand);
+    }
+
+    private afterPlayerDecided(player1: boolean, value: number): void {
+        const playerDecidedCommand = new PlayerDecidedCommand();
+        playerDecidedCommand.Player1 = player1;
+
+        this._commandPublisher.publish(playerDecidedCommand);
     }
 }

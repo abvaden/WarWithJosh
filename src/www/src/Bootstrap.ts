@@ -9,6 +9,7 @@ import { NextTrickCommandHandler } from '@/logic/command-handlers/next-trick.com
 import { IGameService, IGameService_IOC_Key } from '@/logic/services/Interfaces';
 import { GameService } from '@/logic/services/GameService';
 import { RecordTrickScoreCommandHandler } from '@/logic/command-handlers/record-trick-score.command-handler';
+import { PlayerDecidedCommandHandler } from '@/logic/command-handlers/player-decided.command-handler';
 
 export const UIModule: ContainerModule = new ContainerModule((bind) => {
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
@@ -28,6 +29,9 @@ export const UIModule: ContainerModule = new ContainerModule((bind) => {
         .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(StartGameCommandHandler)
+        .inSingletonScope();
+    bind<ICommandHandler>(ICommandHandler_IOC_Key)
+        .to(PlayerDecidedCommandHandler)
         .inSingletonScope();
     
     

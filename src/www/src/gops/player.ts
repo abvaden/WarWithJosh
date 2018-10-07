@@ -4,11 +4,20 @@ export interface IPlayer {
 }
 
 
-export async function playerFactory(): Promise<IPlayer> {
-    return createRandomPlayer();
+export async function playerFactory(callbacks: IPlayerCallbacks): Promise<IPlayer> {
+    return createRandomPlayer(callbacks);
 }
 
-function createRandomPlayer(): IPlayer {
+export interface IPlayerFactoryInputs {
+    callbacks: IPlayerCallbacks
+};
+
+export interface IPlayerCallbacks {
+    afterMove?: (pointValue: number) => void,
+}
+
+
+function createRandomPlayer(callbacks: IPlayerCallbacks): IPlayer {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     
     // Shuffle the numbers to a random order
@@ -30,9 +39,14 @@ function createRandomPlayer(): IPlayer {
                 const number = numbers.shift();
                 if (number === undefined) {
                     reject("All numbers played");
+                    return;
                 }
                 setTimeout(() => {
                     resolve(number);
+
+                    if (callbacks.afterMove) {
+                        callbacks.afterMove(number);
+                    }
                 }, Math.random() * 3000);
             });
         }

@@ -57,21 +57,14 @@ export default {
   },
   methods: {
     cardSelected: (value: number, player2: boolean) => {
-      let cardDeck: Array<INumberOption>;
-      if (player2){
-        cardDeck = StaticGameState.Game.player2_cards;
-      } else {
-        cardDeck = StaticGameState.Game.player1_cards;
-      }
-      const cardIndex = cardDeck.findIndex(x => x.value === value);
-      const cardOption = cardDeck[cardIndex];
-      if (cardOption === undefined) {
-        // Card was already disabled and could not be selected
-        return;
-      }
-
-      cardOption.disabled = !cardOption.disabled;
+      const playCardCommand = new PlayCardCommand();
+      playCardCommand.player1 = !player2;
+      playCardCommand.number = value;
+      commandPublisher.publish(playCardCommand);
     }
+  },
+  computed: {
+
   }
 }
 </script>
@@ -96,7 +89,6 @@ export default {
 }
 
 .player-area {
-  fill: rgba(255, 255, 255, .1);
   border-style: solid;
   border-color: black;
   border-width: 0px;
@@ -120,17 +112,16 @@ export default {
 
   padding-top: 2.5%; 
   padding-bottom: 2.5%;
-  background: rgba(0, 255, 255, .1);
+  background: rgba(0, 0, 0, .1);
 }
 
 .player-name {
   margin: 0px;
-
   text-align: center;
   
   font-size: 50px;
   
-  fill: rgba(220,229,235, 1);
+  color: var(--light-shades-color);
   
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -139,7 +130,7 @@ export default {
   -ms-user-select: none;
   user-select: none;
 
-  background: rgba(255, 255, 0, .1);
+  background: var(--light-accent-color);
 }
 
 .points-card-area {
@@ -154,11 +145,12 @@ export default {
 }
 
 .card {
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 
+  background-color: var(--dark-accent-color);
   border-radius: 10px;
-  border-width: 3px;
+  border-width: 3px; 
   border-style: solid;
   border-color: black;
 
@@ -166,29 +158,30 @@ export default {
   display: inline-block;
 }
 .card:hover {
-  background-color: rgba(0, 0, 0, .1);
   cursor: pointer;
 }
 
 
+.card > div {
+  color: black;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
 .card-disabled {
-  background: rgba(155, 155, 155, .5);
   cursor: no-drop;
+  background-color: var(--dark-accent-disabled-color);
+}
+
+.card-disabled > div {
+  color: black;
 }
 .card-disabled:hover {
   background: rgba(155, 155, 155, .5);
   cursor: no-drop;
-}
-
-.card > div {
-  color: white;
-
-  background-color: rgba(255, 255, 0, .1);
-
-  height: 100%;
-  width: 100px;
-  text-align: center;
-  vertical-align:middle;
 }
 
 [style*="--aspect-ratio"] > :first-child {

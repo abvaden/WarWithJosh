@@ -2,13 +2,6 @@ import { IPlayer, playerFactory } from './player';
 import { IGame } from '@/logic/models/gamestate';
 
 export async function gameFactory(inputs: IGameFactoryInputs): Promise<() => void> {
-    // const inputs = {
-    //     player1: await playerFactory(), 
-    //     player2: await playerFactory(),
-    //     gameCallbacks: {
-
-    //     }
-    // };
     return () => {
         run(inputs);
     };

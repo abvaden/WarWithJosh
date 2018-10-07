@@ -1,8 +1,18 @@
 body { 
-    background:#eee; 
+    background: var(--primary-background-color); 
     margin:0;
     color: #2c3e50;
     background-color: #2c3e50;
 }
 
 
+
+
+:root {
+    --primary-background-color: #82B7C5;
+    --light-accent-color: #857F80;  
+    --light-shades-color: #F9F8F8;
+    --dark-accent-color: #5f8783;
+    --dark-accent-disabled-color: #5d6160;
+    --dark-shades-color: #285282;
+} 
