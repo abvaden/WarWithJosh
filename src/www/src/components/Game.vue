@@ -2,12 +2,11 @@
   <div class="fullscreenGame">
     <!-- Player 1 Area -->
     <div class="player-area player-area-top">
-      <div class="player-name">{{player1_name}}</div>
+      <div class="player-name">{{ player1_alt_name }}</div>
       <div class="player-card-area">
         <div v-for="card in player1_cards" 
             v-bind:key="card.value" 
             v-bind:class="['card', {'card-disabled': card.disabled}]"
-            v-on:click="cardSelected(card.value, false)"
             style="--aspect-ratio:2.5/3.5;">
           <div>{{card.text}}</div>
         </div>
@@ -25,12 +24,12 @@
         <div v-for="card in player2_cards" 
             v-bind:key="card.value" 
             v-bind:class="['card', {'card-disabled': card.disabled}]"
-            v-on:click="cardSelected(card.value, true)"
+            v-on:click.prevent="cardSelected(card.value, true)"
             style="--aspect-ratio:2.5/3.5;">
           <div>{{card.text}}</div>
         </div>
       </div>
-      <div class="player-name">{{player2_name}}</div>
+      <div class="player-name">{{ player2_alt_name }}</div>
     </div>
   </div>
 </template>
@@ -44,6 +43,7 @@ import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { PlayCardCommand } from '../logic/commands/play-card.command';
 import { Stats } from 'fs';
+import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 
 let commandPublisher: ICommandPublisher;
 
@@ -56,15 +56,20 @@ export default {
     return StaticGameState.Game;
   },
   methods: {
-    cardSelected: (value: number, player2: boolean) => {
-      const playCardCommand = new PlayCardCommand();
-      playCardCommand.player1 = !player2;
-      playCardCommand.number = value;
+    cardSelected: (value: number) => {
+      const playCardCommand = new PlayerDecidedCommand();
+      playCardCommand.Player1 = false;
+      playCardCommand.Value = value;
       commandPublisher.publish(playCardCommand);
     }
   },
   computed: {
-
+    player1_alt_name: function(): string {
+      return this.player1_name + (this.player1_handReady ? ' (ready)' : '');
+    },
+    player2_alt_name: function(): string {
+      return this.player2_name + (this.player2_handReady ? ' (ready)' : '');
+    }
   }
 }
 </script>
@@ -159,6 +164,7 @@ export default {
 }
 .card:hover {
   cursor: pointer;
+  border-color: white;
 }
 
 
@@ -181,6 +187,7 @@ export default {
 }
 .card-disabled:hover {
   background: rgba(155, 155, 155, .5);
+  border-color: black;
   cursor: no-drop;
 }
 

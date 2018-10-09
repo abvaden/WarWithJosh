@@ -20,7 +20,7 @@ export class NextTrickCommandHandler implements ICommandHandler {
     private handleOpen(command: NextTrickCommand): void {
         this._gameState.Game.trickPoints = command.TrickPoints;
         this._gameState.Game.remainingTricks -= 1;
-        this._gameState.Game.player2_hasPlayed = false;
-        this._gameState.Game.player2_hasPlayed = false;
+        this._gameState.Game.player1_handReady = false;
+        this._gameState.Game.player2_handReady = false;
     }
 }

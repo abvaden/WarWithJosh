@@ -30,5 +30,8 @@ export class RecordTrickScoreCommandHandler implements ICommandHandler {
 
         this._gameState.Game.player1_points = command.player1_score;
         this._gameState.Game.player2_points = command.player2_score;
+
+        this._gameState.Game.player1_handReady = false;
+        this._gameState.Game.player2_handReady = false;
     }
 }

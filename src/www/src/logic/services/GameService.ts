@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { IGameService } from '@/logic/services/Interfaces';
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
-import { playerFactory } from '@/gops/player';
+import { playerFactory, PlayerType } from '@/gops/player';
 import { ICommandPublisher, ICommand, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { NextTrickCommand } from '@/logic/commands/next-trick.command';
 import { RecordTrickScoreCommand } from '@/logic/commands/record-trick-score.command';
@@ -11,7 +11,7 @@ import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 
 @injectable()
 export class GameService implements IGameService {
-
+    private _interactivePlayerDecideMove: ((x: number) => void) | undefined;
     private _gameActive: boolean = false;
     private _trickNumber: number = 0;
     private readonly _commandPublisher: ICommandPublisher;
@@ -24,18 +24,33 @@ export class GameService implements IGameService {
 
     }
 
-    async startGame(): Promise<void> {
+    interactivePlayerDecideMove(value: number): void {
+        if (!this._interactivePlayerDecideMove) {
+            throw new Error("");
+        }
 
+        this._interactivePlayerDecideMove(value);
+    }
+
+    async startGame(): Promise<void> {
         const player1 = await playerFactory({
-            afterMove: (value: number) => {
-                this.afterPlayerDecided(true, value);
+            PlayerType: PlayerType.Random,
+            Callbacks: {
+                afterMove: (value: number) => {
+                    this.afterPlayerDecided(true, value);
+                }
             }
         });
-        const player2 = await playerFactory({
-            afterMove: (value: number) => {
-                this.afterPlayerDecided(false, value);
+        const player2Params = {
+            PlayerType: PlayerType.CallbackPlayer,
+            nextMoveCallback: this._interactivePlayerDecideMove,
+            Callbacks: {
+                afterMove: (value: number) => {
+                }
             }
-        });
+        };
+        const player2 = await playerFactory(player2Params);
+        this._interactivePlayerDecideMove = player2Params.nextMoveCallback;
         const gameInputs: IGameFactoryInputs = {
             player1: player1,
             player2: player2,
@@ -96,6 +111,7 @@ export class GameService implements IGameService {
     private afterPlayerDecided(player1: boolean, value: number): void {
         const playerDecidedCommand = new PlayerDecidedCommand();
         playerDecidedCommand.Player1 = player1;
+        playerDecidedCommand.Value = value;
 
         this._commandPublisher.publish(playerDecidedCommand);
     }

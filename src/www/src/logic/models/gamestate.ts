@@ -30,10 +30,10 @@ export interface IGame {
     player1_name: string,
     player1_points: number | undefined,
     player1_cards: Array<INumberOption>;
-    player1_hasPlayed: boolean;
+    player1_handReady: boolean;
 
     player2_name: string;
-    player2_hasPlayed: boolean;
+    player2_handReady: boolean;
     player2_points: number | undefined,
     player2_cards: Array<INumberOption>;
     
@@ -59,12 +59,12 @@ export const StaticGameState: IGameState = {
         player1_name: "",
         player1_points: 0,
         player1_cards: [],
-        player1_hasPlayed: false,
+        player1_handReady: false,
 
         player2_name: "",
         player2_points: 0,
         player2_cards: [],
-        player2_hasPlayed: false,
+        player2_handReady: false,
         
         activeGameId: "",
         game_loading: false,
