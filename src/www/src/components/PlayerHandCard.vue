@@ -1,11 +1,10 @@
 <template>
-    <div class="all-cards-area">
-        <div v-for="card in pointCards" v-bind:key="card.index" 
-            class="flip-container"
-            v-bind:class="{ 'flip-container-flipped': !card.isHidden, 'point-card-hidden': card.isHidden}">
+    <div class="container">
+        <div class="flip-container"
+             v-bind:class="{ 'flip-container-flipped': play, 'ready': ready }">
             <div class="flipper">
                 <div class="front point-card"> 
-                    <div>{{card.face}}</div>
+                    <div>{{value}}</div>
                 </div>
                 <div class="back point-card">
                 </div>
@@ -15,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { VNode } from "vue";
 import { StaticGameState } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
@@ -25,6 +24,7 @@ let commandPublisher: ICommandPublisher;
 
 export default {
   components: {  },
+  props: [ "ready", "value", "play", "bottom" ],
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -64,27 +64,18 @@ export default {
   --card-max-height: 70%;
   --card-width: 100px;
   --card-max-width: 25%;
-
-  --card-overlap: -90px;
+  --card-half-width: 70px;
 }
-.card-table {
-    display: flex;
-    background-color: white;
+.container {
     overflow: hidden;
-}
-.all-cards-area {
-    margin-top: auto;
-    margin-bottom: auto;
-    padding-left: 20%;
-    margin-right:20%;
-    width: calc((var(--card-width) + var(--card-overlap)) * 13 - var(--card-overlap));
-    display: block;
+    background-color: rgba(255, 255, 255, .1);
 }
 /* entire container, keeps perspective */
 .flip-container {
-    display: inline-block;
-    margin-left: var(--card-overlap);
+    position: relative;
     perspective: 1000;
+    left: 50%;
+    transform: translateY(calc(var(--card-height) * -1));
 }
 
 /* flip the pane when clicked */
@@ -101,7 +92,7 @@ export default {
 .flipper {
     transition: 1.0s;
 	transform-style: preserve-3d;
-    position: relative;
+    position: absolute;
 }
 
 /* hide back of pane during swap */
@@ -137,13 +128,19 @@ export default {
     justify-content: center;
     flex-direction: column;
 }
-.point-card-hidden {
-    margin-left: var(--card-overlap);
-}
 .point-card div {
     margin: auto;
     font-size: 25px;
     font-weight: bolder;
     color: black;
+}
+
+.ready {
+    transition: 0.6s;
+    transform: translateY(5%) translateX(100%);
+}
+.ready-bottom {
+    transition: 0.6s;
+    transform: translateY(-5%) translateX(100%);
 }
 </style>

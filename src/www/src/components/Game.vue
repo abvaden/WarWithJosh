@@ -15,7 +15,10 @@
 
     <PointsArea class="points-area"/>
 
+
+    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady"/>
     <PointCards class="points-card-area" />
+    
 
 
     <!-- Player 2 Area -->
@@ -35,9 +38,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { VNode } from "vue";
 import PointsArea from "./PointsArea.vue";
 import PointCards from "./PointCards.vue";
+import PlayerHandCard from "./PlayerHandCard.vue";
 import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
@@ -48,7 +52,7 @@ import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 let commandPublisher: ICommandPublisher;
 
 export default {
-  components: { PointsArea, PointCards },
+  components: { PointsArea, PointCards, PlayerHandCard },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -86,7 +90,7 @@ export default {
   width:100%;
   
   display: grid;
-  grid-template-columns: minmax(.5fr, 0) minmax(min-content, max-content) calc(min-content + 5%);
+  grid-template-columns: auto minmax(250px, 250px);
   grid-template-rows: min-content minmax(250px, auto) min-content;
   align-content: stretch;
   align-items: stretch;
@@ -102,12 +106,12 @@ export default {
   border-bottom-width: 2px;
   grid-row: 1;
   grid-column-start: 1;
-  grid-column-end: 4;
+  grid-column-end: 3;
 }
 .player-area-bottom {
   grid-row: 3;
   grid-column-start: 1;
-  grid-column-end: 4;
+  grid-column-end: 3;
   
   border-top-width: 2px;
 }
@@ -140,13 +144,13 @@ export default {
 
 .points-card-area {
   grid-row: 2;
-  grid-column: 2;
+  grid-column-start: 1;
 }
 
 
 .points-area {
-  grid-row: 2;
-  grid-column: 3;
+  grid-row: 0;
+  grid-column: 2;
 }
 
 .card {

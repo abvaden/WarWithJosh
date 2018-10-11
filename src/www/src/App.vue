@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-on:keyup.stop="doThis">
+  <div id="app">
     <GameSetup />
     <Game />
   </div>

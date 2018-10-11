@@ -58,18 +58,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .points-container {
-    display: grid;
-    
+    display: grid;   
     grid-template-rows: auto 1fr;
     grid-template-columns: 1fr 1fr;
-    align-content:stretch;
-    justify-items: stretch;
 }
 .player-name-container {
-    
     justify-content: stretch; 
     text-align: center;
-
     color: white;
 
     border-top: 0px;

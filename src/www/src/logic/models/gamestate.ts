@@ -29,20 +29,24 @@ export interface INumberOption {
 export interface IGame {
     player1_name: string,
     player1_points: number | undefined,
-    player1_cards: Array<INumberOption>;
-    player1_handReady: boolean;
+    player1_handValue: number | undefined,
+    player1_cards: Array<INumberOption>,
+    player1_handReady: boolean,
 
-    player2_name: string;
-    player2_handReady: boolean;
+    player2_name: string,
+    player2_handReady: boolean,
+    player2_handValue: number | undefined,
     player2_points: number | undefined,
-    player2_cards: Array<INumberOption>;
+    player2_cards: Array<INumberOption>,
+
+    handRevealTime: Date,
     
     activeGameId: string,
     game_loading: boolean,
     play_history: Array<IHistoricalPlay>,
-    trickPoints: number;
-    remainingTricks: number;
-    hasBegun: boolean;
+    trickPoints: number,
+    remainingTricks: number,
+    hasBegun: boolean,
 }
 
 
@@ -59,13 +63,16 @@ export const StaticGameState: IGameState = {
         player1_name: "",
         player1_points: 0,
         player1_cards: [],
+        player1_handValue: undefined,
         player1_handReady: false,
 
         player2_name: "",
         player2_points: 0,
         player2_cards: [],
+        player2_handValue: undefined,
         player2_handReady: false,
         
+        handRevealTime: new Date(),
         activeGameId: "",
         game_loading: false,
         play_history: [],

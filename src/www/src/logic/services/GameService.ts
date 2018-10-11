@@ -3,10 +3,11 @@ import { IGameService } from '@/logic/services/Interfaces';
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
 import { playerFactory, PlayerType } from '@/gops/player';
 import { ICommandPublisher, ICommand, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { NextTrickCommand } from '@/logic/commands/next-trick.command';
+import { NextTrickCommandDecided } from '@/logic/commands/next-trick-decided.command';
 import { RecordTrickScoreCommand } from '@/logic/commands/record-trick-score.command';
 import { PlayCardCommand } from '@/logic/commands/play-card.command';
 import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
+import { RevealHandCommand } from '../commands/reveal-hand.command';
 
 
 @injectable()
@@ -76,7 +77,7 @@ export class GameService implements IGameService {
     }
 
     private trickPointsDecided(value: number) {
-        const nextTrickCommand = new NextTrickCommand();
+        const nextTrickCommand = new NextTrickCommandDecided();
         nextTrickCommand.TrickPoints = value;
         this._commandPublisher.publish(nextTrickCommand);
     }
@@ -99,6 +100,12 @@ export class GameService implements IGameService {
         this._commandPublisher.publish(player2PlayCardCommand);
 
         this._trickNumber += 1;
+        const revealHandCommand = new RevealHandCommand();
+        revealHandCommand.Player1_Value = player1Value;
+        revealHandCommand.Player2_Value = player2Value;
+        this._commandPublisher.publish(revealHandCommand);
+
+
         const recordScoreCommand = new RecordTrickScoreCommand();
         recordScoreCommand.trickNumber = this._trickNumber;
         recordScoreCommand.player1_score = player1Score;
