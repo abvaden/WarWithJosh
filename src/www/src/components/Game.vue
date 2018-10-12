@@ -16,8 +16,10 @@
     <PointsArea class="points-area"/>
 
 
-    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady"/>
     <PointCards class="points-card-area" />
+    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" bottom="true"/>
+    <PlayerHandCardBottom class="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
+    
     
 
 
@@ -26,7 +28,7 @@
       <div class="player-card-area">
         <div v-for="card in player2_cards" 
             v-bind:key="card.value" 
-            v-bind:class="['card', {'card-disabled': card.disabled}]"
+            v-bind:class="['card', 'card-selectable', {'card-selectable-disabled': card.disabled} ]"
             v-on:click.prevent="cardSelected(card.value, true)"
             style="--aspect-ratio:2.5/3.5;">
           <div>{{card.text}}</div>
@@ -42,6 +44,7 @@ import Vue, { VNode } from "vue";
 import PointsArea from "./PointsArea.vue";
 import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
+import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
@@ -52,7 +55,7 @@ import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 let commandPublisher: ICommandPublisher;
 
 export default {
-  components: { PointsArea, PointCards, PlayerHandCard },
+  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -73,6 +76,12 @@ export default {
     },
     player2_alt_name: function(): string {
       return this.player2_name + (this.player2_handReady ? ' (ready)' : '');
+    },
+    player1_play: function(): boolean {
+      return this.player1_handReady && (this.player1_handValue !== undefined);
+    },
+    player2_play: function(): boolean {
+      return this.player2_handReady && (this.player2_handValue !== undefined);
     }
   }
 }
@@ -144,7 +153,7 @@ export default {
 
 .points-card-area {
   grid-row: 2;
-  grid-column-start: 1;
+  grid-column: 1;
 }
 
 
@@ -163,12 +172,19 @@ export default {
   border-style: solid;
   border-color: black;
 
+  cursor:default;
+
   width: 50px;
   display: inline-block;
 }
-.card:hover {
+.card-selectable:hover {
   cursor: pointer;
   border-color: white;
+}
+.card-selectable-disabled {
+  background: rgba(155, 155, 155, .5);
+  border-color: black;
+  cursor: no-drop;
 }
 
 
@@ -182,14 +198,13 @@ export default {
 }
 
 .card-disabled {
-  cursor: no-drop;
   background-color: var(--dark-accent-disabled-color);
 }
 
 .card-disabled > div {
   color: black;
 }
-.card-disabled:hover {
+.card-selectable-disabled:hover {
   background: rgba(155, 155, 155, .5);
   border-color: black;
   cursor: no-drop;

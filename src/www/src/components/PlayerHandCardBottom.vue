@@ -17,7 +17,7 @@
 import Vue, { VNode } from "vue";
 
 export default {
-  props: [ "ready", "value", "play", "bottom" ],
+  props: [ "ready", "value", "play", "bottom" ]
 }
 </script>
 
@@ -32,13 +32,14 @@ export default {
 }
 .container {
     overflow: hidden;
+    width: 100%;
 }
 /* entire container, keeps perspective */
 .flip-container {
     position: relative;
     perspective: 1000;
     left: 50%;
-    transform: translateY(calc(var(--card-height) * -1.2));
+    top:100%;
 }
 
 /* flip the pane when clicked */
@@ -100,6 +101,6 @@ export default {
 
 .ready {
     transition: 0.6s;
-    transform: translateX(calc(var(--card-width) * -0.75)) translateY(5%);
+    transform: translateX(calc(var(--card-width) * 0.75)) translateY(-105%);
 }
 </style>

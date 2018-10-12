@@ -27,18 +27,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { StaticGameState } from "@/logic/models/gamestate"
-import { container } from "@/main";
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { PlayCardCommand } from '../logic/commands/play-card.command';
-import { Stats } from 'fs';
-
-let commandPublisher: ICommandPublisher;
 
 export default {
-  components: {  },
-  beforeCreate: () => {
-    commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-  },
   data() {
     return StaticGameState.Game;
   },

@@ -37,6 +37,8 @@ export class StartGameCommandHandler implements ICommandHandler {
     }
 
     private handle_Command(command: StartGameCommand): void {
+        this._gameState.Game.winnerDialogOpen = false;
+        
         this._gameState.Game.hasBegun = true;
         this._gameState.Game.player1_name = "Joshua";
         this._gameState.Game.player1_points = 0;

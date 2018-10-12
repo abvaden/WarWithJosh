@@ -47,6 +47,8 @@ export interface IGame {
     trickPoints: number,
     remainingTricks: number,
     hasBegun: boolean,
+
+    winnerDialogOpen: boolean
 }
 
 
@@ -78,7 +80,9 @@ export const StaticGameState: IGameState = {
         play_history: [],
         trickPoints: 0,
         remainingTricks: 13,
-        hasBegun: false
+        hasBegun: false,
+
+        winnerDialogOpen: false
     }
 };
 
