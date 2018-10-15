@@ -15,4 +15,19 @@ body {
     --dark-accent-color: #5f8783;
     --dark-accent-disabled-color: #5d6160;
     --dark-shades-color: #285282;
+
+    --card-height: 140px;
+    --card-width: 100px;
+    
+    --card-overlap: -90px;
+    --card-overlap-s: -97px;
+
+
+    --card-height: 140px;
+    --card-max-height: 70%;
+    --card-width: 100px;
+    --card-max-width: 25%;
+    --card-half-width: 70px;
+
+    --render-break-width: 600px;
 } 

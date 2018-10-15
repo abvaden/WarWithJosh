@@ -58,7 +58,7 @@ export class CommandPublisher implements ICommandPublisher {
     }
 }
 
-export const CommandingContainerModule: ContainerModule = new ContainerModule((bind) => {
+export const CommandingModule: ContainerModule = new ContainerModule((bind) => {
     bind<ICommandPublisher>(ICommandPublisher_IOC_Key)
         .to(CommandPublisher)
         .inSingletonScope();

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <GameSetup />
+    <WinnerDialog />
     <Game />
   </div>
 </template>
@@ -9,10 +10,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import GameSetup from './components/GameSetup.vue';
 import Game from "./components/Game.vue";
+import WinnerDialog from "./components/WinnerDialog.vue";
 import { IGameState, StaticGameState } from '@/logic/models/gamestate';
 export default {
   name: "App",
-  components: { GameSetup, Game},  
+  components: { GameSetup, Game, WinnerDialog},  
   data() {
     return StaticGameState;
   },

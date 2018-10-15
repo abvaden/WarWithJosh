@@ -8,6 +8,7 @@ import { RecordTrickScoreCommand } from '@/logic/commands/record-trick-score.com
 import { PlayCardCommand } from '@/logic/commands/play-card.command';
 import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 import { RevealHandCommand } from '../commands/reveal-hand.command';
+import { RevealWinnerCommand } from '../commands/reveal-winner.command';
 
 
 @injectable()
@@ -33,7 +34,7 @@ export class GameService implements IGameService {
         this._interactivePlayerDecideMove(value);
     }
 
-    async startGame(): Promise<void> {
+    async startGame(onGameCompleted: (p1: number, p2: number) => void): Promise<void> {
         const player1 = await playerFactory({
             PlayerType: PlayerType.Random,
             Callbacks: {
@@ -69,7 +70,8 @@ export class GameService implements IGameService {
 
         const internalGame = await gameFactory(gameInputs);
 
-        internalGame();
+        const gameResults = await internalGame();
+        onGameCompleted(gameResults.player1, gameResults.player2);
     }
 
     async stopGame(): Promise<void> {

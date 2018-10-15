@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { VNode } from "vue";
 import { StaticGameState } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
@@ -23,7 +23,7 @@ import { PlayCardCommand } from '../logic/commands/play-card.command';
 import { setInterval, clearInterval } from 'timers';
 let commandPublisher: ICommandPublisher;
 
-export default {
+export default Vue.extend({
   components: {  },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
@@ -54,43 +54,65 @@ export default {
         return cards;
     }
   }
-}
+});
 </script>
 
 
 <style scoped>
-:root {
-  --card-height: 140px;
-  --card-max-height: 70%;
-  --card-width: 100px;
-  --card-max-width: 25%;
+@media only screen and (max-width: 700px) {
+    .flip-container-flipped .flipper, .flip-container-flipped .flipper {
+        transform: rotateY(180deg) translateX(var(--card-overlap-s));
+    }
 
-  --card-overlap: -90px;
+    .all-cards-area {
+        margin-top: auto;
+        margin-bottom: auto;
+        padding-left: 110px;
+        min-width: 250px;
+        display: block;
+    }
+
+    .flip-container {
+        display: inline-block;
+        margin-left: var(--card-overlap-s);
+        perspective: 1000;
+    }
+
+    .point-card-hidden {
+        margin-left: var(--card-overlap-s);
+    }
+}
+
+@media only screen and (min-width: 700px) {
+    .flip-container-flipped .flipper, .flip-container-flipped .flipper {
+        transform: rotateY(180deg) translateX(var(--card-overlap));
+    }
+
+    .all-cards-area {
+        margin-top: auto;
+        margin-bottom: auto;
+        padding-left: 110px;
+        min-width: 300px;
+        width: 220px;
+        display: block;
+    }
+
+    .flip-container {
+        display: inline-block;
+        margin-left: var(--card-overlap);
+        perspective: 1000;
+    }
+    .point-card-hidden {
+        margin-left: var(--card-overlap);
+    }
 }
 .card-table {
     display: flex;
     background-color: white;
     overflow: hidden;
 }
-.all-cards-area {
-    margin-top: auto;
-    margin-bottom: auto;
-    padding-left: 20%;
-    margin-right:20%;
-    width: calc((var(--card-width) + var(--card-overlap)) * 13 - var(--card-overlap));
-    display: block;
-}
-/* entire container, keeps perspective */
-.flip-container {
-    display: inline-block;
-    margin-left: var(--card-overlap);
-    perspective: 1000;
-}
 
-/* flip the pane when clicked */
-.flip-container-flipped .flipper, .flip-container-flipped .flipper {
-    transform: rotateY(180deg) translateX(var(--card-overlap));
-}
+
 
 .flip-container, .front, .back {
 	width: var(--card-width);
@@ -137,9 +159,7 @@ export default {
     justify-content: center;
     flex-direction: column;
 }
-.point-card-hidden {
-    margin-left: var(--card-overlap);
-}
+
 .point-card div {
     margin: auto;
     font-size: 25px;

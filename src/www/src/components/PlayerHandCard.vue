@@ -23,24 +23,29 @@ export default {
 
 
 <style scoped>
-:root {
-  --card-height: 140px;
-  --card-max-height: 70%;
-  --card-width: 100px;
-  --card-max-width: 25%;
-  --card-half-width: 70px;
-}
 .container {
     overflow: hidden;
+    padding-right: 20px;
 }
 /* entire container, keeps perspective */
-.flip-container {
-    position: relative;
-    perspective: 1000;
-    left: 50%;
-    transform: translateY(calc(var(--card-height) * -1.2));
+
+@media only screen and (max-width: 850px) {
+    .flip-container {
+        position: relative;
+        perspective: 1000;
+        left: calc(100% - var(--card-width));
+        transform: translateY(calc(var(--card-height) * -1.2));
+    }
 }
 
+@media only screen and (min-width: 850px) {
+    .flip-container {
+        position: relative;
+        perspective: 1000;
+        left: 50%;
+        transform: translateY(calc(var(--card-height) * -1.2));
+    }
+}
 /* flip the pane when clicked */
 .flip-container-flipped .flipper, .flip-container-flipped .flipper {
     transform: translateX(calc(var(--card-width))) rotateY(180deg);
@@ -100,6 +105,6 @@ export default {
 
 .ready {
     transition: 0.6s;
-    transform: translateX(calc(var(--card-width) * -0.75)) translateY(5%);
+    transform: translateY(5%);
 }
 </style>

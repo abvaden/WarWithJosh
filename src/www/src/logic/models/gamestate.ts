@@ -1,14 +1,24 @@
-import { IPlayer } from '../../gops/player';
 
 export interface IGameState {
-    SetupDialog: IGameSetupDialog;
-    Game: IGame;
+    SetupDialog: IGameSetupDialog,
+    WinnerDialog: IWinnerDialog,
+    Game: IGame
 }
 
 export interface IGameSetupDialog {
     Message: string;
     IsOpen: boolean;
     PlayerCount: number;
+}
+
+export interface IWinnerDialog {
+    player1_name: string,
+    player2_name: string,
+
+    player1_score: number,
+    player2_score: number,
+    
+    isOpen: boolean
 }
 
 export interface IHistoricalPlay {
@@ -61,6 +71,15 @@ export const StaticGameState: IGameState = {
         IsOpen: true,
         PlayerCount: 0
     },
+    WinnerDialog: {
+        player1_name: "",
+        player2_name: "",
+
+        player1_score: 0,
+        player2_score: 0,
+
+        isOpen: false
+    },
     Game: {
         player1_name: "",
         player1_points: 0,
@@ -83,6 +102,7 @@ export const StaticGameState: IGameState = {
         hasBegun: false,
 
         winnerDialogOpen: false
-    }
+    },
+
 };
 

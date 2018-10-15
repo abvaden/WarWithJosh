@@ -4,10 +4,9 @@ import Vue from 'vue';
 import App from './App.vue';
 import './registerServiceWorker';
 import { Container } from 'inversify';
-import { CommandingContainerModule, ICommandPublisher_IOC_Key, ICommandPublisher } from '@/logic/commanding';
+import { CommandingModule, ICommandPublisher_IOC_Key, ICommandPublisher } from '@/logic/commanding';
 import { UIModule } from '@/Bootstrap';
-import { IGameState, GameState_IOC_Key } from '@/logic/models/gamestate';
-import { OpenDialogCommand } from '@/logic/commands/open-dialog.command';
+import { IGameState, GameState_IOC_Key, StaticGameState } from '@/logic/models/gamestate';
 
 export let container: Container;
 
@@ -15,7 +14,7 @@ import './assets/styles/global.css';
 
 const loadData = async (): Promise<IGameState> => {
   container = new Container();
-  container.load(CommandingContainerModule);
+  container.load(CommandingModule);
   container.load(UIModule);
   
   const commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
@@ -28,6 +27,7 @@ const loadData = async (): Promise<IGameState> => {
 
 
 Vue.config.productionTip = false;
+Vue.config.devtools = false;
 
 loadData().then(x => {
   new Vue({

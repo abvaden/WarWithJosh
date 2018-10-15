@@ -1,9 +1,9 @@
 import { IPlayer, playerFactory } from './player';
 import { IGame } from '@/logic/models/gamestate';
 
-export async function gameFactory(inputs: IGameFactoryInputs): Promise<() => void> {
+export async function gameFactory(inputs: IGameFactoryInputs): Promise<() => Promise<{player1: number, player2: number}>> {
     return () => {
-        run(inputs);
+        return run(inputs);
     };
 }
 

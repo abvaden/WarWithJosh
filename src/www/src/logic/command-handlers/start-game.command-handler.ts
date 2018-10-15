@@ -1,8 +1,9 @@
-import { ICommandHandler, ICommand } from '@/logic/commanding';
+import { ICommandHandler, ICommand, ICommandPublisher_IOC_Key, CommandPublisher, ICommandPublisher } from '@/logic/commanding';
 import { IGameState, GameState_IOC_Key, INumberOption } from '@/logic/models/gamestate';
 import { inject, injectable } from 'inversify';
 import { StartGameCommand, StartGameCommandName } from '@/logic/commands/start-game.command';
 import { IGameService_IOC_Key, IGameService } from '@/logic/services/Interfaces';
+import { RevealWinnerCommand } from '../commands/reveal-winner.command';
 
 
 function playerCards(): Array<INumberOption> {
@@ -25,11 +26,14 @@ export class StartGameCommandHandler implements ICommandHandler {
     
     private readonly _gameState: IGameState;
     private readonly _gameService: IGameService;
+    private readonly _commandPublisher: ICommandPublisher;
 
     constructor(@inject(GameState_IOC_Key)gameState: IGameState,
-    @inject(IGameService_IOC_Key)gameService: IGameService) {
+                @inject(IGameService_IOC_Key)gameService: IGameService,
+                @inject(ICommandPublisher_IOC_Key)commandPublisher: ICommandPublisher) {
         this._gameState = gameState;
         this._gameService = gameService;
+        this._commandPublisher = commandPublisher;
     }
 
     handle(command: ICommand): void {
@@ -49,6 +53,14 @@ export class StartGameCommandHandler implements ICommandHandler {
         this._gameState.Game.player2_cards = playerCards();
 
 
-        this._gameService.startGame();
+        this._gameService.startGame((player1: number, player2: number) => {
+            console.log('Game completed');
+            const showWinnerCommand = new RevealWinnerCommand();
+            showWinnerCommand.Player1_Name = this._gameState.Game.player1_name;
+            showWinnerCommand.Player2_Name = this._gameState.Game.player2_name;
+            showWinnerCommand.Player1_Score = player1;
+            showWinnerCommand.Player2_Score = player2;
+            this._commandPublisher.publish(showWinnerCommand);
+        });
     }
 }

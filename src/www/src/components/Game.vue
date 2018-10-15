@@ -1,41 +1,18 @@
 <template>
   <div class="fullscreenGame">
     <!-- Player 1 Area -->
-    <div class="player-area player-area-top">
-      <div class="player-name">{{ player1_alt_name }}</div>
-      <div class="player-card-area">
-        <div v-for="card in player1_cards" 
-            v-bind:key="card.value" 
-            v-bind:class="['card', {'card-disabled': card.disabled}]"
-            style="--aspect-ratio:2.5/3.5;">
-          <div>{{card.text}}</div>
-        </div>
-      </div>
-    </div>
+    <PlayerArea v-bind:player_name="player1_name" v-bind:cards="player1_cards" class="player-area-top" />
 
     <PointsArea class="points-area"/>
 
 
     <PointCards class="points-card-area" />
-    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" bottom="true"/>
-    <PlayerHandCardBottom class="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
-    
-    
 
+    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" />
+    <PlayerHandCardBottom class="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
 
     <!-- Player 2 Area -->
-    <div class="player-area player-area-bottom">
-      <div class="player-card-area">
-        <div v-for="card in player2_cards" 
-            v-bind:key="card.value" 
-            v-bind:class="['card', 'card-selectable', {'card-selectable-disabled': card.disabled} ]"
-            v-on:click.prevent="cardSelected(card.value, true)"
-            style="--aspect-ratio:2.5/3.5;">
-          <div>{{card.text}}</div>
-        </div>
-      </div>
-      <div class="player-name">{{ player2_alt_name }}</div>
-    </div>
+    <PlayerArea v-bind:player_name="player2_name" v-bind:cards="player2_cards" class="player-area-bottom" v-bind:selectable="true" v-bind:bottom="true"/>
   </div>
 </template>
 
@@ -45,17 +22,17 @@ import PointsArea from "./PointsArea.vue";
 import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
+import PlayerArea from "./PlayerArea.vue";
 import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { PlayCardCommand } from '../logic/commands/play-card.command';
-import { Stats } from 'fs';
 import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 
 let commandPublisher: ICommandPublisher;
 
-export default {
-  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom },
+export default Vue.extend({
+  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -71,36 +48,29 @@ export default {
     }
   },
   computed: {
-    player1_alt_name: function(): string {
-      return this.player1_name + (this.player1_handReady ? ' (ready)' : '');
-    },
-    player2_alt_name: function(): string {
-      return this.player2_name + (this.player2_handReady ? ' (ready)' : '');
-    },
-    player1_play: function(): boolean {
+    player1_play(): boolean {
       return this.player1_handReady && (this.player1_handValue !== undefined);
     },
-    player2_play: function(): boolean {
+    player2_play(): boolean {
       return this.player2_handReady && (this.player2_handValue !== undefined);
     }
   }
-}
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .fullscreenGame {
   position: absolute; 
-  top:0; 
-  left:0; 
-  margin: 0;
+
+  margin: auto;
 
   height:100%; 
   width:100%;
   
   display: grid;
   grid-template-columns: auto minmax(250px, 250px);
-  grid-template-rows: min-content minmax(250px, auto) min-content;
+  grid-template-rows: min-content minmax(300px, auto) min-content;
   align-content: stretch;
   align-items: stretch;
   justify-items: stretch;
@@ -125,111 +95,13 @@ export default {
   border-top-width: 2px;
 }
 
-.player-card-area {
-  text-align: center;
-
-  padding-top: 2.5%; 
-  padding-bottom: 2.5%;
-  background: rgba(0, 0, 0, .1);
-}
-
-.player-name {
-  margin: 0px;
-  text-align: center;
-  
-  font-size: 50px;
-  
-  color: var(--light-shades-color);
-  
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  background: var(--light-accent-color);
-}
-
 .points-card-area {
   grid-row: 2;
   grid-column: 1;
 }
 
-
 .points-area {
   grid-row: 0;
   grid-column: 2;
-}
-
-.card {
-  margin-left: 5px;
-  margin-right: 5px;
-
-  background-color: var(--dark-accent-color);
-  border-radius: 10px;
-  border-width: 3px; 
-  border-style: solid;
-  border-color: black;
-
-  cursor:default;
-
-  width: 50px;
-  display: inline-block;
-}
-.card-selectable:hover {
-  cursor: pointer;
-  border-color: white;
-}
-.card-selectable-disabled {
-  background: rgba(155, 155, 155, .5);
-  border-color: black;
-  cursor: no-drop;
-}
-
-
-.card > div {
-  color: black;
-  font-size: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-}
-
-.card-disabled {
-  background-color: var(--dark-accent-disabled-color);
-}
-
-.card-disabled > div {
-  color: black;
-}
-.card-selectable-disabled:hover {
-  background: rgba(155, 155, 155, .5);
-  border-color: black;
-  cursor: no-drop;
-}
-
-[style*="--aspect-ratio"] > :first-child {
-    width: 100%;
-}
-[style*="--aspect-ratio"] > img {  
-    height: auto;
-} 
-@supports (--custom:property) {
-    [style*="--aspect-ratio"] {
-        position: relative;
-    }
-    [style*="--aspect-ratio"]::before {
-        content: "";
-        display: block;
-        padding-bottom: calc(100% / (var(--aspect-ratio)));
-    }  
-    [style*="--aspect-ratio"] > :first-child {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-    }  
 }
 </style>

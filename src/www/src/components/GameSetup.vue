@@ -24,7 +24,7 @@
 import { StaticGameState } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { OpenDialogCommand } from '@/logic/commands/open-dialog.command';
+import { ToggleDialogCommand } from '@/logic/commands/toggle-dialog.command';
 import { StartGameCommand } from "../logic/commands/start-game.command";
 
 let commandPublisher: ICommandPublisher;
@@ -38,8 +38,8 @@ export default {
   },
   methods: {
     selectPlay: () => {
-      const closeDialogCommand = new OpenDialogCommand();
-
+      const closeDialogCommand = new ToggleDialogCommand();
+      closeDialogCommand.open = false;
       commandPublisher.publish(closeDialogCommand);
 
       const startGameCommand = new StartGameCommand();
@@ -51,10 +51,7 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* The Modal (background) */
 .modal {
     display: none; 
     position: fixed; 
@@ -64,15 +61,12 @@ export default {
     width: 100%; 
     height: 100%; 
     overflow: auto; 
-    /* background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.7);  */
 }
 
 .modalopen {
   display: block;
 }
 
-/* Modal Content/Box */
 .modal-content {
     background-color: #30312F;
     margin-top: 15%;
@@ -86,15 +80,9 @@ export default {
     max-height: 70%;
 }
 
-@font-face {
-    font-family: Ubuntu Mono;
-    src: url(/assets/UbuntuMono-R_W.woff2);
-}
-
 .consoleText {
   color: #DCE5EB;
   font-size: 24px;
-  font-family: "Ubuntu Mono";
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
