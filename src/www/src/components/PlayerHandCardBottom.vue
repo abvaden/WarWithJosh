@@ -28,7 +28,7 @@ export default {
     padding-right: 20px;
 }
 /* entire container, keeps perspective */
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 850px) {
     .flip-container {
         position: relative;
         perspective: 1000;
@@ -37,7 +37,7 @@ export default {
     }
 }
 
-@media only screen and (min-width: 950px) {
+@media only screen and (min-width: 850px) {
     .flip-container {
         position: relative;
         perspective: 1000;

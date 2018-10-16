@@ -41,8 +41,9 @@ export class StartGameCommandHandler implements ICommandHandler {
     }
 
     private handle_Command(command: StartGameCommand): void {
-        this._gameState.Game.winnerDialogOpen = false;
-        
+        this._gameState.Game.trickPoints = 0;
+        this._gameState.Game.remainingTricks = 13;
+
         this._gameState.Game.hasBegun = true;
         this._gameState.Game.player1_name = "Joshua";
         this._gameState.Game.player1_points = 0;
@@ -54,7 +55,6 @@ export class StartGameCommandHandler implements ICommandHandler {
 
 
         this._gameService.startGame((player1: number, player2: number) => {
-            console.log('Game completed');
             const showWinnerCommand = new RevealWinnerCommand();
             showWinnerCommand.Player1_Name = this._gameState.Game.player1_name;
             showWinnerCommand.Player2_Name = this._gameState.Game.player2_name;
