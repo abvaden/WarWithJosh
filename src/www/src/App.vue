@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <GameSetup />
+    <GameSetup v-if="SetupDialog.IsOpen"/>
     <WinnerDialog />
-    <Game />
+    <Game v-if="game_visible"/>
   </div>
 </template>
 
@@ -12,13 +12,18 @@ import GameSetup from './components/GameSetup.vue';
 import Game from "./components/Game.vue";
 import WinnerDialog from "./components/WinnerDialog.vue";
 import { IGameState, StaticGameState } from '@/logic/models/gamestate';
-export default {
+export default Vue.extend({
   name: "App",
   components: { GameSetup, Game, WinnerDialog},  
   data() {
     return StaticGameState;
   },
-}
+  computed: {
+    game_visible(): boolean{
+      return !(this.WinnerDialog.isOpen || this.SetupDialog.IsOpen);
+    }
+  }
+});
 </script>
 
 <style>

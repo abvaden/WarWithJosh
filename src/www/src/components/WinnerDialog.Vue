@@ -1,6 +1,6 @@
 <template>
     <div v-bind:class="['modal', {'modal-open': isOpen}]">
-        <div class="content">
+        <div class="modal-content">
             <div class="name-row" v-if="player1_winner">
                 <h5>{{player1_name}} wins</h5>
             </div>
@@ -162,7 +162,7 @@ export default Vue.extend({
     font-size: 1.5em;
 }
 
-.content { 
+.modal-content { 
     background-color: #30312F;
     margin-top: 15%;
     margin-left: 15%;

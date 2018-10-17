@@ -12,8 +12,12 @@ import { RecordTrickScoreCommandHandler } from '@/logic/command-handlers/record-
 import { PlayerDecidedCommandHandler } from '@/logic/command-handlers/player-decided.command-handler';
 import { RevealHandCommandHandler } from './logic/command-handlers/reveal-hand.command-handler';
 import { RevealWinnerCommandHandler } from './logic/command-handlers/reveal-winner.command-handler';
+import { ChangeSetupDisplayCommandHandler } from './logic/command-handlers/change-setup-display.command-handler';
 
 export const UIModule: ContainerModule = new ContainerModule((bind) => {
+    bind<ICommandHandler>(ICommandHandler_IOC_Key)
+        .to(ChangeSetupDisplayCommandHandler)
+        .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(NextTrickDecidedCommandHandler)
         .inSingletonScope();

@@ -6,9 +6,8 @@ export interface IGameState {
 }
 
 export interface IGameSetupDialog {
-    Message: string;
     IsOpen: boolean;
-    PlayerCount: number;
+    selected_option: "Play" | "Rules" | "Info"
 }
 
 export interface IWinnerDialog {
@@ -67,18 +66,17 @@ export const GameState_IOC_Key = Symbol.for("GameState");
 
 export const StaticGameState: IGameState = {
     SetupDialog: {
-        Message: "$ Shall we play a game?",
-        IsOpen: false,
-        PlayerCount: 0
+        IsOpen: true,
+        selected_option: "Play"
     },
     WinnerDialog: {
-        player1_name: "Josh",
-        player2_name: "Joe User",
+        player1_name: "",
+        player2_name: "",
 
-        player1_score: 10,
-        player2_score: 15,
+        player1_score: 0,
+        player2_score: 0,
 
-        isOpen: true
+        isOpen: false
     },
     Game: {
         player1_name: "",

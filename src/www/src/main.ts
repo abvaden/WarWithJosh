@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 import Vue from 'vue';
 import App from './App.vue';
-import './registerServiceWorker';
+// import './registerServiceWorker';
 import { Container } from 'inversify';
 import { CommandingModule, ICommandPublisher_IOC_Key, ICommandPublisher } from '@/logic/commanding';
 import { UIModule } from '@/Bootstrap';
