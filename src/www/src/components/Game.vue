@@ -1,18 +1,20 @@
 <template>
-  <div class="fullscreenGame">
+  <div id="fullscreen-game">
     <!-- Player 1 Area -->
-    <PlayerArea v-bind:player_name="player1_name" v-bind:cards="player1_cards" class="player-area-top" />
+    <PlayerArea v-bind:player_name="player1_name" v-bind:cards="player1_cards" id="player-area-top" />
 
-    <PointsArea class="points-area"/>
+    <PointsArea id="points-area"/>
 
 
-    <PointCards class="points-card-area" />
+    <PointCards id="points-card-area" />
 
-    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" />
-    <PlayerHandCardBottom class="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
+    <PlayerHandCard id="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" />
+    <PlayerHandCardBottom id="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
 
     <!-- Player 2 Area -->
-    <PlayerArea v-bind:player_name="player2_name" v-bind:cards="player2_cards" class="player-area-bottom" v-bind:selectable="true" v-bind:bottom="true"/>
+    <PlayerArea id="player-area-bottom" v-bind:player_name="player2_name" v-bind:cards="player2_cards" v-bind:selectable="true" v-bind:bottom="true"/>
+
+    <TutorialPopup id="tutorial-popup" style="z-index: 1;"/>
   </div>
 </template>
 
@@ -23,6 +25,7 @@ import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 import PlayerArea from "./PlayerArea.vue";
+import TutorialPopup from "./TutorialPopup.vue";
 import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
 import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
@@ -32,7 +35,7 @@ import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 let commandPublisher: ICommandPublisher;
 
 export default Vue.extend({
-  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea },
+  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea, TutorialPopup },
   beforeCreate: () => {
     commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
   },
@@ -60,7 +63,7 @@ export default Vue.extend({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.fullscreenGame {
+#fullscreen-game {
   position: absolute; 
 
   margin: auto;
@@ -81,13 +84,13 @@ export default Vue.extend({
   border-color: black;
   border-width: 0px;
 }
-.player-area-top {
+#player-area-top {
   border-bottom-width: 2px;
   grid-row: 1;
   grid-column-start: 1;
   grid-column-end: 3;
 }
-.player-area-bottom {
+#player-area-bottom {
   grid-row: 3;
   grid-column-start: 1;
   grid-column-end: 3;
@@ -95,13 +98,20 @@ export default Vue.extend({
   border-top-width: 2px;
 }
 
-.points-card-area {
+#points-card-area {
   grid-row: 2;
   grid-column: 1;
 }
 
-.points-area {
-  grid-row: 0;
+#points-area {
+  grid-row: 2;
   grid-column: 2;
+}
+
+#tutorial-popup {
+  grid-row-start: 1;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 </style>

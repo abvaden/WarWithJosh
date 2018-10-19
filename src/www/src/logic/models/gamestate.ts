@@ -2,7 +2,8 @@
 export interface IGameState {
     SetupDialog: IGameSetupDialog,
     WinnerDialog: IWinnerDialog,
-    Game: IGame
+    Game: IGame,
+    Tutorial: ITutorial
 }
 
 export interface IGameSetupDialog {
@@ -18,6 +19,13 @@ export interface IWinnerDialog {
     player2_score: number,
     
     isOpen: boolean
+}
+
+export interface ITutorial {
+    show_popup: boolean,
+    is_running: boolean,
+    continue_to_show: boolean,
+    stage: "Opponent" | "Player" | "Well-Cards" | "Cumulative-Points"
 }
 
 export interface IHistoricalPlay {
@@ -101,6 +109,11 @@ export const StaticGameState: IGameState = {
 
         winnerDialogOpen: false
     },
-
+    Tutorial: {
+        show_popup: ((localStorage.getItem("show-tutorial-popup") == "T") || (localStorage.getItem("show-tutorial-popup") == null)) ? true : false,
+        is_running: false,
+        continue_to_show: false,
+        stage: "Opponent"
+    }
 };
 

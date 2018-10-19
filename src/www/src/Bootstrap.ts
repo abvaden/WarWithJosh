@@ -13,10 +13,14 @@ import { PlayerDecidedCommandHandler } from '@/logic/command-handlers/player-dec
 import { RevealHandCommandHandler } from './logic/command-handlers/reveal-hand.command-handler';
 import { RevealWinnerCommandHandler } from './logic/command-handlers/reveal-winner.command-handler';
 import { ChangeSetupDisplayCommandHandler } from './logic/command-handlers/change-setup-display.command-handler';
+import { ChangeTutorialPopupPersistanceCommandHandler } from './logic/command-handlers/change-tutorial-popup-persistance.command-handler';
 
 export const UIModule: ContainerModule = new ContainerModule((bind) => {
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(ChangeSetupDisplayCommandHandler)
+        .inSingletonScope();
+    bind<ICommandHandler>(ICommandHandler_IOC_Key)
+        .to(ChangeTutorialPopupPersistanceCommandHandler)
         .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(NextTrickDecidedCommandHandler)

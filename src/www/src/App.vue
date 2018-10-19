@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <GameSetup v-if="SetupDialog.IsOpen"/>
+    <!-- <GameSetup v-if="SetupDialog.IsOpen"/> -->
     <WinnerDialog />
-    <Game v-if="game_visible"/>
+    <!-- <Game v-if="game_visible"/> -->
+    <Game/>
   </div>
 </template>
 
