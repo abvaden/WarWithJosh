@@ -18,7 +18,7 @@ export class ToggleDialogCommandHandler implements ICommandHandler {
     }
 
     private handleOpen(command: ToggleDialogCommand): void {
-        this._gameState.SetupDialog.IsOpen = command.setupDialog;
+        this._gameState.Tutorial.show_popup = command.tutorialDialog;
         this._gameState.WinnerDialog.isOpen = command.winnerDialog;
     }
 }

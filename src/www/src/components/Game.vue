@@ -1,6 +1,10 @@
 <template>
   <div id="fullscreen-game">
     <!-- Player 1 Area -->
+    <div id="menu-button" v-on:click.stop="menu_button_click">
+      &equiv;
+    </div>
+    
     <PlayerArea v-bind:player_name="player1_name" v-bind:cards="player1_cards" id="player-area-top" />
 
     <PointsArea id="points-area"/>
@@ -31,6 +35,7 @@ import { container } from "@/main";
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { PlayCardCommand } from '../logic/commands/play-card.command';
 import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
+import { ToggleDialogCommand } from '@/logic/commands/toggle-dialog.command';
 
 let commandPublisher: ICommandPublisher;
 
@@ -48,6 +53,12 @@ export default Vue.extend({
       playCardCommand.Player1 = false;
       playCardCommand.Value = value;
       commandPublisher.publish(playCardCommand);
+    },
+    menu_button_click: () => {
+      const showTutorialMenuCommand = new ToggleDialogCommand();
+      showTutorialMenuCommand.open = true;
+      showTutorialMenuCommand.tutorialDialog = true;
+      commandPublisher.publish(showTutorialMenuCommand);
     }
   },
   computed: {
@@ -113,5 +124,26 @@ export default Vue.extend({
   grid-row-end: 4;
   grid-column-start: 1;
   grid-column-end: 3;
+}
+
+#menu-button {
+  grid-row: 1;
+  grid-column-start: 1;
+  grid-column-end: 3;
+
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  align-self: flex-start;
+
+  color: black;
+  font-weight: bold;
+  user-select: none;
+
+  font-size: 25px;
+}
+
+#menu-button:hover{
+  color: white;
 }
 </style>

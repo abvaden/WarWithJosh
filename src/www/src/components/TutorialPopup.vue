@@ -14,8 +14,8 @@
             </div>
 
             <div class="popup-footer">
-                <span id="disable-checkbox"><input type="checkbox" v-bind:checked="popup_continue_to_display" id="disable-checkbox-input" @change="toggle_display_popup($event)"><label for="disable-checkbox-input">Disable Tutorial</label></span>
-                <div class="button" id="start-button">Start</div>
+                <!-- <span id="disable-checkbox"><input type="checkbox" v-bind:checked="popup_continue_to_display" id="disable-checkbox-input" @change="toggle_display_popup($event)"><label for="disable-checkbox-input">Disable Tutorial</label></span> -->
+                <div class="button" id="start-button" v-on:click.stop="start_game_click">Start</div>
                 <div class="button button-danger" id="close-button">Close</div>
             </div>
         </div>
@@ -27,6 +27,8 @@ import Vue from "vue";
 import { StaticGameState } from "@/logic/models/gamestate"
 import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
 import { container } from '@/main';
+import { StartGameCommand } from "@/logic/commands/start-game.command";
+import { ToggleDialogCommand } from "@/logic/commands/toggle-dialog.command";
 import { ChangeTutorialPopupPersistanceCommand } from '@/logic/commands/change-tutorial-popup-persistance.command';
 
 let commandPublisher: ICommandPublisher;
@@ -39,17 +41,29 @@ export default Vue.extend({
     return StaticGameState.Tutorial;
   },
   methods: {
-      toggle_display_popup(value: any): void {
-          console.dir(value);
+      toggle_display_popup(value: Event): void {
+          const changeElement = value.target;
+          if (changeElement == null) {
+              return;
+          }
+          const inputElement = changeElement as HTMLInputElement;
           const changePopupPersistanceCommand = new ChangeTutorialPopupPersistanceCommand();
-          changePopupPersistanceCommand.value = false;
+          changePopupPersistanceCommand.value = !inputElement.checked;
 
           commandPublisher.publish(changePopupPersistanceCommand);
+      },
+      start_game_click: () => {
+          const startGameCommand = new StartGameCommand();
+          commandPublisher.publish(startGameCommand);
+
+          const closeDialogCommand = new ToggleDialogCommand();
+          closeDialogCommand.open = false;
+          commandPublisher.publish(closeDialogCommand);
       }
   },
   computed: {
       popup_open(): boolean {
-          return true;
+          return this.show_popup;
       },
       popup_continue_to_display(): boolean {
           return !this.continue_to_show;

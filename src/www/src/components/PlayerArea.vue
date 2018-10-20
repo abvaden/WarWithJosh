@@ -81,12 +81,6 @@ export default Vue.extend({
   font-size: 50px;
   
   color: var(--light-shades-color);
-  
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 
   background: var(--light-accent-color);

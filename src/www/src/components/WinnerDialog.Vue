@@ -64,7 +64,7 @@ export default Vue.extend({
 
             const toggleDialogCommand = new ToggleDialogCommand();
             toggleDialogCommand.open = true;
-            toggleDialogCommand.setupDialog = true;
+            toggleDialogCommand.tutorialDialog = true;
 
             commandPublisher.publish(toggleDialogCommand);
         }

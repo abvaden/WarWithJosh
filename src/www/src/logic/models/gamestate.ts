@@ -1,4 +1,3 @@
-
 export interface IGameState {
     SetupDialog: IGameSetupDialog,
     WinnerDialog: IWinnerDialog,
@@ -72,6 +71,23 @@ export interface IGame {
 
 export const GameState_IOC_Key = Symbol.for("GameState");
 
+const Initialize_Tutorial_State: () => ITutorial = () => {
+    let popupPersistanceValue = localStorage.getItem("show-tutorial-popup");
+    if (popupPersistanceValue == null) {
+        localStorage.setItem("show-tutorial-popup", "T");
+        popupPersistanceValue = "T";
+    }
+
+    const show_popup = (popupPersistanceValue == "T") ? true : false;
+    return {
+        show_popup: show_popup,
+        is_running: false,
+        continue_to_show: show_popup,
+        stage: "Opponent"
+    };
+}
+
+
 export const StaticGameState: IGameState = {
     SetupDialog: {
         IsOpen: true,
@@ -109,11 +125,7 @@ export const StaticGameState: IGameState = {
 
         winnerDialogOpen: false
     },
-    Tutorial: {
-        show_popup: ((localStorage.getItem("show-tutorial-popup") == "T") || (localStorage.getItem("show-tutorial-popup") == null)) ? true : false,
-        is_running: false,
-        continue_to_show: false,
-        stage: "Opponent"
-    }
+    Tutorial: Initialize_Tutorial_State()
 };
+
 
