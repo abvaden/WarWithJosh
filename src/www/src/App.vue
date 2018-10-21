@@ -10,7 +10,6 @@
 <script lang="ts">
 import Game from "./components/Game.vue";
 import Tutorial from "./components/Tutorial.vue";
-import GameSetup from './components/GameSetup.vue';
 import WinnerDialog from "./components/WinnerDialog.vue";
 import TutorialPopup from "./components/TutorialPopup.vue";
 
@@ -19,7 +18,7 @@ import { IGameState, StaticGameState } from '@/logic/models/gamestate';
 
 export default Vue.extend({
   name: "App",
-  components: { GameSetup, Game, WinnerDialog, Tutorial, TutorialPopup },  
+  components: { Game, WinnerDialog, Tutorial, TutorialPopup },  
   data() {
     return StaticGameState;
   },
