@@ -23,9 +23,9 @@
     <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-top-container" v-if="Tutorial.stage == 'Opponent' && Tutorial.is_running"> 
       <span class="tutorial-text-font" 
             id="tutorial-player-area-top-text">
-            This is your oponents hand. <br />
+            This is your opponent's hand. <br />
             When the game starts each player has cards numbered 1-13. <br />
-            These are refered to a bid cards.
+            These are refereed to a bid cards.
       </span>
       <NextButton v-on:click="advance_tutorial_click" style="float: right;" total-count="4" current-count="2"/>
     </div>
