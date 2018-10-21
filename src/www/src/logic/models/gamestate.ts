@@ -1,8 +1,8 @@
 export interface IGameState {
     SetupDialog: IGameSetupDialog,
     WinnerDialog: IWinnerDialog,
-    Game: IGame,
     Tutorial: ITutorial
+    Game: IGame
 }
 
 export interface IGameSetupDialog {
@@ -93,6 +93,7 @@ export const StaticGameState: IGameState = {
         IsOpen: true,
         selected_option: "Play"
     },
+    Tutorial: Initialize_Tutorial_State(),
     WinnerDialog: {
         player1_name: "",
         player2_name: "",
@@ -125,7 +126,6 @@ export const StaticGameState: IGameState = {
 
         winnerDialogOpen: false
     },
-    Tutorial: Initialize_Tutorial_State()
 };
 
 

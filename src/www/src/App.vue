@@ -1,28 +1,29 @@
 <template>
   <div id="app">
-    <!-- <GameSetup v-if="SetupDialog.IsOpen"/> -->
     <WinnerDialog />
-    <!-- <Game v-if="game_visible"/> -->
-    <Game/>
+    <Game />
+    <!-- <Tutorial v-if="Tutorial.is_running" /> -->
+    <TutorialPopup id="tutorial-popup" style="z-index: 5;"/>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import GameSetup from './components/GameSetup.vue';
 import Game from "./components/Game.vue";
+import Tutorial from "./components/Tutorial.vue";
+import GameSetup from './components/GameSetup.vue';
 import WinnerDialog from "./components/WinnerDialog.vue";
+import TutorialPopup from "./components/TutorialPopup.vue";
+
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { IGameState, StaticGameState } from '@/logic/models/gamestate';
+
 export default Vue.extend({
   name: "App",
-  components: { GameSetup, Game, WinnerDialog},  
+  components: { GameSetup, Game, WinnerDialog, Tutorial, TutorialPopup },  
   data() {
     return StaticGameState;
   },
   computed: {
-    game_visible(): boolean{
-      return !(this.WinnerDialog.isOpen || this.SetupDialog.IsOpen);
-    }
   }
 });
 </script>
@@ -32,5 +33,12 @@ export default Vue.extend({
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+#tutorial-popup {
+  grid-row-start: 1;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  z-index: 5;
 }
 </style>

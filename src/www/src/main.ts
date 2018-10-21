@@ -11,6 +11,7 @@ import { IGameState, GameState_IOC_Key, StaticGameState } from '@/logic/models/g
 export let container: Container;
 
 import './assets/styles/global.css';
+import './assets/styles/buttons.css';
 
 const loadData = async (): Promise<IGameState> => {
   container = new Container();

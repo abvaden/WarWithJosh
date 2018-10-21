@@ -1,0 +1,32 @@
+.button {
+    background-color: #2196F3;
+
+    color: white;
+    width: min-content;
+
+    user-select: none;
+
+    border-color: black;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 2px;
+
+
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+
+
+}
+
+.button:hover {
+    border-color: gray;
+    color: black;
+    filter: brightness(125%);
+}

@@ -6,7 +6,7 @@ import { IGameService_IOC_Key, IGameService } from '@/logic/services/Interfaces'
 import { RevealWinnerCommand } from '../commands/reveal-winner.command';
 
 
-function playerCards(): Array<INumberOption> {
+export function playerCards(): Array<INumberOption> {
     const values = new Array<INumberOption>();
     for (let i = 1; i <= 13; i++) {
         const numberOption = {
@@ -52,6 +52,8 @@ export class StartGameCommandHandler implements ICommandHandler {
         this._gameState.Game.player2_name = "Joe User";
         this._gameState.Game.player2_points = 0;
         this._gameState.Game.player2_cards = playerCards();
+
+        this._gameState.Game.play_history = [];
 
 
         this._gameService.startGame((player1: number, player2: number) => {

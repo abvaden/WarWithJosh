@@ -14,8 +14,13 @@ import { RevealHandCommandHandler } from './logic/command-handlers/reveal-hand.c
 import { RevealWinnerCommandHandler } from './logic/command-handlers/reveal-winner.command-handler';
 import { ChangeSetupDisplayCommandHandler } from './logic/command-handlers/change-setup-display.command-handler';
 import { ChangeTutorialPopupPersistanceCommandHandler } from './logic/command-handlers/change-tutorial-popup-persistance.command-handler';
+import { AdvanceTutorialCommandHandler } from './logic/command-handlers/advance-tutorial.command-handler';
+import { StartTutorialCommandHandler } from './logic/command-handlers/start-tutorial.command-handler';
 
 export const UIModule: ContainerModule = new ContainerModule((bind) => {
+    bind<ICommandHandler>(ICommandHandler_IOC_Key)
+        .to(AdvanceTutorialCommandHandler)
+        .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(ChangeSetupDisplayCommandHandler)
         .inSingletonScope();
@@ -45,6 +50,9 @@ export const UIModule: ContainerModule = new ContainerModule((bind) => {
         .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(StartGameCommandHandler)
+        .inSingletonScope();
+    bind<ICommandHandler>(ICommandHandler_IOC_Key)
+        .to(StartTutorialCommandHandler)
         .inSingletonScope();
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
         .to(ToggleDialogCommandHandler)

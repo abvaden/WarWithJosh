@@ -3,20 +3,20 @@
         <div class="modal-content">
             <div class="popup-title-bar">
                 <div id="popup-title-text">War with Josh</div>
-                <div class="button" id="exit-button">x</div>
+                <!-- <div class="button" id="exit-button">x</div> -->
             </div>
 
             <div class="popup-body">
                 <p>
                     Welcome to War with Josh <br /><br />
-                    Looks like you are new here consider hitting Start to go through the tutorial.
+                    If you are new here we suggest trying out the tutorial first.
                 </p>
             </div>
 
             <div class="popup-footer">
                 <!-- <span id="disable-checkbox"><input type="checkbox" v-bind:checked="popup_continue_to_display" id="disable-checkbox-input" @change="toggle_display_popup($event)"><label for="disable-checkbox-input">Disable Tutorial</label></span> -->
-                <div class="button" id="start-button" v-on:click.stop="start_game_click">Start</div>
-                <div class="button button-danger" id="close-button">Close</div>
+                <div class="button" id="tutorial-button"  v-on:click.stop="tutorial_button_click">Tutorial</div>
+                <div class="button" id="start-button" v-on:click.stop="start_game_click">Play</div>
             </div>
         </div>
     </div>
@@ -30,6 +30,7 @@ import { container } from '@/main';
 import { StartGameCommand } from "@/logic/commands/start-game.command";
 import { ToggleDialogCommand } from "@/logic/commands/toggle-dialog.command";
 import { ChangeTutorialPopupPersistanceCommand } from '@/logic/commands/change-tutorial-popup-persistance.command';
+import { StartTutorialCommand } from '@/logic/commands/start-tutorial.command';
 
 let commandPublisher: ICommandPublisher;
 
@@ -55,6 +56,14 @@ export default Vue.extend({
       start_game_click: () => {
           const startGameCommand = new StartGameCommand();
           commandPublisher.publish(startGameCommand);
+
+          const closeDialogCommand = new ToggleDialogCommand();
+          closeDialogCommand.open = false;
+          commandPublisher.publish(closeDialogCommand);
+      },
+      tutorial_button_click: () => {
+          const startTutorialCommand = new StartTutorialCommand();
+          commandPublisher.publish(startTutorialCommand);
 
           const closeDialogCommand = new ToggleDialogCommand();
           closeDialogCommand.open = false;
@@ -148,11 +157,9 @@ export default Vue.extend({
     margin-left: 15px;
     margin-right: 5px;
 }
-#start-button {
+
+#tutorial-button {
     margin-left: auto;
-}
-#close-button {
-    background-color: #F44336;
 }
 #exit-button {
     align-self: flex-start;
