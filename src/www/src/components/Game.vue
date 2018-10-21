@@ -153,7 +153,6 @@ export default Vue.extend({
   grid-column-end: 3;
 
   position: absolute;
-  top: 10px;
   left: 10px;
   align-self: flex-start;
 
@@ -161,7 +160,7 @@ export default Vue.extend({
   font-weight: bold;
   user-select: none;
 
-  font-size: 25px;
+  font-size: 50px;
 }
 
 #menu-button:hover{
