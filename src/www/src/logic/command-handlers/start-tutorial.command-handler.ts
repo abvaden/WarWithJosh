@@ -3,12 +3,14 @@ import { IGameState, GameState_IOC_Key } from '@/logic/models/gamestate';
 import { inject, injectable } from 'inversify';
 import { StartTutorialCommand, StartTutorialCommand_Name } from '../commands/start-tutorial.command';
 import { playerCards } from './start-game.command-handler';
+import { IAPIClient_IOC_KEY, IAPIClient } from '@/api-client';
 
 @injectable()
 export class StartTutorialCommandHandler implements ICommandHandler {
     public readonly For: Symbol[] = [StartTutorialCommand_Name ];
-    
+
     private readonly _gameState: IGameState;
+    
 
     constructor(@inject(GameState_IOC_Key)gameState: IGameState) {
         this._gameState = gameState;

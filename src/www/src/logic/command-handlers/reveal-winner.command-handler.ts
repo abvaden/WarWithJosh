@@ -3,17 +3,21 @@ import { IGameState, GameState_IOC_Key, INumberOption } from '@/logic/models/gam
 import { inject, injectable } from 'inversify';
 import { RevealWinnerCommand, RevealWinnerCommandName } from '../commands/reveal-winner.command';
 import { ToggleDialogCommand } from '../commands/toggle-dialog.command';
+import { IAPIClient, IAPIClient_IOC_KEY } from '@/api-client';
 
 @injectable()
 export class RevealWinnerCommandHandler implements ICommandHandler {
     readonly For: Symbol[] = [RevealWinnerCommandName]
     
     private readonly _gameState: IGameState;
+    private readonly _apiClient: IAPIClient;
     private readonly _commandPublisher: ICommandPublisher;
 
     constructor(@inject(GameState_IOC_Key)gameState: IGameState,
+                @inject(IAPIClient_IOC_KEY)apiClient: IAPIClient,
                 @inject(ICommandPublisher_IOC_Key)commandPublisher: ICommandPublisher) {
         this._gameState = gameState;
+        this._apiClient = apiClient;
         this._commandPublisher = commandPublisher;
     }
 
@@ -30,6 +34,9 @@ export class RevealWinnerCommandHandler implements ICommandHandler {
         if (this._gameState.Game.player2_points !== undefined) {
             this._gameState.WinnerDialog.player2_score = this._gameState.Game.player2_points;
         }
+
+        this._apiClient.EndSession(this._gameState.Game.activeGameId);
+        this._gameState.Game.activeGameId = "";
 
         const openWinnerDialogCommand = new ToggleDialogCommand();
         openWinnerDialogCommand.open = true;

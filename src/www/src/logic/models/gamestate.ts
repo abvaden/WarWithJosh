@@ -7,7 +7,10 @@ export interface IGameState {
 
 export interface IGameSetupDialog {
     IsOpen: boolean;
-    selected_option: "Play" | "Rules" | "Info"
+    IsLoading: boolean;
+    HasErrored: boolean;
+    error_message: string;
+    selected_option: "Play" | "Rules" | "Info";
 }
 
 export interface IWinnerDialog {
@@ -91,6 +94,9 @@ const Initialize_Tutorial_State: () => ITutorial = () => {
 export const StaticGameState: IGameState = {
     SetupDialog: {
         IsOpen: true,
+        IsLoading: false,
+        HasErrored: false,
+        error_message: "",
         selected_option: "Play"
     },
     Tutorial: Initialize_Tutorial_State(),

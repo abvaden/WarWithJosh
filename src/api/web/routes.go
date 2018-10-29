@@ -23,7 +23,8 @@ type gameRouteHandler func(w http.ResponseWriter, r *http.Request, engine *servi
 func createHandleFunc(route string, handleFunc gameRouteHandler, engine *services.GameEngine) http.Handler {
 	finalHandler := makeHttpHandler(handleFunc, engine)
 	loggingMiddleWare := MakeLoggingMiddleware(route, finalHandler)
-	return loggingMiddleWare
+	corsMiddleWare := AddCORSMiddleWare(loggingMiddleWare)
+	return corsMiddleWare
 }
 
 type internalHandler struct {

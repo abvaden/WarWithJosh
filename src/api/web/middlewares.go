@@ -17,3 +17,12 @@ func MakeLoggingMiddleware(route string, next http.Handler) http.Handler {
 		log.Printf("Handled API request for route %s in %d", route, duration)
 	})
 }
+
+// AddCORSMiddleWare ...
+func AddCORSMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		headers := w.Header()
+		headers.Add("Access-Control-Allow-Origin", "*")
+		next.ServeHTTP(w, r)
+	})
+}

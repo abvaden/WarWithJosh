@@ -1,0 +1,1 @@
+export const APIBasePath = process.env.VUE_APP_API_ENDPOINT

@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { StartGameCommand, StartGameCommandName } from '@/logic/commands/start-game.command';
 import { IGameService_IOC_Key, IGameService } from '@/logic/services/Interfaces';
 import { RevealWinnerCommand } from '../commands/reveal-winner.command';
+import { IAPIClient_IOC_KEY, IAPIClient } from '@/api-client';
 
 
 export function playerCards(): Array<INumberOption> {
@@ -25,13 +26,16 @@ export class StartGameCommandHandler implements ICommandHandler {
     readonly For: Symbol[] = [StartGameCommandName]
     
     private readonly _gameState: IGameState;
+    private readonly _apiClient: IAPIClient;
     private readonly _gameService: IGameService;
     private readonly _commandPublisher: ICommandPublisher;
 
     constructor(@inject(GameState_IOC_Key)gameState: IGameState,
+                @inject(IAPIClient_IOC_KEY)apiClient: IAPIClient,
                 @inject(IGameService_IOC_Key)gameService: IGameService,
                 @inject(ICommandPublisher_IOC_Key)commandPublisher: ICommandPublisher) {
         this._gameState = gameState;
+        this._apiClient = apiClient;
         this._gameService = gameService;
         this._commandPublisher = commandPublisher;
     }
@@ -41,28 +45,47 @@ export class StartGameCommandHandler implements ICommandHandler {
     }
 
     private handle_Command(command: StartGameCommand): void {
-        this._gameState.Game.trickPoints = 0;
-        this._gameState.Game.remainingTricks = 13;
+        this.Handle();
+    }
 
-        this._gameState.Game.hasBegun = true;
-        this._gameState.Game.player1_name = "Joshua";
-        this._gameState.Game.player1_points = 0;
-        this._gameState.Game.player1_cards = playerCards();
+    private async Handle(): Promise<void> {
+        try {
+            const sessionId = await this._apiClient.StartNewSession();
 
-        this._gameState.Game.player2_name = "Joe User";
-        this._gameState.Game.player2_points = 0;
-        this._gameState.Game.player2_cards = playerCards();
+            this._gameState.SetupDialog.IsLoading = false;
+            this._gameState.SetupDialog.IsOpen = false;
+            
+            this._gameState.Game.activeGameId = sessionId;
 
-        this._gameState.Game.play_history = [];
+            this._gameState.Game.trickPoints = 0;
+            this._gameState.Game.remainingTricks = 13;
+
+            this._gameState.Game.hasBegun = true;
+            this._gameState.Game.player1_name = "Joshua";
+            this._gameState.Game.player1_points = 0;
+            this._gameState.Game.player1_cards = playerCards();
+
+            this._gameState.Game.player2_name = "Joe User";
+            this._gameState.Game.player2_points = 0;
+            this._gameState.Game.player2_cards = playerCards();
+
+            this._gameState.Game.play_history = [];
 
 
-        this._gameService.startGame((player1: number, player2: number) => {
-            const showWinnerCommand = new RevealWinnerCommand();
-            showWinnerCommand.Player1_Name = this._gameState.Game.player1_name;
-            showWinnerCommand.Player2_Name = this._gameState.Game.player2_name;
-            showWinnerCommand.Player1_Score = player1;
-            showWinnerCommand.Player2_Score = player2;
-            this._commandPublisher.publish(showWinnerCommand);
-        });
+            this._gameService.startGame((player1: number, player2: number) => {
+                const showWinnerCommand = new RevealWinnerCommand();
+                showWinnerCommand.Player1_Name = this._gameState.Game.player1_name;
+                showWinnerCommand.Player2_Name = this._gameState.Game.player2_name;
+                showWinnerCommand.Player1_Score = player1;
+                showWinnerCommand.Player2_Score = player2;
+                this._commandPublisher.publish(showWinnerCommand);
+            });
+        } catch (e) {
+            this._gameState.SetupDialog.IsOpen = true;
+            this._gameState.SetupDialog.IsLoading = false;
+            this._gameState.SetupDialog.HasErrored = true;
+            this._gameState.SetupDialog.error_message = e.Message;
+            console.error(e);
+        }
     }
 }

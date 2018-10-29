@@ -16,6 +16,7 @@ import { ChangeSetupDisplayCommandHandler } from './logic/command-handlers/chang
 import { ChangeTutorialPopupPersistanceCommandHandler } from './logic/command-handlers/change-tutorial-popup-persistance.command-handler';
 import { AdvanceTutorialCommandHandler } from './logic/command-handlers/advance-tutorial.command-handler';
 import { StartTutorialCommandHandler } from './logic/command-handlers/start-tutorial.command-handler';
+import { IAPIClient, IAPIClient_IOC_KEY, NetworkAPIClient } from './api-client';
 
 export const UIModule: ContainerModule = new ContainerModule((bind) => {
     bind<ICommandHandler>(ICommandHandler_IOC_Key)
@@ -64,5 +65,8 @@ export const UIModule: ContainerModule = new ContainerModule((bind) => {
         .toConstantValue(StaticGameState);
     bind<IGameService>(IGameService_IOC_Key)
         .to(GameService)
+        .inSingletonScope();
+    bind<IAPIClient>(IAPIClient_IOC_KEY)
+        .to(NetworkAPIClient)
         .inSingletonScope();
 });
