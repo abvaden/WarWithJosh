@@ -1,0 +1,19 @@
+package web
+
+import (
+	"log"
+	"net/http"
+	"time"
+)
+
+//MakeLoggingMiddleWare ... Wraps an http handler with request timing logging
+func MakeLoggingMiddleware(route string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now().UTC().Unix()
+		next.ServeHTTP(w, r)
+		end := time.Now().UTC().Unix()
+		duration := end - start
+
+		log.Printf("Handled API request for route %s in %d", route, duration)
+	})
+}

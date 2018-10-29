@@ -12,7 +12,8 @@ type Session struct {
 
 // Player ... Details about the player who initiated the session
 type Player struct {
-	PlayerIP string
+	PlayerIP        string
+	PlayerUserAgent string
 }
 
 // AI ... Details about the AI used in the session

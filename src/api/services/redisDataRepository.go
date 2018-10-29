@@ -47,13 +47,13 @@ func RedisRepositoryFactory(serverName string) (*RedisDataRepository, error) {
 		return nil, errors.New("Error while starting data repository")
 	}
 	if resultsExist == 0 {
-		repository.updateGlobalResults(new(models.GlobalResults))
+		repository.UpdateGlobalResults(new(models.GlobalResults))
 	}
 
 	return &repository, nil
 }
 
-func (repository *RedisDataRepository) addSession() (*models.Session, error) {
+func (repository *RedisDataRepository) AddSession() (*models.Session, error) {
 	session := models.Session{}
 	sessionID, err := uuid.NewV4()
 	if err != nil {
@@ -84,7 +84,7 @@ func (repository *RedisDataRepository) addSession() (*models.Session, error) {
 	return &session, nil
 }
 
-func (repository *RedisDataRepository) getSession(sessionID *string) (*models.Session, error) {
+func (repository *RedisDataRepository) GetSession(sessionID *string) (*models.Session, error) {
 	client := repository.redisClient
 
 	sessionString, err := client.HGet(sessionKey, *sessionID).Result()
@@ -100,7 +100,7 @@ func (repository *RedisDataRepository) getSession(sessionID *string) (*models.Se
 	return session, nil
 }
 
-func (repository *RedisDataRepository) updateSession(session *models.Session) error {
+func (repository *RedisDataRepository) UpdateSession(session *models.Session) error {
 	client := repository.redisClient
 
 	sessionString, err := serializeSession(*session)
@@ -117,7 +117,7 @@ func (repository *RedisDataRepository) updateSession(session *models.Session) er
 	return nil
 }
 
-func (repository *RedisDataRepository) updateGlobalResults(results *models.GlobalResults) error {
+func (repository *RedisDataRepository) UpdateGlobalResults(results *models.GlobalResults) error {
 	client := repository.redisClient
 
 	resultsString, err := serializeResults(*results)
@@ -136,7 +136,7 @@ func (repository *RedisDataRepository) updateGlobalResults(results *models.Globa
 	return nil
 }
 
-func (repository *RedisDataRepository) getGlobalResults() (*models.GlobalResults, error) {
+func (repository *RedisDataRepository) GetGlobalResults() (*models.GlobalResults, error) {
 	client := repository.redisClient
 
 	resultsString, err := client.Get(resultsKey).Result()

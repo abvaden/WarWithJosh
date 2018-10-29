@@ -6,9 +6,9 @@ import (
 
 // IDataRepository ... Abstraction over the persistance of app data
 type IDataRepository interface {
-	addSession() (*models.Session, error)
-	getSession(sessionID string) (*models.Session, error)
-	updateSession(session *models.Session) error
+	AddSession() (*models.Session, error)
+	GetSession(sessionID *string) (*models.Session, error)
+	UpdateSession(session *models.Session) error
 
-	updateGlobalResults(results *models.GlobalResults) error
+	UpdateGlobalResults(results *models.GlobalResults) error
 }
