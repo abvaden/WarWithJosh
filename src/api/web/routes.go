@@ -12,7 +12,7 @@ const sessionBaseRoute = "session/"
 func Routes(engine *services.GameEngine) {
 	newSessionRoute := baseRoute + sessionBaseRoute + "new"
 	http.Handle(newSessionRoute, createHandleFunc(newSessionRoute, NewSessionHandler, engine))
-	addMoveRoute := baseRoute + sessionBaseRoute + " add-move"
+	addMoveRoute := baseRoute + sessionBaseRoute + "add-move"
 	http.Handle(addMoveRoute, createHandleFunc(addMoveRoute, SessionAddMoveHandler, engine))
 	endSessionRoute := baseRoute + sessionBaseRoute + "end"
 	http.Handle(endSessionRoute, createHandleFunc(endSessionRoute, SessionEndHandler, engine))

@@ -28,4 +28,5 @@ type Move struct {
 	PlayerScore float32
 	PlayerBid   uint8
 	HandValue   uint8
+	MoveTime    int64
 }

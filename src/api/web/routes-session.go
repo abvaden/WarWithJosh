@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 )
 
 // NewSessionHandler ...
@@ -21,6 +22,7 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 	session, err := engine.StartNewSession(player)
 	if err != nil {
 		ServerError(err, &w)
+		return
 	}
 
 	response := new(NewSessionResponse)
@@ -30,20 +32,27 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 
 // SessionAddMoveHandler ...
 func SessionAddMoveHandler(w http.ResponseWriter, r *http.Request, engine *services.GameEngine) {
-	body, err := r.GetBody()
-	if err != nil {
-		ServerError(err, &w)
-	}
+	body := r.Body
 
 	request := new(AddMoveRequest)
-	err = json.NewDecoder(io.LimitReader(body, 5000)).Decode(request)
+	err := json.NewDecoder(io.LimitReader(body, 5000)).Decode(request)
 	if err != nil {
 		BadRequest(&w)
+		return
 	}
 
-	err = engine.AddSessionMove(&request.SessionID, &request.Move)
+	move := new(models.Move)
+	move.AiBid = request.Move.AiBid
+	move.AiScore = request.Move.AiScore
+	move.HandValue = request.Move.HandValue
+	move.MoveTime = time.Now().UTC().Unix()
+	move.PlayerBid = request.Move.PlayerBid
+	move.PlayerScore = request.Move.PlayerScore
+
+	err = engine.AddSessionMove(&request.SessionID, move)
 	if err != nil {
 		ServerError(err, &w)
+		return
 	}
 
 	OK(&w)
@@ -51,20 +60,19 @@ func SessionAddMoveHandler(w http.ResponseWriter, r *http.Request, engine *servi
 
 // SessionEndHandler ...
 func SessionEndHandler(w http.ResponseWriter, r *http.Request, engine *services.GameEngine) {
-	body, err := r.GetBody()
-	if err != nil {
-		ServerError(err, &w)
-	}
+	body := r.Body
 
 	request := new(EndSessionRequest)
-	err = json.NewDecoder(io.LimitReader(body, 5000)).Decode(body)
+	err := json.NewDecoder(io.LimitReader(body, 5000)).Decode(body)
 	if err != nil {
 		BadRequest(&w)
+		return
 	}
 
 	err = engine.EndSession(&request.SessionID)
 	if err != nil {
 		BadRequest(&w)
+		return
 	}
 
 	OK(&w)
