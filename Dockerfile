@@ -17,7 +17,7 @@ ENTRYPOINT /bin/sh
 FROM debian:stretch-slim
 WORKDIR /root
 COPY --from=api-build /go/bin/api /root/
-COPY --from=www-build /src/www/public/ /root/www/
+COPY --from=www-build /src/www/dist/ /root/www/
 RUN chmod +x /root/api
 ENTRYPOINT /root/api
 EXPOSE 3000
