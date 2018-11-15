@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: war-with-josh
+spec:
+  selector:
+    app: war-with-josh
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000

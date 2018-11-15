@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: war-with-josh
+  labels:
+    app: war-with-josh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: war-with-josh
+  template:
+    metadata:
+      labels:
+        app: war-with-josh
+    spec:
+      containers:
+      - name: app
+        image: abvaden/warwithjosh
+        ports:
+        - containerPort: 3000
+      - name: redis
+        image: redis
+        ports:
+          - containerPort: 6379
