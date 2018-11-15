@@ -36,7 +36,7 @@ export class NetworkAPIClient implements IAPIClient {
     private readonly _apiBasePath: string;
     constructor() {
         const basePath = Constants.APIBasePath;
-        this._apiBasePath = (basePath === undefined) ? "http://localhost:3000" : basePath
+        this._apiBasePath = (basePath === undefined) ? "" : basePath
     }
 
     async StartNewSession(): Promise<string> {
