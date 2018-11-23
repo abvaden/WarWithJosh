@@ -10,7 +10,7 @@ import (
 func main() {
 	fs := http.FileServer(http.Dir("./www"))
 
-	dataRepository, err := services.RedisRepositoryFactory("redis:6379")
+	dataRepository, err := services.RedisRepositoryFactory("localhost:6379")
 	if err != nil {
 		panic(err)
 	}
