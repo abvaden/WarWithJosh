@@ -53,6 +53,7 @@ func RedisRepositoryFactory(serverName string) (*RedisDataRepository, error) {
 	return &repository, nil
 }
 
+// AddSession ...
 func (repository *RedisDataRepository) AddSession() (*models.Session, error) {
 	session := models.Session{}
 	sessionID, err := uuid.NewV4()
@@ -84,6 +85,7 @@ func (repository *RedisDataRepository) AddSession() (*models.Session, error) {
 	return &session, nil
 }
 
+// GetSession ...
 func (repository *RedisDataRepository) GetSession(sessionID *string) (*models.Session, error) {
 	client := repository.redisClient
 
@@ -100,6 +102,7 @@ func (repository *RedisDataRepository) GetSession(sessionID *string) (*models.Se
 	return session, nil
 }
 
+// UpdateSession ...
 func (repository *RedisDataRepository) UpdateSession(session *models.Session) error {
 	client := repository.redisClient
 
@@ -117,6 +120,7 @@ func (repository *RedisDataRepository) UpdateSession(session *models.Session) er
 	return nil
 }
 
+// UpdateGlobalResults ...
 func (repository *RedisDataRepository) UpdateGlobalResults(results *models.GlobalResults) error {
 	client := repository.redisClient
 
@@ -136,6 +140,7 @@ func (repository *RedisDataRepository) UpdateGlobalResults(results *models.Globa
 	return nil
 }
 
+// GetGlobalResults ...
 func (repository *RedisDataRepository) GetGlobalResults() (*models.GlobalResults, error) {
 	client := repository.redisClient
 
