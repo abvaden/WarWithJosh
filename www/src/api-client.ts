@@ -36,7 +36,7 @@ export class NetworkAPIClient implements IAPIClient {
     private readonly _apiBasePath: string;
     constructor() {
         const basePath = Constants.APIBasePath;
-        this._apiBasePath = (basePath === undefined) ? "" : basePath
+        this._apiBasePath = (basePath === undefined) ? window.location.href : basePath
     }
 
     async StartNewSession(): Promise<string> {
