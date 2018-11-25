@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: app
-        image: abvaden/warwithjosh
+        imagePullPolicy: Always
+        image: abvaden/warwithjosh:arm
         ports:
         - containerPort: 3000
       - name: redis
