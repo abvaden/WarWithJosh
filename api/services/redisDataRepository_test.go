@@ -23,7 +23,7 @@ func TestRedisDataRepository_SaveGetSession(t *testing.T) {
 		return
 	}
 
-	testSession, err := repository.addSession()
+	testSession, err := repository.AddSession()
 	if err != nil {
 		t.Error(err)
 		return
@@ -35,7 +35,7 @@ func TestRedisDataRepository_SaveGetSession(t *testing.T) {
 	}
 
 	testSessionID := testSession.ID
-	recalledSession, err := repository.getSession(&testSessionID)
+	recalledSession, err := repository.GetSession(&testSessionID)
 
 	if err != nil {
 		t.Error(err)
@@ -55,7 +55,7 @@ func TestRedisDataRepository_UpdateSession(t *testing.T) {
 		return
 	}
 
-	session, err := repository.addSession()
+	session, err := repository.AddSession()
 	if err != nil {
 		t.Error(err)
 		return
@@ -66,13 +66,13 @@ func TestRedisDataRepository_UpdateSession(t *testing.T) {
 	session.IsComplete = false
 	session.Moves = []models.Move{}
 
-	err = repository.updateSession(session)
+	err = repository.UpdateSession(session)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	recalledSession, err := repository.getSession(&sessionID)
+	recalledSession, err := repository.GetSession(&sessionID)
 	if err != nil {
 		t.Error(err)
 		return
@@ -91,7 +91,7 @@ func TestRedisDataRepository_GlobalResults(t *testing.T) {
 		return
 	}
 
-	results, err := repository.getGlobalResults()
+	results, err := repository.GetGlobalResults()
 	if err != nil {
 		t.Error(err)
 		return
@@ -103,13 +103,13 @@ func TestRedisDataRepository_GlobalResults(t *testing.T) {
 
 	results.CurrentWinRatio = float32(results.GamesWon) / float32(results.GamesLost)
 
-	err = repository.updateGlobalResults(results)
+	err = repository.UpdateGlobalResults(results)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	recalledResults, err := repository.getGlobalResults()
+	recalledResults, err := repository.GetGlobalResults()
 	if err != nil {
 		t.Error(err)
 		return

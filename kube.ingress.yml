@@ -3,10 +3,9 @@ kind: Ingress
 metadata:
   name: war-with-josh
   annotations:
+    nginx.ingress.kubernetes.io/add-base-url: true
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  selector:
-    app: war-with-josh
   rules:
   - http:
       paths:
