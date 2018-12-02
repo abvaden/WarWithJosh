@@ -2,28 +2,23 @@
   <div id="app">
     <WinnerDialog />
     <Game />
-    <!-- <Tutorial v-if="Tutorial.is_running" /> -->
     <TutorialPopup id="tutorial-popup"/>
     <ErrorPopup id="error-popup"/>
   </div>
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import Game from "./components/Game.vue";
-import Tutorial from "./components/Tutorial.vue";
 import ErrorPopup from "./components/ErrorPopup.vue";
 import WinnerDialog from "./components/WinnerDialog.vue";
 import TutorialPopup from "./components/TutorialPopup.vue";
 
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { IGameState, StaticGameState } from '@/logic/models/gamestate';
 
 export default Vue.extend({
   name: "App",
-  components: { Game, WinnerDialog, Tutorial, TutorialPopup, ErrorPopup },  
-  data() {
-    return StaticGameState;
-  },
+  components: { Game, WinnerDialog, TutorialPopup, ErrorPopup },  
+
   computed: {
   }
 });

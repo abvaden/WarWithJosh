@@ -18,13 +18,7 @@ import PointsArea from "./PointsArea.vue";
 import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
-import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
-import { container } from "@/main";
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { PlayCardCommand } from '../logic/commands/play-card.command';
-import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
 
-let commandPublisher: ICommandPublisher;
 
 export default Vue.extend({
     props: {
@@ -33,16 +27,13 @@ export default Vue.extend({
       selectable: Boolean,
       bottom: Boolean
     },
-    beforeCreate: () => {
-    commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-    },
     methods: {
         cardSelected: (value: number) => {
-        const playCardCommand = new PlayerDecidedCommand();
-        playCardCommand.Player1 = false;
-        playCardCommand.Value = value;
-        commandPublisher.publish(playCardCommand);
-        }
+          // const playCardCommand = new PlayerDecidedCommand();
+          // playCardCommand.Player1 = false;
+          // playCardCommand.Value = value;
+          // commandPublisher.publish(playCardCommand);
+        },
     },
     computed: {
       top(): boolean {

@@ -2,7 +2,7 @@
   <div class="fullscreen-game">
     <!-- Player 1 Area -->
     <div id="menu-button" class="player-area-top" v-on:click.stop="menu_button_click">&equiv;</div>
-    <PlayerArea id="plyer-area-top" class="player-area player-area-top" v-bind:player_name="Game.player1_name" v-bind:cards="Game.player1_cards" />
+    <PlayerArea id="plyer-area-top" class="player-area player-area-top" v-bind:player_name="player1_name" v-bind:cards="Game.player1_cards" />
     
     <!-- Points Columns -->
     <PointsArea class="points-area" />
@@ -27,7 +27,7 @@
             When the game starts each player has cards numbered 1-13. <br />
             These are refereed to a bid cards.
       </span>
-      <NextButton v-on:click="advance_tutorial_click" style="float: right;" total-count="4" current-count="2"/>
+      <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="2"/>
     </div>
     <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-bottom-container" v-if="Tutorial.stage == 'Player' && Tutorial.is_running"> 
       <span class="tutorial-text-font" 
@@ -37,7 +37,7 @@
             To place your bid click on one of the cards in your hand, be careful though each value may
             only be bid once.
       </span>
-      <NextButton v-on:click="advance_tutorial_click" style="float: right;" total-count="4" current-count="3"/>
+      <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="3"/>
     </div>
     <div class="tutorial-text-layer tutorial-text-container" id="tutorial-well-cards-container" v-if="Tutorial.stage == 'Well-Cards' && Tutorial.is_running"> 
       <span class="tutorial-text-font" 
@@ -46,7 +46,7 @@
             At the start of each hand the top well card will be drawn. The value of 
             this card determines the number of points available for this hand.
       </span>
-      <NextButton v-on:click="advance_tutorial_click" style="float: right;" total-count="4" current-count="1"/>
+      <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="1"/>
     </div>
     <div class="tutorial-text-layer tutorial-text-container" id="tutorial-points-area-container" v-if="(Tutorial.stage == 'Cumulative-Points') && Tutorial.is_running"> 
       <span class="tutorial-text-font" 
@@ -55,7 +55,7 @@
             After each hand is complete, the player who had the higher bid wins the points for that hand. 
             The player that has won the most points after all 13 hands is the winner.
       </span>
-      <NextButton v-on:click="advance_tutorial_click" style="float: right;" total-count="4" current-count="4"/>
+      <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="4"/>
     </div>
   </div>
 </template>
@@ -70,50 +70,31 @@ import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 
 
-import { StaticGameState, INumberOption } from "@/logic/models/gamestate"
-import { container } from "@/main";
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { PlayCardCommand } from '../logic/commands/play-card.command';
-import { EndGameCommand } from '../logic/commands/end-game.command';
-import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
-import { ToggleDialogCommand } from '@/logic/commands/toggle-dialog.command';
-import { AdvanceTutorialCommand } from "@/logic/commands/advance-tutorial.command";
+import * as TutorialModule from "../store/Tutorial.module";
+import * as GameModule from "../store/Game.module";
 
-let commandPublisher: ICommandPublisher;
 
 export default Vue.extend({
   components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea, NextButton },
-  beforeCreate: () => {
-    commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-  },
   data() {
-    return { 
-      Game: StaticGameState.Game,
-      Tutorial: StaticGameState.Tutorial
+    return {
+      Game: this.$store.state.GameModule as GameModule.GameState,
+      Tutorial: this.$store.state.TutorialModule as TutorialModule.ITutorialState,
     };
   },
   methods: {
     cardSelected: (value: number) => {
-      const playCardCommand = new PlayerDecidedCommand();
-      playCardCommand.Player1 = false;
-      playCardCommand.Value = value;
-      commandPublisher.publish(playCardCommand);
     },
-    menu_button_click: () => {
-      const endGameCommand = new EndGameCommand();
-      commandPublisher.publish(endGameCommand);
-      
-      const showTutorialMenuCommand = new ToggleDialogCommand();
-      showTutorialMenuCommand.open = true;
-      showTutorialMenuCommand.tutorialDialog = true;
-      commandPublisher.publish(showTutorialMenuCommand);
+    menu_button_click() {
     },
-    advance_tutorial_click: () => {
-      const advanceTutorialCommand = new AdvanceTutorialCommand();
-      commandPublisher.publish(advanceTutorialCommand);
-    }
+    advance_tutorial_click() {
+      this.$store.dispatch("advanceTutorial");
+    },
   },
   computed: {
+    player1_name(): string {
+      return GameModule.player1_name(this.$store);
+    },
     player1_play(): boolean {
       return this.Game.player1_handReady && (this.Game.player1_handValue !== undefined);
     },

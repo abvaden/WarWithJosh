@@ -35,60 +35,27 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { StaticGameState } from "@/logic/models/gamestate"
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { container } from '@/main';
-import { RequestStartGameCommand } from "@/logic/commands/request-start-game.command";
-import { ToggleDialogCommand } from "@/logic/commands/toggle-dialog.command";
-import { ChangeTutorialPopupPersistanceCommand } from '@/logic/commands/change-tutorial-popup-persistance.command';
-import { StartTutorialCommand } from '@/logic/commands/start-tutorial.command';
+import { tutorialDialogOpen } from "../store/Dialog.module";
 
-let commandPublisher: ICommandPublisher;
 
 export default Vue.extend({
-  beforeCreate: () => {
-      commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-  },
-  data() {
-    return StaticGameState.Tutorial;
-  },
   methods: {
-      toggle_display_popup(value: Event): void {
-          const changeElement = value.target;
-          if (changeElement == null) {
-              return;
-          }
-          const inputElement = changeElement as HTMLInputElement;
-          const changePopupPersistanceCommand = new ChangeTutorialPopupPersistanceCommand();
-          changePopupPersistanceCommand.value = !inputElement.checked;
-
-          commandPublisher.publish(changePopupPersistanceCommand);
+      start_game_click(): void {
       },
-      start_game_click: () => {
-          const requestStartGameCommand = new RequestStartGameCommand();
-          commandPublisher.publish(requestStartGameCommand);
-      },
-      tutorial_button_click: () => {
-          const startTutorialCommand = new StartTutorialCommand();
-          commandPublisher.publish(startTutorialCommand);
-
-          const closeDialogCommand = new ToggleDialogCommand();
-          closeDialogCommand.open = false;
-          commandPublisher.publish(closeDialogCommand);
+      tutorial_button_click(): void {
+        const store = this.$store;
+        store.dispatch("startTutorial");
       }
   },
   computed: {
       popup_open(): boolean {
-          return this.show_popup;
-      },
-      popup_continue_to_display(): boolean {
-          return !this.continue_to_show;
+          return tutorialDialogOpen(this.$store);
       },
       popup_display_body(): boolean {
-          return !this.is_loading;
+          return true;
       },
       popup_display_loading(): boolean {
-          return this.is_loading;
+          return true;
       }
   }
 });

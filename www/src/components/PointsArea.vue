@@ -12,12 +12,12 @@
                  v-bind:class="{ 'player-points-row-alt': (i + 1) % 2 === 0}"
                  v-bind:key="trick_history.trickNumber">
                 <div class="player-points-cell player1-points-cell">
-                    <span>{{ trick_history.player1_number + " " }}</span>
-                    <span class="player-trick-points-text">{{ renderPoints(trick_history.player1_points) }}</span>
+                    <span>{{ trick_history.player1_value + " " }}</span>
+                    <span class="player-trick-points-text">{{ renderPoints(trick_history.player1_score) }}</span>
                 </div>
                 <div class="player-points-cell player2-points-cell">
-                    <span>{{ trick_history.player2_number + " "}}</span>
-                    <span class="player-trick-points-text">{{ renderPoints(trick_history.player2_points) }}</span>
+                    <span>{{ trick_history.player2_value + " "}}</span>
+                    <span class="player-trick-points-text">{{ renderPoints(trick_history.player2_score) }}</span>
                 </div>
             </div>
         </div>
@@ -26,12 +26,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { StaticGameState } from "@/logic/models/gamestate"
+import * as ScoreboardModule from "../store/Scoreboard.module";
 
-export default {
-  data() {
-    return StaticGameState.Game;
-  },
+export default Vue.extend({
   methods: {
       renderPoints: (pointsValue: undefined | number): string => {
           if (!pointsValue) {
@@ -41,8 +38,25 @@ export default {
               return "(" + pointsValue.toString() + ")";
           }
       }
+  },
+  computed: {
+      player1_name(): string {
+          return ScoreboardModule.getPlayer1Name(this.$store);
+      },
+      player2_name(): string {
+          return ScoreboardModule.getPlayer2Name(this.$store);
+      },
+      player1_points(): number | undefined {
+          return ScoreboardModule.getPlayer1Score(this.$store);
+      },
+      player2_points(): number | undefined {
+          return ScoreboardModule.getPlayer2Score(this.$store);
+      },
+      play_history(): ScoreboardModule.PlayHistory[] {
+          return ScoreboardModule.getPlayHistory(this.$store);
+      }
   }
-}
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

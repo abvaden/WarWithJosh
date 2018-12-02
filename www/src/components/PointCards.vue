@@ -1,8 +1,8 @@
 <template>
     <div class="all-cards-area">
         <div v-for="card in pointCards" v-bind:key="card.index" 
-            class="flip-container"
-            v-bind:class="{ 'flip-container-flipped': !card.isHidden, 'point-card-hidden': card.isHidden}">
+             class="flip-container"
+             v-bind:class="{ 'flip-container-flipped': !card.isHidden, 'point-card-hidden': card.isHidden}">
             <div class="flipper">
                 <div class="front point-card"> 
                     <div>{{card.face}}</div>
@@ -16,39 +16,26 @@
 
 <script lang="ts">
 import Vue, { VNode } from "vue";
-import { StaticGameState } from "@/logic/models/gamestate"
-import { container } from "@/main";
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { PlayCardCommand } from '../logic/commands/play-card.command';
-import { setInterval, clearInterval } from 'timers';
-let commandPublisher: ICommandPublisher;
+import * as GameModule from "../store/Game.module";
 
 export default Vue.extend({
-  components: {  },
-  beforeCreate: () => {
-    commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-  },
-  destroyed: () => {
-  },
-  data() {
-    return StaticGameState.Game;
-  },
-  methods: {
-  },
-  computed: {
-      pointCards():  Array<{ index: number; isHidden: boolean; face: number; }> {
-        const totalCards = this.hasBegun ? (this.remainingTricks + 1) : 13;
+    computed: {
+      pointCards():  Array<{ index: number; isHidden: boolean; face: string; }> {
+        const hasBegun = GameModule.hasBegun(this.$store);
+        const remainingTricks = GameModule.remainingTricks(this.$store);
+        const totalCards = hasBegun ? (remainingTricks + 1) : 13;
         const cards = [];
         for (let i = 0 ; i < totalCards; i++) {
             cards.push({
                 index: i,
                 isHidden: true,
-                face: 5
+                face: "-"
             });
         }
-        if (this.hasBegun && (this.trickPoints != 0)) {
-            cards[cards.length - 1].isHidden = false;
-            cards[cards.length - 1].face = <number>StaticGameState.Game.trickPoints;   
+        const trickPoints = GameModule.trickPoints(this.$store);
+        if (hasBegun && (trickPoints != 0) && (trickPoints != undefined)) {
+          cards[cards.length - 1].isHidden = false;
+          cards[cards.length - 1].face = trickPoints.toString();
         }
 
         return cards;

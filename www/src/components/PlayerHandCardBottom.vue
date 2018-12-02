@@ -14,8 +14,6 @@
 </template>
 
 <script lang="ts">
-import Vue, { VNode } from "vue";
-
 export default {
   props: [ "ready", "value", "play", "bottom" ]
 }

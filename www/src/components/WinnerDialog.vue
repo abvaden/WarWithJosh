@@ -31,56 +31,36 @@
 
 <script lang="ts">
 import Vue, {VNode} from "vue";
-import { StaticGameState } from "@/logic/models/gamestate"
-import { container } from "@/main";
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { ResetGameCommand } from '@/logic/commands/reset-game.command';
-import { RequestStartGameCommand } from "@/logic/commands/request-start-game.command";
-import { ToggleDialogCommand } from '@/logic/commands/toggle-dialog.command';
+import { winnerDialogOpen, } from "../store/Dialog.module";
+import { player2_name, player1_name } from "../store/Game.module";
 
-let commandPublisher: ICommandPublisher;
 export default Vue.extend({
-    beforeCreate: () => {
-        commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-    },
-    data() {
-        return StaticGameState.WinnerDialog;
-    },
     methods: {
         resetButtonClick: () => {
-            const resetGameCommand = new ResetGameCommand();
-            commandPublisher.publish(resetGameCommand);
-
-            const startNewGameCommand = new RequestStartGameCommand();
-            commandPublisher.publish(startNewGameCommand);
-
-            const closeDialogsCommand = new ToggleDialogCommand();
-            closeDialogsCommand.open = true;
-            closeDialogsCommand.tutorialDialog = true;
-            commandPublisher.publish(closeDialogsCommand);
         },
         homeButtonClick: () => {
-            const resetGameCommand = new ResetGameCommand();
-            commandPublisher.publish(resetGameCommand);
-
-            const toggleDialogCommand = new ToggleDialogCommand();
-            toggleDialogCommand.open = true;
-            toggleDialogCommand.tutorialDialog = true;
-
-            commandPublisher.publish(toggleDialogCommand);
         }
     },
     computed: {
         tie(): boolean {
-            return this.player1_score === this.player2_score;
+            return true;
         },
         player1_winner(): boolean {
-            return this.player1_score > this.player2_score;
+            return true;
         },
         player2_winner(): boolean {
-            return this.player1_score < this.player2_score;
-        }
-    }
+            return true;
+        },
+        player1_name(): string {
+            return player1_name(this.$store);
+        },
+        player2_name(): string {
+            return player2_name(this.$store);
+        },
+        isOpen(): boolean {
+            return winnerDialogOpen(this.$store);
+        },
+    },
 });
 </script>
 
