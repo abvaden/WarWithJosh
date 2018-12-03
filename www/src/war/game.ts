@@ -38,7 +38,6 @@ async function run(inputs: {players: IPlayer[]}): Promise<{player: IPlayer, scor
             var cardPlayed = await players[i].playCard();
             playedCards.push({player: players[i], card: cardPlayed});
         }
-        
         const winner = determineHandWinner(playedCards);
         const previousScore = <number>playerScoreMap.get(winner.player);
         playerScoreMap.set(winner.player, winner.points + previousScore);

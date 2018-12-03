@@ -19,6 +19,8 @@ import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 
+import { playCard } from "../store/Game.module";
+
 
 export default Vue.extend({
     props: {
@@ -28,11 +30,8 @@ export default Vue.extend({
       bottom: Boolean
     },
     methods: {
-        cardSelected: (value: number) => {
-          // const playCardCommand = new PlayerDecidedCommand();
-          // playCardCommand.Player1 = false;
-          // playCardCommand.Value = value;
-          // commandPublisher.publish(playCardCommand);
+        cardSelected(value: number) {
+          this.$emit("selected", value);
         },
     },
     computed: {

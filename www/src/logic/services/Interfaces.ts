@@ -1,6 +1,7 @@
 export const IGameService_IOC_Key = Symbol.for("IGameService");
 
 export interface GameStartParams {
+    offline: boolean;
 }
 export interface TrickResults {
     payer1_value: number;

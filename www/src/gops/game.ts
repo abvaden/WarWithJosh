@@ -14,7 +14,7 @@ export interface IGameFactoryInputs {
 
 export interface IGameCallbacks {
     afterPointsDecided?: (pointValue: number) => void,
-    afterTrickFinished?: (player1Option: number, player2Option: number, player1Score: number, player2Score: number) => void;
+    afterTrickFinished?: (trickNumber: number, trickPoints: number, player1Value: number, player2Value: number, player1Score: number, player2Score: number) => void;
 }
 
 async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player2: number}> {
@@ -47,6 +47,8 @@ async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player
 
         const numbers = await Promise.all([p1MovePromise, p2MovePromise]);
         
+console.log("ABC");
+
         const p1Move = numbers[0];
         const p2Move = numbers[1];
 
@@ -64,7 +66,7 @@ async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player
         }
         
         if (inputs.callbacks.afterTrickFinished) {
-            inputs.callbacks.afterTrickFinished(p1Move, p2Move, score.player1, score.player2);
+            inputs.callbacks.afterTrickFinished(i + 1, pointsValue, p1Move, p2Move, score.player1, score.player2);
         }
     }
 

@@ -35,12 +35,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { tutorialDialogOpen } from "../store/Dialog.module";
+import { tutorialDialogOpen, loading } from "../store/Dialog.module";
+import { startGame } from "../store/Game.module";
 
 
 export default Vue.extend({
   methods: {
       start_game_click(): void {
+          this.$store.dispatch("startGame");
       },
       tutorial_button_click(): void {
         const store = this.$store;
@@ -52,10 +54,10 @@ export default Vue.extend({
           return tutorialDialogOpen(this.$store);
       },
       popup_display_body(): boolean {
-          return true;
+          return !loading(this.$store);
       },
       popup_display_loading(): boolean {
-          return true;
+          return loading(this.$store);
       }
   }
 });

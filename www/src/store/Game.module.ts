@@ -43,7 +43,7 @@ interface SetPlayerHandValuePayload extends IMultiPlayerInterface {
     value: number | undefined;
 }
 interface SetPlayerReadyPayload extends IMultiPlayerInterface {
-    is_ready: boolean;
+    isReady: boolean;
 }
 interface PlayCardPayload extends IMultiPlayerInterface {
     number: number;
@@ -86,8 +86,6 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
             player2_handValue: undefined,
             player2_points: undefined,
             player2_cards: makeFreshCards(),
-
-            handRevealTime: new Date(0),
             
             activeGameId: undefined,
             game_loading: false,
@@ -191,9 +189,9 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
             },
             playerReady(state: GameState, payload: SetPlayerReadyPayload) {
                 if (payload.player1) {
-                    state.player1_handReady = payload.is_ready;
+                    state.player1_handReady = payload.isReady;
                 } else {
-                    state.player2_handReady = payload.is_ready;
+                    state.player2_handReady = payload.isReady;
                 }
             },
             player_hand_value(state: GameState, payload: SetPlayerHandValuePayload) {
@@ -206,13 +204,17 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
             resetGame(state: GameState) {
                 state.hasBegun = false;
 
+                state.remainingTricks = 13;
+                
                 state.player1_handReady = false;
                 state.player1_handValue = undefined;
                 state.player1_points = undefined;
+                state.player1_name = "";
                 
                 state.player2_handReady = false;
                 state.player2_handValue = undefined;
                 state.player2_points = undefined;
+                state.player2_name = "";
 
                 for (let i = 0; i < 13; i++) {
                     state.player1_cards[i].disabled = false;
@@ -226,12 +228,12 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
                 set_gameBegun(context, false);
             },
             async startGame(context: GameContext): Promise<void> {
-                throw Error("Not implemented");
+                set_gameBegun(context, true);
             },
-            async player_decided(context: GameContext, payload: PlayerDecidedPayload): Promise<void> {
+            async playerDecided(context: GameContext, payload: PlayerDecidedPayload): Promise<void> {
                 set_playerReady(context, {
                     player1: payload.player1,
-                    is_ready: true
+                    isReady: true
                 });
         
                 if (!payload.player1) {
@@ -244,8 +246,8 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
             async startNextTrick(context: GameContext, payload: number): Promise<void> {
                 set_trickPoints(context, payload);
                 set_remainingTricks(context, context.state.remainingTricks - 1);
-                set_playerReady(context, {player1: true, is_ready: false});
-                set_playerReady(context, {player1: false, is_ready: false});
+                set_playerReady(context, {player1: true, isReady: false});
+                set_playerReady(context, {player1: false, isReady: false});
                 set_playerCardValue(context, {player1: true, value: undefined});
                 set_playerCardValue(context, {player1: false, value: undefined});
             },
@@ -297,5 +299,6 @@ export const set_disablePlayerCard = commit(game.mutations.disablePlayerCard);
 export const resetGame = commit(game.mutations.resetGame);
 
 // Actions
-export const start_game = dispatch(game.actions.startGame);
-export const end_game = dispatch(game.actions.endGame);
+export const startGame = dispatch(game.actions.startGame);
+export const endGame = dispatch(game.actions.endGame);
+export const playCard = dispatch(game.actions.playerDecided);

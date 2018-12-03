@@ -22,7 +22,7 @@ export async function playerFactory(input: IPlayerFactoryInputs): Promise<IPlaye
             const interactivePlayer = createInteractivePlayer(input.Callbacks);
             player = interactivePlayer;
 
-            input.nextMoveCallback  = (value: number) => { 
+            input.nextMoveCallback = (value: number) => { 
                 interactivePlayer.decideNextMove(value); 
             };
             break;
@@ -97,6 +97,7 @@ class InteractivePlayer implements IPlayer {
     }
 
     public decideNextMove(value: number): void {
+        
         if (this._nextMoveResolve) {
             const resolve = this._nextMoveResolve;
             this._nextMoveResolve = undefined;

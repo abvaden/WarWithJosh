@@ -60,6 +60,9 @@ const dialog = {
                 state.tutorialOpen = payload.isOpen;
             }
         },
+        setLoading(state: IDialogState, payload: boolean) {
+            state.tutorial.loading = payload;
+        }
     },
     actions: {
         closeActiveDialog(context: DialogContext) {
@@ -98,6 +101,7 @@ export const loading =  read(dialog.getters.loading);
 
 // Mutations
 const setDialogOpen = commit(dialog.mutations.setDialogOpen);
+export const setLoading = commit(dialog.mutations.setLoading);
 
 // Actions
 export const closeActiveDialog = dispatch(dialog.actions.closeActiveDialog);

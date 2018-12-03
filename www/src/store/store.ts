@@ -7,6 +7,8 @@ import * as Scoreboard from './Scoreboard.module';
 import { ScoreboardModule } from './Scoreboard.module';
 import { Container } from 'inversify';
 import { ITutorialState } from './Tutorial.module';
+import { IGameService, IGameService_IOC_Key, GameStartParams, Callbacks } from '@/logic/services/Interfaces';
+import { IGameFactoryInputs } from '@/gops/game';
 
 
 Vue.use(Vuex);
@@ -52,12 +54,12 @@ export const createStore = (container: Container) => {
                     break;
                 }
                 case("Player"): {
-                    Game.set_playerReady(store, {player1: true, is_ready: true});
+                    Game.set_playerReady(store, {player1: true, isReady: true});
                     break;
                 }
                 case ("Cumulative-Points"): {
-                    Game.set_playerReady(store, {player1: true, is_ready: true});
-                    Game.set_playerReady(store, {player1: true, is_ready: true});
+                    Game.set_playerReady(store, {player1: true, isReady: true});
+                    Game.set_playerReady(store, {player1: true, isReady: true});
     
                     Game.set_playerCardValue(store, {player1: true, value: 3});
                     Game.set_playerCardValue(store, {player1: true, value: 7});
@@ -75,11 +77,71 @@ export const createStore = (container: Container) => {
                     Game.resetGame(store);
                     Tutorial.set_isRunning(store, false);
                     Scoreboard.reset(store);
+                    Dialog.openDialog(store, Dialog.DialogType.Tutorial);
                 }
             }
         },
-        startGame(context: RootContext) {
-            context.commit("GameModule/start_game");
+        async startGame(context: RootContext): Promise<void> {
+            return new Promise<void>(async (resolve, reject) => {
+                const gameService = container.get<IGameService>(IGameService_IOC_Key);
+
+                Dialog.setLoading(store, true);
+
+                const startGameParams: GameStartParams = {
+                    offline: true,
+                };
+                const handlers: Callbacks = {
+                    onGameStarted: (gameId) => {
+                        Game.set_gameId(store, gameId);
+                    },
+                    onAiDecided: (value: number) => {
+                        Game.set_playerReady(store, {player1: true, isReady: true});
+                    },
+                    onError: (errorMessage) => {
+
+                    },
+                    onGameCompleted: (player1Score: number, player2Score: number) => {
+                        Scoreboard.setPlayerScore(store, { player1: true, score: player1Score});
+                        Scoreboard.setPlayerScore(store, { player1: false, score: player2Score});
+                        Dialog.openDialog(store, Dialog.DialogType.Winner);
+                    },
+                    onTrickCompleted: (results) => {
+                        Game.set_playerReady(store, {player1: true, isReady: false});
+                        Game.set_playerReady(store, {player1: false, isReady: false});
+                    },
+                    onTrickPointsDecided: (points: number) => {
+                        Game.set_trickPoints(store, points);
+                    },
+                };
+
+
+                gameService.startGame(handlers, startGameParams);
+                setTimeout(async () => {
+                    Game.resetGame(store);
+
+                    Game.set_playerName(store, {player1: true, name: "Joshua"});
+                    Game.set_playerName(store, {player1: false, name: "Joe User"});
+
+
+                    await Game.startGame(store);
+
+                    Dialog.setLoading(store, false);
+                    Dialog.closeActiveDialog(store);
+                    resolve();
+                }, 1000);
+                
+            });
+        },
+        playCard(context: RootContext, payload: number): void {
+            const gameService = container.get<IGameService>(IGameService_IOC_Key);
+            gameService.interactivePlayerDecideMove(payload);
+        },
+        endGame(context: RootContext) {
+            Game.endGame(store);
+            
+            Game.resetGame(store);
+
+            Dialog.openDialog(store, Dialog.DialogType.Tutorial);
         }
     },
     modules: {

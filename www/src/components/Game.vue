@@ -13,7 +13,7 @@
     <PlayerHandCardBottom class="points-card-area" v-bind:ready="Game.player2_handReady" v-bind:play="player2_play" v-bind:value="Game.player2_handValue" />
 
     <!-- Player 2 Area -->
-    <PlayerArea class="player-area-bottom" v-bind:player_name="Game.player2_name" v-bind:cards="Game.player2_cards" v-bind:selectable="true" v-bind:bottom="true" />
+    <PlayerArea class="player-area-bottom" v-bind:player_name="Game.player2_name" v-bind:cards="Game.player2_cards" v-bind:selectable="true" v-bind:bottom="true" v-on:selected="cardSelected($event)"/>
 
     <!-- Tutorial -->
     <div v-bind:class="['player-area-top', {'hidden-area': hide_top_player_area }]"></div>
@@ -72,7 +72,7 @@ import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 
 import * as TutorialModule from "../store/Tutorial.module";
 import * as GameModule from "../store/Game.module";
-
+import { openDialog, DialogType } from "../store/Dialog.module";
 
 export default Vue.extend({
   components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea, NextButton },
@@ -83,9 +83,12 @@ export default Vue.extend({
     };
   },
   methods: {
-    cardSelected: (value: number) => {
+    cardSelected(value: number) {
+      this.$store.dispatch("playCard", value);
+      // GameModule.playCard(this.$store, { player1: false, Value: value});
     },
     menu_button_click() {
+      this.$store.dispatch("endGame");
     },
     advance_tutorial_click() {
       this.$store.dispatch("advanceTutorial");
