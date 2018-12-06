@@ -19,8 +19,8 @@ export interface RootState {
     Container: Container;
     afterTrickReveal: (() => void) | undefined,
     afterTrickRevealTimer: number | undefined,
-    afterCardDeal: (() => void) | undefined,
-    afterCardDealTimer: number | undefined,
+    pendingTrickPoints: undefined | number,
+    pendingAiReady: boolean,
 }
 
 export const createStore = (container: Container) => {
@@ -28,19 +28,21 @@ export const createStore = (container: Container) => {
     strict: debug,
     state: {
         Container: container,
-        afterCardDeal: undefined,
-        afterCardDealTimer: undefined,
         afterTrickReveal: undefined,
         afterTrickRevealTimer: undefined,
+        pendingTrickPoints: undefined,
+        pendingAiReady: false,
     },
     mutations: {
         afterTrickRevealAnimation(state: RootState, payload: {callback: () => void, timer: number | undefined}) {
             state.afterTrickReveal = payload.callback;
-            state.afterTrickRevealTimer = payload.timer;
+            state.afterTrickRevealTimer = payload.timer
         },
-        afterAnimatingCardDeal(state: RootState, payload: {callback: () => void, timer: number | undefined}) {
-            state.afterCardDeal = payload.callback;
-            state.afterCardDealTimer = payload.timer;
+        pendingTrickPoints(state: RootState, payload: number | undefined) {
+            state.pendingTrickPoints = payload;
+        },
+        pendingAiReady(state: RootState, payload: boolean) {
+            state.pendingAiReady = payload;
         },
     },
     actions: {
@@ -122,7 +124,11 @@ export const createStore = (container: Container) => {
                         Dialog.closeActiveDialog(store);
                     },
                     onAiDecided: (value: number) => {
-                        Game.set_playerReady(store, {player1: true, isReady: true});
+                        if (context.state.afterTrickReveal) {
+                            context.commit('pendingAiReady', true);
+                        } else {
+                            Game.set_playerReady(store, {player1: true, isReady: true});
+                        }
                     },
                     onError: (errorMessage) => {
 
@@ -142,6 +148,10 @@ export const createStore = (container: Container) => {
                             store.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
                         }
                         
+                        if (!Game.player1_handReady(store)) {
+                            Game.set_playerReady(store, {player1: true, isReady: true});
+                        }
+
                         // Reveal the cards that the players used for this hand
                         Game.set_playerCardValue(store, {player1: true, value: results.player1_value});
                         Game.set_playerCardValue(store, {player1: false, value: results.player2_value});
@@ -164,15 +174,27 @@ export const createStore = (container: Container) => {
                             Game.set_disablePlayerCard(store, {player1: true, number: results.player1_value});
                             Game.set_disablePlayerCard(store, {player1: false, number: results.player2_value});
                             Game.set_remainingTricks(store, 12 - results.trickNumber);
-                            Game.set_trickPoints(store, undefined);
-
+                            
                             store.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
+                            if (context.state.pendingTrickPoints) {
+                                Game.set_trickPoints(store, context.state.pendingTrickPoints);
+                                store.commit('pendingTrickPoints', undefined);
+                            } else {
+                                Game.set_trickPoints(store, undefined);
+                            }
+
+                            if (context.state.pendingAiReady) {
+                                store.commit('pendingAiReady', false);
+                                Game.set_playerReady(store, {player1: true, isReady: true});
+                            }
                         };
                         const timer = setTimeout(afterAnimationCallback, 1000);
                         store.commit('afterTrickRevealAnimation', {callback: afterAnimationCallback, timer: timer});
                     },
                     onTrickPointsDecided: (points: number) => {
-                        Game.set_trickPoints(store, points);
+                        if (context.state.afterTrickReveal) {
+                            context.commit('pendingTrickPoints', points);
+                        }
                     },
                 };
 
@@ -191,7 +213,7 @@ export const createStore = (container: Container) => {
             Game.resetGame(store);
 
             Dialog.openDialog(store, Dialog.DialogType.Tutorial);
-        }
+        },
     },
     modules: {
         GameModule: Game.GameModuleFactory(container),

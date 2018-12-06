@@ -29,7 +29,7 @@ export default Vue.extend({
             cards.push({
                 index: i,
                 isHidden: true,
-                face: "-"
+                face: "-",
             });
         }
         const trickPoints = GameModule.trickPoints(this.$store);

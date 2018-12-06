@@ -66,12 +66,6 @@ async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player
         if (inputs.callbacks.afterTrickFinished) {
             inputs.callbacks.afterTrickFinished(i + 1, pointsValue, p1Move, p2Move, score.player1, score.player2);
         }
-
-        // await new Promise((r) => {
-        //     setTimeout(() => {
-        //         r();
-        //     },1500);
-        // });
     }
 
     return score;

@@ -5,7 +5,7 @@
       <div v-for="card in cards" 
           v-bind:key="card.value" 
           v-bind:class="['card', {'card-disabled': card.disabled, 'card-selectable': selectable, 'card-selectable-disabled': selectable && card.disabled }]"
-          v-on:click="cardSelected(card.value);">
+          v-on:click="cardSelected(card);">
           <div>{{card.text}}</div>
       </div>
     </div>
@@ -28,8 +28,10 @@ export default Vue.extend({
       bottom: Boolean
     },
     methods: {
-        cardSelected(value: number) {
-          this.$emit("selected", value);
+        cardSelected(card: any): void {
+          if (this.$props.selectable && !card.disabled) {
+            this.$emit("selected", card.value);
+          }
         },
     },
     computed: {
