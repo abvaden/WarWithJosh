@@ -15,16 +15,13 @@ export interface IPlayerFactoryInputs {
     nextMoveCallback? : (x: number) => void;
 };
 
-export async function playerFactory(input: IPlayerFactoryInputs): Promise<IPlayer> {
+export async function playerFactory<T extends IPlayer>(input: IPlayerFactoryInputs): Promise<T> {
     let player: IPlayer;
     switch (input.PlayerType) {
         case(PlayerType.CallbackPlayer): {
-            const interactivePlayer = createInteractivePlayer(input.Callbacks);
+            const interactivePlayer =  new InteractivePlayer();
             player = interactivePlayer;
 
-            input.nextMoveCallback = (value: number) => { 
-                interactivePlayer.decideNextMove(value); 
-            };
             break;
         }
         case (PlayerType.Random): {
@@ -36,7 +33,7 @@ export async function playerFactory(input: IPlayerFactoryInputs): Promise<IPlaye
         }
     }
 
-    return player;
+    return player as T;
 }
 
 export interface IPlayerCallbacks {
@@ -81,28 +78,23 @@ function createRandomPlayer(callbacks: IPlayerCallbacks): IPlayer {
 }
 
 function createInteractivePlayer(callbacks: IPlayerCallbacks): InteractivePlayer {
-    const afterMoveCallback = callbacks.afterMove ? callbacks.afterMove : () => {};
-   return new InteractivePlayer(afterMoveCallback);
+   return new InteractivePlayer();
 }
 
-class InteractivePlayer implements IPlayer {
+export class InteractivePlayer implements IPlayer {
     private _nextMoveResolve: ((x: number) => void) | undefined;
     private _nextMoveNumber: number | undefined;
     
-    private readonly _afterMoveCallback: (x: number) => void;
     private readonly _numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     
-    constructor(afterMoveCallback: (x:number) => void) {
-        this._afterMoveCallback = afterMoveCallback;
+    constructor() {
     }
 
     public decideNextMove(value: number): void {
-        
         if (this._nextMoveResolve) {
             const resolve = this._nextMoveResolve;
             this._nextMoveResolve = undefined;
             resolve(value);
-            this._afterMoveCallback(value);
         } else {
             this._nextMoveNumber = value;
         }
@@ -118,9 +110,10 @@ class InteractivePlayer implements IPlayer {
                 const number = this._nextMoveNumber;
                 this._nextMoveNumber = undefined;
                 resolve(number);
-                this._afterMoveCallback(number);
+                return;
             } else {
                 this._nextMoveResolve = resolve;
+                return;
             }
         });
     }

@@ -19,8 +19,6 @@ import PointCards from "./PointCards.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 
-import { playCard } from "../store/Game.module";
-
 
 export default Vue.extend({
     props: {

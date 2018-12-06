@@ -46,8 +46,6 @@ async function run(inputs: IGameFactoryInputs): Promise<{player1: number, player
         const p2MovePromise = player2.nextMove();
 
         const numbers = await Promise.all([p1MovePromise, p2MovePromise]);
-        
-console.log("ABC");
 
         const p1Move = numbers[0];
         const p2Move = numbers[1];
@@ -68,6 +66,12 @@ console.log("ABC");
         if (inputs.callbacks.afterTrickFinished) {
             inputs.callbacks.afterTrickFinished(i + 1, pointsValue, p1Move, p2Move, score.player1, score.player2);
         }
+
+        // await new Promise((r) => {
+        //     setTimeout(() => {
+        //         r();
+        //     },1500);
+        // });
     }
 
     return score;

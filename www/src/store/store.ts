@@ -17,14 +17,32 @@ const debug = process.env.NODE_ENV !== 'production';
 type RootContext = Vuex.ActionContext<RootState, RootState>;
 export interface RootState {
     Container: Container;
-    ScoreboardModule: Scoreboard.ScoreboardState;
-    GameModule: Game.GameState;
-    TutorialModule: Vuex.Module<ITutorialState, RootState>;
+    afterTrickReveal: (() => void) | undefined,
+    afterTrickRevealTimer: number | undefined,
+    afterCardDeal: (() => void) | undefined,
+    afterCardDealTimer: number | undefined,
 }
 
 export const createStore = (container: Container) => {
     const store = new Vuex.Store<RootState>({
     strict: debug,
+    state: {
+        Container: container,
+        afterCardDeal: undefined,
+        afterCardDealTimer: undefined,
+        afterTrickReveal: undefined,
+        afterTrickRevealTimer: undefined,
+    },
+    mutations: {
+        afterTrickRevealAnimation(state: RootState, payload: {callback: () => void, timer: number | undefined}) {
+            state.afterTrickReveal = payload.callback;
+            state.afterTrickRevealTimer = payload.timer;
+        },
+        afterAnimatingCardDeal(state: RootState, payload: {callback: () => void, timer: number | undefined}) {
+            state.afterCardDeal = payload.callback;
+            state.afterCardDealTimer = payload.timer;
+        },
+    },
     actions: {
         startTutorial(context: RootContext): void {
             Scoreboard.reset(store);
@@ -86,6 +104,7 @@ export const createStore = (container: Container) => {
                 const gameService = container.get<IGameService>(IGameService_IOC_Key);
 
                 Dialog.setLoading(store, true);
+                Game.resetGame(store);
 
                 const startGameParams: GameStartParams = {
                     offline: true,
@@ -93,6 +112,14 @@ export const createStore = (container: Container) => {
                 const handlers: Callbacks = {
                     onGameStarted: (gameId) => {
                         Game.set_gameId(store, gameId);
+
+                        Game.set_playerName(store, {player1: true, name: "Joshua"});
+                        Game.set_playerName(store, {player1: false, name: "Joe User"});
+
+                        Game.startGame(store);
+
+                        Dialog.setLoading(store, false);
+                        Dialog.closeActiveDialog(store);
                     },
                     onAiDecided: (value: number) => {
                         Game.set_playerReady(store, {player1: true, isReady: true});
@@ -106,8 +133,43 @@ export const createStore = (container: Container) => {
                         Dialog.openDialog(store, Dialog.DialogType.Winner);
                     },
                     onTrickCompleted: (results) => {
-                        Game.set_playerReady(store, {player1: true, isReady: false});
-                        Game.set_playerReady(store, {player1: false, isReady: false});
+                        // If we are waiting for the animation to complete from the last time then
+                        // "cancel" the animation by eagerly executing the after animation state transition
+                        // and canceling the timeout associated with the state transition
+                        if (context.state.afterTrickReveal) {
+                            clearTimeout(context.state.afterTrickRevealTimer);
+                            context.state.afterTrickReveal();
+                            store.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
+                        }
+                        
+                        // Reveal the cards that the players used for this hand
+                        Game.set_playerCardValue(store, {player1: true, value: results.player1_value});
+                        Game.set_playerCardValue(store, {player1: false, value: results.player2_value});
+
+                        // Card reveal is handled through an animation, this timeout ensures that the animation
+                        // has completed and that the user can view the results of the trick before clearing the
+                        // board of the cards dealt in that trick
+                        const afterAnimationCallback = () => {
+                            Scoreboard.handCompleted(store, {
+                                trickNumber: results.trickNumber,
+                                player1_score: results.player1_score,
+                                player2_score: results.player2_score,
+                                player1_value: results.player1_value,
+                                player2_value: results.player2_value,
+                            });
+                            Game.set_playerReady(store, {player1: true, isReady: false});
+                            Game.set_playerReady(store, {player1: false, isReady: false});
+                            Game.set_playerCardValue(store, {player1: true, value: undefined});
+                            Game.set_playerCardValue(store, {player1: false, value: undefined});
+                            Game.set_disablePlayerCard(store, {player1: true, number: results.player1_value});
+                            Game.set_disablePlayerCard(store, {player1: false, number: results.player2_value});
+                            Game.set_remainingTricks(store, 12 - results.trickNumber);
+                            Game.set_trickPoints(store, undefined);
+
+                            store.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
+                        };
+                        const timer = setTimeout(afterAnimationCallback, 1000);
+                        store.commit('afterTrickRevealAnimation', {callback: afterAnimationCallback, timer: timer});
                     },
                     onTrickPointsDecided: (points: number) => {
                         Game.set_trickPoints(store, points);
@@ -116,23 +178,10 @@ export const createStore = (container: Container) => {
 
 
                 gameService.startGame(handlers, startGameParams);
-                setTimeout(async () => {
-                    Game.resetGame(store);
-
-                    Game.set_playerName(store, {player1: true, name: "Joshua"});
-                    Game.set_playerName(store, {player1: false, name: "Joe User"});
-
-
-                    await Game.startGame(store);
-
-                    Dialog.setLoading(store, false);
-                    Dialog.closeActiveDialog(store);
-                    resolve();
-                }, 1000);
-                
             });
         },
         playCard(context: RootContext, payload: number): void {
+            Game.set_playerReady(store, {player1: false, isReady: true});
             const gameService = container.get<IGameService>(IGameService_IOC_Key);
             gameService.interactivePlayerDecideMove(payload);
         },

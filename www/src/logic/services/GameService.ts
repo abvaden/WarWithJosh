@@ -1,13 +1,13 @@
 import { injectable, inject } from 'inversify';
 import { IGameService, Callbacks, GameStartParams } from '@/logic/services/Interfaces';
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
-import { playerFactory, PlayerType, IPlayerFactoryInputs } from '@/gops/player';
+import { playerFactory, PlayerType, IPlayerFactoryInputs, InteractivePlayer } from '@/gops/player';
 
 
 
 @injectable()
 export class GameService implements IGameService {
-    private _playerDecided: ((x: number) => void) | undefined;
+    private _interactivePlayer: InteractivePlayer | undefined;
     constructor() {
     }
 
@@ -16,12 +16,13 @@ export class GameService implements IGameService {
     }
 
     interactivePlayerDecideMove(value: number): void {
-        if (this._playerDecided) {
-            this._playerDecided(value);
+        if (this._interactivePlayer) {
+            this._interactivePlayer.decideNextMove(value);
         }
     }
 
     endGame(): void {
+        this._interactivePlayer = undefined;
         throw new Error("Method not implemented.");
     }
 
@@ -45,9 +46,8 @@ export class GameService implements IGameService {
                 }
             }
         };
-        this._playerDecided = player2Params.nextMoveCallback;
-        const player2 = await playerFactory(player2Params);
-        this._playerDecided = player2.nextMove;
+        const player2 = await playerFactory<InteractivePlayer>(player2Params);
+        this._interactivePlayer = player2;
 
         const gameInputs: IGameFactoryInputs = {
             player1: player1,
@@ -59,15 +59,15 @@ export class GameService implements IGameService {
                         handlers.onTrickPointsDecided(x);
                     }
                 },
-                afterTrickFinished: (a, b, c, d, e, f) => {
+                afterTrickFinished: (trickNumber, trickPoints, player1Value, player2Value, player1Score, player2Score) => {
                     if (handlers.onTrickCompleted) {
                         handlers.onTrickCompleted({
-                            trickNumber: a,
-                            trickPoints: b,
-                            payer1_value: c,
-                            player1_score: d,
-                            player2_value: e,
-                            player2_score: f 
+                            trickNumber: trickNumber,
+                            trickPoints: trickPoints,
+                            player1_value: player1Value,
+                            player1_score: player1Score,
+                            player2_value: player2Value,
+                            player2_score: player2Score 
                         })
                     }
                 }
@@ -75,7 +75,10 @@ export class GameService implements IGameService {
         }
 
         const internalGame = await gameFactory(gameInputs);
-
+        if (handlers.onGameStarted) {
+            handlers.onGameStarted("offline");
+        }
+        
         const gameResults = await internalGame();
         if (handlers.onGameCompleted) {
             handlers.onGameCompleted(gameResults.player1, gameResults.player2);

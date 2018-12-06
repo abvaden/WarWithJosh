@@ -4,7 +4,7 @@ export interface GameStartParams {
     offline: boolean;
 }
 export interface TrickResults {
-    payer1_value: number;
+    player1_value: number;
     player2_value: number;
     trickPoints: number;
     player1_score: number;
