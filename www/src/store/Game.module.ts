@@ -169,7 +169,6 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
                 if (payload.player1){
                     cardDeck = state.player1_cards;
                 } else {
-                    console.log(payload.number);
                     cardDeck = state.player2_cards;
                 }
 

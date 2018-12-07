@@ -47,9 +47,9 @@ const scoreboard = {
     mutations: {
         playerName(state: ScoreboardState, payload: {player1: boolean, name: string}) {
             if (payload.player1) {
-                state.player1_name = name;
+                state.player1_name = payload.name;
             } else {
-                state.player2_name = name;
+                state.player2_name = payload.name;
             }
         },
         playerScore(state: ScoreboardState, payload: {player1: boolean, score: number | undefined}) {

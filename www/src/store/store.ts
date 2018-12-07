@@ -6,7 +6,6 @@ import * as Tutorial from './Tutorial.module';
 import * as Scoreboard from './Scoreboard.module';
 import { ScoreboardModule } from './Scoreboard.module';
 import { Container } from 'inversify';
-import { ITutorialState } from './Tutorial.module';
 import { IGameService, IGameService_IOC_Key, GameStartParams, Callbacks } from '@/logic/services/Interfaces';
 import { IGameFactoryInputs } from '@/gops/game';
 
@@ -21,6 +20,7 @@ export interface RootState {
     afterTrickRevealTimer: number | undefined,
     pendingTrickPoints: undefined | number,
     pendingAiReady: boolean,
+    trickRevealAnimationTime: number,
 }
 
 export const createStore = (container: Container) => {
@@ -32,6 +32,7 @@ export const createStore = (container: Container) => {
         afterTrickRevealTimer: undefined,
         pendingTrickPoints: undefined,
         pendingAiReady: false,
+        trickRevealAnimationTime: 1250,
     },
     mutations: {
         afterTrickRevealAnimation(state: RootState, payload: {callback: () => void, timer: number | undefined}) {
@@ -117,7 +118,8 @@ export const createStore = (container: Container) => {
 
                         Game.set_playerName(store, {player1: true, name: "Joshua"});
                         Game.set_playerName(store, {player1: false, name: "Joe User"});
-
+                        Scoreboard.setPlayerName(store, {player1: true, name: "Joshua"});
+                        Scoreboard.setPlayerName(store, {player1: false, name: "Joe User"});
                         Game.startGame(store);
 
                         Dialog.setLoading(store, false);
@@ -136,6 +138,12 @@ export const createStore = (container: Container) => {
                     onGameCompleted: (player1Score: number, player2Score: number) => {
                         Scoreboard.setPlayerScore(store, { player1: true, score: player1Score});
                         Scoreboard.setPlayerScore(store, { player1: false, score: player2Score});
+                        Dialog.setWinnerDetails(store, {
+                            player1_name: Game.player1_name(store),
+                            player2_name: Game.player2_name(store),
+                            player1_score: Scoreboard.getPlayer1Score(store) as number,
+                            player2_score: Scoreboard.getPlayer2Score(store) as number,
+                        })
                         Dialog.openDialog(store, Dialog.DialogType.Winner);
                     },
                     onTrickCompleted: (results) => {
@@ -188,12 +196,17 @@ export const createStore = (container: Container) => {
                                 Game.set_playerReady(store, {player1: true, isReady: true});
                             }
                         };
-                        const timer = setTimeout(afterAnimationCallback, 1000);
+                        const timer = setTimeout(afterAnimationCallback, context.state.trickRevealAnimationTime);
                         store.commit('afterTrickRevealAnimation', {callback: afterAnimationCallback, timer: timer});
                     },
                     onTrickPointsDecided: (points: number) => {
+                        if(Game.remainingTricks(store) === 13) {
+                            Game.set_remainingTricks(store, 12);
+                        }
                         if (context.state.afterTrickReveal) {
                             context.commit('pendingTrickPoints', points);
+                        } else {
+                            Game.set_trickPoints(store, points);
                         }
                     },
                 };

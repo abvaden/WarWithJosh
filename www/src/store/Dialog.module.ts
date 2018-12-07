@@ -12,7 +12,16 @@ interface IDialogState {
     tutorial: {
         loading: boolean;
     };
+    winner: WinnerDialogState;
 }
+
+export interface WinnerDialogState {
+    player1_name: string;
+    player2_name: string;
+    player1_score: number;
+    player2_score: number;
+}
+
 export enum DialogType {
     Winner,
     Error,
@@ -32,6 +41,12 @@ const dialog = {
         tutorial: {
             loading: false,
         },
+        winner: {
+            player1_name: "",
+            player2_name: "",
+            player1_score: 0,
+            player2_score: 0,
+        }
     },
     getters: {
         winnerDialogOpen(state: IDialogState) {
@@ -62,7 +77,10 @@ const dialog = {
         },
         setLoading(state: IDialogState, payload: boolean) {
             state.tutorial.loading = payload;
-        }
+        },
+        winnerDetails(state: IDialogState, payload: WinnerDialogState) {
+            state.winner = payload;
+        },
     },
     actions: {
         closeActiveDialog(context: DialogContext) {
@@ -102,6 +120,7 @@ export const loading =  read(dialog.getters.loading);
 // Mutations
 const setDialogOpen = commit(dialog.mutations.setDialogOpen);
 export const setLoading = commit(dialog.mutations.setLoading);
+export const setWinnerDetails = commit(dialog.mutations.winnerDetails);
 
 // Actions
 export const closeActiveDialog = dispatch(dialog.actions.closeActiveDialog);

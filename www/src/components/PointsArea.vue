@@ -46,11 +46,21 @@ export default Vue.extend({
       player2_name(): string {
           return ScoreboardModule.getPlayer2Name(this.$store);
       },
-      player1_points(): number | undefined {
-          return ScoreboardModule.getPlayer1Score(this.$store);
+      player1_points(): string {
+          const score = ScoreboardModule.getPlayer1Score(this.$store);
+          if (score === undefined) {
+              return "0";
+          }
+
+          return score.toFixed(0);
       },
-      player2_points(): number | undefined {
-          return ScoreboardModule.getPlayer2Score(this.$store);
+      player2_points(): string {
+          const score = ScoreboardModule.getPlayer2Score(this.$store);
+          if (score === undefined) {
+              return "0";
+          }
+
+          return score.toFixed(0);
       },
       play_history(): ScoreboardModule.PlayHistory[] {
           return ScoreboardModule.getPlayHistory(this.$store);

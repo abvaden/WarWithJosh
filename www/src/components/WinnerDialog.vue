@@ -36,10 +36,10 @@ import { player2_name, player1_name } from "../store/Game.module";
 
 export default Vue.extend({
     methods: {
-        resetButtonClick: () => {
+        resetButtonClick(): void {
         },
-        homeButtonClick: () => {
-        }
+        homeButtonClick(): void {
+        },
     },
     computed: {
         tie(): boolean {
