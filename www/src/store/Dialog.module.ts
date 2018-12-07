@@ -16,10 +16,10 @@ interface IDialogState {
 }
 
 export interface WinnerDialogState {
-    player1_name: string;
-    player2_name: string;
-    player1_score: number;
-    player2_score: number;
+    readonly player1_name: string;
+    readonly player2_name: string;
+    readonly player1_score: number;
+    readonly player2_score: number;
 }
 
 export enum DialogType {
@@ -51,6 +51,9 @@ const dialog = {
     getters: {
         winnerDialogOpen(state: IDialogState) {
             return state.winnerDialogOpen;
+        },
+        winnerState(state: IDialogState) {
+            return state.winner;
         },
         errorDialogOpen(state: IDialogState) {
             return state.errorOpen;
@@ -115,7 +118,7 @@ export const errorDialogOpen = read(dialog.getters.errorDialogOpen);
 export const tutorialDialogOpen = read(dialog.getters.tutorialDialogOpen);
 export const errorMessage = read(dialog.getters.errorMessage);
 export const loading =  read(dialog.getters.loading);
-
+export const winnerState = read(dialog.getters.winnerState);
 
 // Mutations
 const setDialogOpen = commit(dialog.mutations.setDialogOpen);

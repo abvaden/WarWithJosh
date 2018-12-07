@@ -31,25 +31,31 @@
 
 <script lang="ts">
 import Vue, {VNode} from "vue";
-import { winnerDialogOpen, } from "../store/Dialog.module";
-import { player2_name, player1_name } from "../store/Game.module";
+import { winnerDialogOpen, winnerState } from "../store/Dialog.module";
+import { player2_name, player1_name, resetGame } from "../store/Game.module";
 
 export default Vue.extend({
     methods: {
         resetButtonClick(): void {
+            this.$store.dispatch("reset");
+            this.$store.dispatch("startGame");
         },
         homeButtonClick(): void {
+            this.$store.dispatch("reset");
         },
     },
     computed: {
         tie(): boolean {
-            return true;
+            const state = winnerState(this.$store);
+            return  state.player1_score === state.player2_score;
         },
         player1_winner(): boolean {
-            return true;
+            const state = winnerState(this.$store);
+            return  state.player1_score > state.player2_score;
         },
         player2_winner(): boolean {
-            return true;
+            const state = winnerState(this.$store);
+            return  state.player1_score < state.player2_score;
         },
         player1_name(): string {
             return player1_name(this.$store);

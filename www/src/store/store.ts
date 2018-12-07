@@ -227,6 +227,11 @@ export const createStore = (container: Container) => {
 
             Dialog.openDialog(store, Dialog.DialogType.Tutorial);
         },
+        reset(context: RootContext) {
+            Game.resetGame(store);
+            Scoreboard.reset(store);
+            Dialog.openDialog(store, Dialog.DialogType.Tutorial);
+        }
     },
     modules: {
         GameModule: Game.GameModuleFactory(container),
