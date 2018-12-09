@@ -1,4 +1,7 @@
 export const IGameService_IOC_Key = Symbol.for("IGameService");
+export const ILogger_IOC_Key = Symbol.for("ILogger");
+export const IConnectionService_IOC_Key = Symbol.for("IConnectionService");
+export const IResultsService_IOC_Key = Symbol.for("IResultsService");
 
 export interface GameStartParams {
     offline: boolean;
@@ -21,6 +24,28 @@ export interface Callbacks {
 }
 export interface IGameService {
     startGame(handlers: Callbacks, params: GameStartParams): void;
+    validPlayerTypes(): Promise<string[]>;
     interactivePlayerDecideMove(value: number): void;
     endGame(): void;
+}
+
+export interface IResultsService {
+
+}
+
+export interface ConnectionChangeEvent {
+    readonly Online: boolean;
+}
+export interface IConnectionService {
+    readonly IsRunning: boolean;
+    Online(): boolean;
+    Start(): void;
+    Stop(): void;
+    Attach(handler: (event: ConnectionChangeEvent) => void): void;
+    Detach(handler: (event: ConnectionChangeEvent) => void): void;
+}
+
+
+export interface ILogger {
+    Log(level: "Error" | "Info", site: string, message: string): void;
 }

@@ -77,9 +77,6 @@ function createRandomPlayer(callbacks: IPlayerCallbacks): IPlayer {
     };
 }
 
-function createInteractivePlayer(callbacks: IPlayerCallbacks): InteractivePlayer {
-   return new InteractivePlayer();
-}
 
 export class InteractivePlayer implements IPlayer {
     private _nextMoveResolve: ((x: number) => void) | undefined;

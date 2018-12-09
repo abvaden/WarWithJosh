@@ -26,6 +26,10 @@ export class GameService implements IGameService {
         throw new Error("Method not implemented.");
     }
 
+    async validPlayerTypes(): Promise<string[]> {
+        throw new Error("Not implemented");
+    }
+
     private async startOfflineGame(handlers: Callbacks): Promise<void> {
         const player1 = await playerFactory({
             PlayerType: PlayerType.Random,

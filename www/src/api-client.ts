@@ -6,6 +6,8 @@ export interface IAPIClient {
     StartNewSession(): Promise<string>
     AddSessionMove(sessionId: string, move: Move): Promise<void>
     EndSession(sessionId: string): Promise<void>
+    ValidPlayerTypes(): Promise<string[]>
+    Ping(timeOut: number): Promise<{success: boolean, errorMessage?: string}>
 }
 
 
@@ -83,6 +85,66 @@ export class NetworkAPIClient implements IAPIClient {
             throw new Error(this.generateError(r));
         }
         return;
+    }
+
+    async ValidPlayerTypes(): Promise<string[]> {
+        const playerTypesUrl = this._apiBasePath + "/api/player-types";
+        const r = await fetch(playerTypesUrl, {
+            method: "GET"
+        });
+
+        if (r.status != 200) {
+            throw new Error(this.generateError(r));
+        }
+
+        return r.json();
+    }
+
+    async Ping(timeOutMs: number): Promise<{success: boolean, errorMessage?: string}> {
+        const p =  new Promise<boolean>(async (resolve, reject) => {
+            try {
+                let hasTimedOut = false;
+                const timer = setTimeout(() => {
+                    hasTimedOut = true;
+                    reject("Timeout");
+                }, timeOutMs);
+                const sendTime = new Date();
+                const pingUrl = this._apiBasePath + "/api/ping";
+                const r = await fetch(pingUrl, {
+                    method: "GET"
+                });
+
+                if (r.status != 200) {
+                    if (hasTimedOut) {
+                        return;
+                    }
+                    reject("Invalid response");
+                    throw new Error(this.generateError(r));
+                }
+                const timeString = await r.text();
+                const receiveTime = new Date(timeString);
+
+                const deltaMs = receiveTime.valueOf() - sendTime.valueOf();
+                clearTimeout(timer);
+                if (hasTimedOut) {
+                    return;
+                }
+                return resolve(true);
+            } catch (err) {
+                return reject("Connection error");
+            }
+        });
+        
+        try {
+            const result = await p;
+            if (result) {
+                return { success: true};
+            } else {
+                return { success: false, errorMessage: "Could not reach server"};
+            }
+        } catch (e) {
+            return { success: false, errorMessage: e};
+        }
     }
 
     private generateError(response: Response): string {
