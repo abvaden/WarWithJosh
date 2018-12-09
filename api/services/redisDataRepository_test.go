@@ -91,7 +91,7 @@ func TestRedisDataRepository_GlobalResults(t *testing.T) {
 		return
 	}
 
-	results, err := repository.GetGlobalResults()
+	results, err := repository.GetGlobalResults("random")
 	if err != nil {
 		t.Error(err)
 		return
@@ -100,6 +100,7 @@ func TestRedisDataRepository_GlobalResults(t *testing.T) {
 	results.GamesWon = 1 + results.GamesWon
 	results.GamesLost = 5
 	results.NumberOfGamesPlayed++
+	results.AIType = "unit test"
 
 	results.CurrentWinRatio = float32(results.GamesWon) / float32(results.GamesLost)
 
@@ -109,7 +110,7 @@ func TestRedisDataRepository_GlobalResults(t *testing.T) {
 		return
 	}
 
-	recalledResults, err := repository.GetGlobalResults()
+	recalledResults, err := repository.GetGlobalResults("unit test")
 	if err != nil {
 		t.Error(err)
 		return

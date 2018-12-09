@@ -42,13 +42,13 @@ func RedisRepositoryFactory(serverName string) (*RedisDataRepository, error) {
 		return &repository, errors.New("Error while connecting to redis server")
 	}
 
-	resultsExist, err := client.Exists(resultsKey).Result()
-	if err != nil {
-		return nil, errors.New("Error while starting data repository")
-	}
-	if resultsExist == 0 {
-		repository.UpdateGlobalResults(new(models.GlobalResults))
-	}
+	// resultsExist, err := client.Exists(resultsKey).Result()
+	// if err != nil {
+	// 	return nil, errors.New("Error while starting data repository")
+	// }
+	// if resultsExist == 0 {
+	// 	repository.UpdateGlobalResults(new(models.GlobalResults))
+	// }
 
 	return &repository, nil
 }
@@ -125,33 +125,33 @@ func (repository *RedisDataRepository) UpdateGlobalResults(results *models.Globa
 	client := repository.redisClient
 
 	resultsString, err := serializeResults(*results)
+	resultsIDString := results.AIType
 	if err != nil {
 		return err
 	}
 
-	result, err := client.Set(resultsKey, resultsString, 0).Result()
+	_, err = client.HSet(resultsKey, resultsIDString, resultsString).Result()
 	if err != nil {
 		return err
-	}
-	if result != "OK" {
-		return errors.New("Error while updating global results")
 	}
 
 	return nil
 }
 
 // GetGlobalResults ...
-func (repository *RedisDataRepository) GetGlobalResults() (*models.GlobalResults, error) {
+func (repository *RedisDataRepository) GetGlobalResults(aiTypeID string) (*models.GlobalResults, error) {
 	client := repository.redisClient
 
-	resultsString, err := client.Get(resultsKey).Result()
+	resultsString, err := client.HGet(resultsKey, aiTypeID).Result()
 	if err != nil {
-		return nil, errors.New("Error while getting global results")
+		newResults := models.GlobalResults{}
+		newResults.AIType = aiTypeID
+		return &newResults, nil
 	}
 	results, err := deserializeResults(resultsString)
 
 	if err != nil {
-		return nil, err
+		return results, err
 	}
 
 	return results, nil
