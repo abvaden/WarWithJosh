@@ -9,6 +9,6 @@ type IDataRepository interface {
 	AddSession() (*models.Session, error)
 	GetSession(sessionID *string) (*models.Session, error)
 	UpdateSession(session *models.Session) error
-
 	UpdateGlobalResults(results *models.GlobalResults) error
+	GetGlobalResults(aiTypeID string) (*models.GlobalResults, error)
 }

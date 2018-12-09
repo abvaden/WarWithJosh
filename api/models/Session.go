@@ -8,17 +8,20 @@ type Session struct {
 	Player     Player
 	Moves      []Move
 	IsComplete bool
+	AI         AI
 }
 
 // Player ... Details about the player who initiated the session
 type Player struct {
 	PlayerIP        string
 	PlayerUserAgent string
+	AvailableCards  []int
 }
 
 // AI ... Details about the AI used in the session
 type AI struct {
-	AiID string
+	AiID           string
+	AvailableCards []int
 }
 
 // Move ... A record of one hand
