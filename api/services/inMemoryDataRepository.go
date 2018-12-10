@@ -15,7 +15,7 @@ type InMemoryRepository struct {
 }
 
 // InMemoryRepositoryFactory ... Create a new data repository not backed by a persistent mechanism. This should prove useful in testing
-func InMemoryRepositoryFactory(serverName string) *InMemoryRepository {
+func InMemoryRepositoryFactory() *InMemoryRepository {
 	repository := InMemoryRepository{}
 	repository.sessions = make(map[string]*models.Session)
 
@@ -52,14 +52,14 @@ func (repository *InMemoryRepository) GetSession(sessionID *string) (*models.Ses
 	}
 
 	retSession := models.Session{}
-	copier.Copy(retSession, storedSession)
+	copier.Copy(&retSession, &storedSession)
 	return &retSession, nil
 }
 
 // UpdateSession ...
 func (repository *InMemoryRepository) UpdateSession(session *models.Session) error {
 	storedSession := models.Session{}
-	copier.Copy(storedSession, *session)
+	copier.Copy(&storedSession, &session)
 
 	repository.sessions[storedSession.ID] = &storedSession
 	return nil

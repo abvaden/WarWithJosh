@@ -6,7 +6,7 @@ type Session struct {
 	StartTime  int64
 	Endtime    int64
 	Player     Player
-	Moves      []Move
+	Game       Game
 	IsComplete bool
 	AI         AI
 }
@@ -15,13 +15,11 @@ type Session struct {
 type Player struct {
 	PlayerIP        string
 	PlayerUserAgent string
-	AvailableCards  []int
 }
 
 // AI ... Details about the AI used in the session
 type AI struct {
-	AiID           string
-	AvailableCards []int
+	AiID string
 }
 
 // Move ... A record of one hand
@@ -32,4 +30,17 @@ type Move struct {
 	PlayerBid   uint8
 	HandValue   uint8
 	MoveTime    int64
+}
+
+// Game ... State of the current game for a given session
+type Game struct {
+	PlayerCards       []uint8
+	WellCards         []uint8
+	AICards           []uint8
+	PlayerPoints      float32
+	AiPoints          float32
+	CurrentHandPoints uint8
+	PlayerValue       uint8
+	AiValue           uint8
+	CompletedHands    []Move
 }

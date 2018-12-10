@@ -64,7 +64,7 @@ func TestRedisDataRepository_UpdateSession(t *testing.T) {
 	sessionID := session.ID
 	session.StartTime = time.Now().Unix()
 	session.IsComplete = false
-	session.Moves = []models.Move{}
+	session.Game.CompletedHands = []models.Move{}
 
 	err = repository.UpdateSession(session)
 	if err != nil {
