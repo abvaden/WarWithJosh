@@ -19,7 +19,14 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 	player.PlayerIP = playerIP
 	player.PlayerUserAgent = playerUserAgent
 
-	session, err := engine.StartNewSession(player)
+	session, err := engine.StartNewSession()
+
+	if err != nil {
+		ServerError(err, &w)
+		return
+	}
+	sessionID := session.ID
+	session, err = engine.SetPlayerDetails(&sessionID, player)
 	if err != nil {
 		ServerError(err, &w)
 		return
@@ -49,11 +56,11 @@ func SessionAddMoveHandler(w http.ResponseWriter, r *http.Request, engine *servi
 	move.PlayerBid = request.Move.PlayerBid
 	move.PlayerScore = request.Move.PlayerScore
 
-	err = engine.AddSessionMove(&request.SessionID, move)
-	if err != nil {
-		ServerError(err, &w)
-		return
-	}
+	// err = engine.AddSessionMove(&request.SessionID, move)
+	// if err != nil {
+	// 	ServerError(err, &w)
+	// 	return
+	// }
 
 	OK(&w)
 }

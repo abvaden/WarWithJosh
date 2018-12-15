@@ -1,6 +1,8 @@
 package services
 
 import (
+	"WarWithJosh/api/models"
+	"errors"
 	"testing"
 )
 
@@ -96,4 +98,134 @@ func TestGameEngineService_SampleHand(t *testing.T) {
 	if move == nil {
 		t.Error("Move should not be nil")
 	}
+}
+
+func TestGameEngineService_SampleGame(t *testing.T) {
+	session, engine, err := startSessionAgainstRandom()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	sessionID := &session.ID
+
+	// Starts the initial hand of the game
+	_, err = engine.StartNextHand(sessionID)
+	if err != nil {
+		t.Error("Should not error")
+		return
+	}
+	for i := uint8(13); i > 0; i-- {
+		move, err := engine.DeterminePlayerMove(sessionID, i)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+		move, err = engine.DetermineAiNextMove(sessionID)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+		if move == nil {
+			t.Error("A move should be returned")
+			return
+		}
+
+		if move.PlayerBid != i {
+			t.Error("Bid value should equal the value played")
+			return
+		}
+	}
+}
+
+func TestGameEngineService_CanNotPlaySameCardTwice(t *testing.T) {
+	session, engine, err := startSessionAgainstRandom()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	sessionID := &session.ID
+
+	// Starts the initial hand of the game
+	_, err = engine.StartNextHand(sessionID)
+	if err != nil {
+		t.Error("Should not error")
+		return
+	}
+	for i := uint8(13); i > 0; i-- {
+		if i == 3 {
+			_, err = engine.DeterminePlayerMove(sessionID, 2)
+			if err == nil {
+				t.Error("Player should not be able to play the same card twice")
+			}
+
+			// Test succesful we can exit the test now
+			return
+		}
+		move, err := engine.DeterminePlayerMove(sessionID, i)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+
+		move, err = engine.DetermineAiNextMove(sessionID)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+		if move == nil {
+			t.Error("A move should be returned")
+			return
+		}
+
+		if move.PlayerBid != i {
+			t.Error("Bid value should equal the value played")
+			return
+		}
+	}
+}
+
+func TestGameEngineService_MustPlayValidCard(t *testing.T) {
+	session, engine, err := startSessionAgainstRandom()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	sessionID := &session.ID
+	_, err = engine.StartNextHand(sessionID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	_, err = engine.DeterminePlayerMove(sessionID, 0)
+	if err == nil {
+		t.Error("Should error on values < 1")
+		return
+	}
+
+	_, err = engine.DeterminePlayerMove(sessionID, 14)
+	if err == nil {
+		t.Error("Should error on values > 13")
+		return
+	}
+}
+
+func startSessionAgainstRandom() (*models.Session, *GameEngine, error) {
+	repository := InMemoryRepositoryFactory()
+	engine := GameEngineFactory(repository)
+
+	session, err := engine.StartNewSession()
+	if err != nil {
+		return nil, nil, errors.New("Should not error when starting a new game")
+	}
+
+	aiType := "Random"
+	sessionID := session.ID
+	err = engine.SetAi(&sessionID, &aiType)
+	if err != nil {
+		return nil, nil, errors.New("Should not error when setting Ai to random")
+	}
+
+	return session, engine, nil
 }

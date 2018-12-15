@@ -230,6 +230,10 @@ func (engine *GameEngine) cardDecided(session *models.Session, value uint8, ai b
 		session.Game.PlayerValue = value
 	}
 
+	if value < 1 || value > 13 {
+		return nil, errors.New("Not a valid value")
+	}
+
 	if session.Game.PlayerValue != 0 &&
 		session.Game.AiValue != 0 &&
 		session.Game.CurrentHandPoints != 0 {
