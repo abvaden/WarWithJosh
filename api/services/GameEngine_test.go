@@ -151,7 +151,7 @@ func TestGameEngineService_CanNotPlaySameCardTwice(t *testing.T) {
 		t.Error("Should not error")
 		return
 	}
-	for i := uint8(13); i > 0; i-- {
+	for i := uint8(1); i <= 13; i++ {
 		if i == 3 {
 			_, err = engine.DeterminePlayerMove(sessionID, 2)
 			if err == nil {
@@ -161,9 +161,58 @@ func TestGameEngineService_CanNotPlaySameCardTwice(t *testing.T) {
 			// Test succesful we can exit the test now
 			return
 		}
+
 		move, err := engine.DeterminePlayerMove(sessionID, i)
 		if err != nil {
 			t.Error("Should not error")
+			return
+		}
+
+		move, err = engine.DetermineAiNextMove(sessionID)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+		if move == nil {
+			t.Error("A move should be returned")
+			return
+		}
+
+		if move.PlayerBid != i {
+			t.Error("Bid value should equal the value played")
+			return
+		}
+	}
+}
+
+func TestGameEngineService_OnceMoveDecidedCanNotBeChanged(t *testing.T) {
+	session, engine, err := startSessionAgainstRandom()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	sessionID := &session.ID
+
+	// Starts the initial hand of the game
+	_, err = engine.StartNextHand(sessionID)
+	if err != nil {
+		t.Error("Should not error")
+		return
+	}
+	for i := uint8(13); i > 0; i-- {
+		move, err := engine.DeterminePlayerMove(sessionID, i)
+		if err != nil {
+			t.Error("Should not error")
+			return
+		}
+
+		if i == 4 {
+			_, err = engine.DeterminePlayerMove(sessionID, i+1)
+			if err == nil {
+				t.Error("Should not be able to change a card after one has been decided")
+			}
+
+			// Test succesful we can exit the test now
 			return
 		}
 

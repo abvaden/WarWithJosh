@@ -216,22 +216,40 @@ func (engine *GameEngine) addSessionMove(sessionID *string, move *models.Move) e
 }
 
 func (engine *GameEngine) cardDecided(session *models.Session, value uint8, ai bool) (*models.Move, error) {
+	if value < 1 || value > 13 {
+		return nil, errors.New("Not a valid value")
+	}
+
+	var availableCards []uint8
 	if ai {
 		if session.Game.AiValue != 0 {
 			return nil, errors.New("Ai had already decided a value for the current hand")
 		}
 
-		session.Game.AiValue = value
+		availableCards = session.Game.AICards
 	} else {
 		if session.Game.PlayerValue != 0 {
 			return nil, errors.New("Player has already decided a value for the current hand")
 		}
 
-		session.Game.PlayerValue = value
+		availableCards = session.Game.PlayerCards
 	}
 
-	if value < 1 || value > 13 {
-		return nil, errors.New("Not a valid value")
+	doesContainCard := false
+	for _, v := range availableCards {
+		if v == value {
+			doesContainCard = true
+			break
+		}
+	}
+	if !doesContainCard {
+		return nil, errors.New("May not choose same card twice")
+	}
+
+	if ai {
+		session.Game.AiValue = value
+	} else {
+		session.Game.PlayerValue = value
 	}
 
 	if session.Game.PlayerValue != 0 &&
@@ -252,6 +270,33 @@ func (engine *GameEngine) cardDecided(session *models.Session, value uint8, ai b
 		completedMove.HandValue = session.Game.CurrentHandPoints
 		completedMove.AiScore = session.Game.AiPoints
 		completedMove.PlayerScore = session.Game.PlayerPoints
+
+		session.Game.PlayerValue = 0
+		session.Game.AiValue = 0
+
+		var playerCardIndex, aiCardIndex = -1, -1
+		for i := 0; i < len(session.Game.PlayerCards); i++ {
+			if session.Game.PlayerCards[i] == completedMove.PlayerBid {
+				playerCardIndex = i
+			}
+			if session.Game.AICards[i] == completedMove.AiBid {
+				aiCardIndex = i
+			}
+			if aiCardIndex != -1 &&
+				playerCardIndex != -1 {
+				break
+			}
+		}
+
+		if playerCardIndex == -1 || aiCardIndex == -1 {
+			return nil, errors.New("Internal error")
+		}
+
+		session.Game.AICards[aiCardIndex] = session.Game.AICards[len(session.Game.AICards)-1]
+		session.Game.PlayerCards[playerCardIndex] = session.Game.PlayerCards[len(session.Game.PlayerCards)-1]
+
+		session.Game.AICards = session.Game.AICards[:len(session.Game.AICards)-1]
+		session.Game.PlayerCards = session.Game.PlayerCards[:len(session.Game.PlayerCards)-1]
 
 		return &completedMove, nil
 	}
