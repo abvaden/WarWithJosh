@@ -11,21 +11,20 @@ import (
 
 // GameEngine .. Business engine for interacting with WarWithJosh entities
 type GameEngine struct {
-	repository *interfaces.IDataRepository
+	repository interfaces.IDataRepository
 }
 
 // GameEngineFactory .. Create a new game engine that functions on a  give data repository
 func GameEngineFactory(dataRepository interfaces.IDataRepository) *GameEngine {
 	engine := new(GameEngine)
-	engine.repository = &dataRepository
+	engine.repository = dataRepository
 
 	return engine
 }
 
 // StartNewSession ..
 func (engine *GameEngine) StartNewSession() (*models.Session, error) {
-	repository := *engine.repository
-	session, err := repository.AddSession()
+	session, err := engine.repository.AddSession()
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +46,7 @@ func (engine *GameEngine) StartNewSession() (*models.Session, error) {
 		session.Game.WellCards[i], session.Game.WellCards[j] = session.Game.WellCards[j], session.Game.WellCards[i]
 	})
 
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return session, err
 	}
@@ -56,14 +55,13 @@ func (engine *GameEngine) StartNewSession() (*models.Session, error) {
 
 // SetAi ... Sets the Ai that the session will be played against
 func (engine *GameEngine) SetAi(sessionID, aiTypeID *string) error {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err
 	}
 
 	session.AI.AiID = *aiTypeID
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return err
 	}
@@ -73,15 +71,14 @@ func (engine *GameEngine) SetAi(sessionID, aiTypeID *string) error {
 
 // SetPlayerDetails ...
 func (engine *GameEngine) SetPlayerDetails(sessionID *string, player *models.Player) (*models.Session, error) {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
 	}
 
 	clonedPlayer := *(&player)
 	session.Player = *clonedPlayer
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return session, err
 	}
@@ -91,8 +88,7 @@ func (engine *GameEngine) SetPlayerDetails(sessionID *string, player *models.Pla
 // DeterminePlayerMove ... Sets the players value for the current hand, and returns a move if the hand was completed by the player
 // determining their hand
 func (engine *GameEngine) DeterminePlayerMove(sessionID *string, value uint8) (*models.Move, error) {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +97,7 @@ func (engine *GameEngine) DeterminePlayerMove(sessionID *string, value uint8) (*
 	if err != nil {
 		return nil, err
 	}
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return nil, err
 	}
@@ -115,9 +111,7 @@ func (engine *GameEngine) DeterminePlayerMove(sessionID *string, value uint8) (*
 
 // DetermineAiNextMove ... Determins the Ai's next move
 func (engine *GameEngine) DetermineAiNextMove(sessionID *string) (*models.Move, error) {
-	repository := *engine.repository
-
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +138,7 @@ func (engine *GameEngine) DetermineAiNextMove(sessionID *string) (*models.Move, 
 	if err != nil {
 		return nil, err
 	}
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return nil, err
 	}
@@ -158,8 +152,7 @@ func (engine *GameEngine) DetermineAiNextMove(sessionID *string) (*models.Move, 
 
 // StartNextHand ...
 func (engine *GameEngine) StartNextHand(sessionID *string) (uint8, error) {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return 0, err
 	}
@@ -173,14 +166,13 @@ func (engine *GameEngine) StartNextHand(sessionID *string) (uint8, error) {
 		session.Game.WellCards = []uint8{}
 	}
 
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	return session.Game.CurrentHandPoints, err
 }
 
 // EndSession ..
 func (engine *GameEngine) EndSession(sessionID *string) error {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err
 	}
@@ -188,7 +180,7 @@ func (engine *GameEngine) EndSession(sessionID *string) error {
 	session.IsComplete = true
 	session.Endtime = time.Now().UTC().Unix()
 
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return err
 	}
@@ -197,8 +189,7 @@ func (engine *GameEngine) EndSession(sessionID *string) error {
 }
 
 func (engine *GameEngine) addSessionMove(sessionID *string, move *models.Move) error {
-	repository := *engine.repository
-	session, err := repository.GetSession(sessionID)
+	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err
 	}
@@ -207,7 +198,7 @@ func (engine *GameEngine) addSessionMove(sessionID *string, move *models.Move) e
 	newCompletedHands := append(session.Game.CompletedHands, *clonedMove)
 
 	session.Game.CompletedHands = newCompletedHands
-	err = repository.UpdateSession(session)
+	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return err
 	}

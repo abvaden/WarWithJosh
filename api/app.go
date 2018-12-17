@@ -1,6 +1,8 @@
 package main
 
 import (
+	"WarWithJosh/api/events"
+	"WarWithJosh/api/handlers"
 	"WarWithJosh/api/services"
 	"WarWithJosh/api/web"
 	"log"
@@ -14,6 +16,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	globalBus := events.Busfactory()
+	_, err = handlers.GlobalHandlersFactory(globalBus, dataRepository)
+	if err != nil {
+		panic(err)
+	}
+
 	gameEngine := services.GameEngineFactory(dataRepository)
 
 	http.Handle("/", fs)
