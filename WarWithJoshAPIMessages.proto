@@ -1,0 +1,46 @@
+/// protoc -I=. --go_out=plugins=grpc:. messages.proto
+syntax = "proto3";
+package web;
+
+import "google/protobuf/any.proto";
+
+message Move {
+  float AiScore = 1;
+  int32 AiBid = 2;
+  float PlayerScore = 3;
+  int32 PlayerBid = 4;
+  int32 HandValue = 5;  
+}
+
+message TrickCompleted {
+  Move Move = 1;
+  int32 TricksRemaining = 2;
+}
+
+message AiDecided {
+}
+
+message TrickDecided {
+  int32 TrickPoints = 1;
+}
+
+message PlayerDecided {
+  int32 Value = 1;
+}
+
+message Results {
+  float AiScore = 1;
+  float PlayerScore = 2;
+  int32 AiTotalGames =  3;
+  int32 PlayerTotalGames = 4;
+  float AiWinPercentage = 5;
+}
+
+message Error {
+  string Message = 1;
+}
+
+message Wrapper {
+  string type = 1;
+  google.protobuf.Any payload = 2;
+}

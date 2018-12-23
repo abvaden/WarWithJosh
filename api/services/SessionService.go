@@ -11,9 +11,8 @@ type SessionService struct {
 
 // SessionServiceFactory ...
 func SessionServiceFactory(repository interfaces.IDataRepository) *SessionService {
-	service := new(SessionService)
 	engine := GameEngineFactory(repository)
-	service.engine = engine
+	service := SessionService{engine}
 
-	return service
+	return &service
 }

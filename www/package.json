@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "codegen": "node codegen.js"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^17.2.0",
@@ -30,6 +31,7 @@
     "@vue/devtools": "^4.1.5",
     "@vue/test-utils": "^1.0.0-beta.20",
     "chai": "^4.1.2",
+    "ts-protoc-gen": "^0.8.0",
     "typescript": "^3.0.0",
     "vue-template-compiler": "^2.5.17"
   }
