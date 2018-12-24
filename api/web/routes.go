@@ -12,6 +12,8 @@ const sessionBaseRoute = "session/"
 func Routes(engine *services.GameEngine) {
 	newSessionRoute := baseRoute + sessionBaseRoute + "new"
 	http.Handle(newSessionRoute, createHandleFunc(newSessionRoute, NewSessionHandler, engine))
+	pingRoute := baseRoute + "ping"
+	http.Handle(pingRoute, createHandleFunc(pingRoute, PingHandler, engine))
 }
 
 type gameRouteHandler func(w http.ResponseWriter, r *http.Request, engine *services.GameEngine)

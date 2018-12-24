@@ -16,7 +16,7 @@ Push-Location $wwwPath
 & protoc -I $wellKnownTypesPath `
          -I $PSScriptRoot `
          --plugin="protoc-gen-ts=$tsPluginPath" `
-         --js_out=import_style=es6,binary:$tsOutDir `
+         --js_out=import_style=commonjs,binary:$tsOutDir `
          --ts_out="$tsOutDir" `
          $protoFile
 Pop-Location

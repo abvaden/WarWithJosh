@@ -21,7 +21,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Move struct {
+type MoveMessage struct {
 	AiScore              float32  `protobuf:"fixed32,1,opt,name=AiScore,proto3" json:"AiScore,omitempty"`
 	AiBid                int32    `protobuf:"varint,2,opt,name=AiBid,proto3" json:"AiBid,omitempty"`
 	PlayerScore          float32  `protobuf:"fixed32,3,opt,name=PlayerScore,proto3" json:"PlayerScore,omitempty"`
@@ -32,223 +32,223 @@ type Move struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Move) Reset()         { *m = Move{} }
-func (m *Move) String() string { return proto.CompactTextString(m) }
-func (*Move) ProtoMessage()    {}
-func (*Move) Descriptor() ([]byte, []int) {
+func (m *MoveMessage) Reset()         { *m = MoveMessage{} }
+func (m *MoveMessage) String() string { return proto.CompactTextString(m) }
+func (*MoveMessage) ProtoMessage()    {}
+func (*MoveMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{0}
 }
 
-func (m *Move) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Move.Unmarshal(m, b)
+func (m *MoveMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MoveMessage.Unmarshal(m, b)
 }
-func (m *Move) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Move.Marshal(b, m, deterministic)
+func (m *MoveMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MoveMessage.Marshal(b, m, deterministic)
 }
-func (m *Move) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Move.Merge(m, src)
+func (m *MoveMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MoveMessage.Merge(m, src)
 }
-func (m *Move) XXX_Size() int {
-	return xxx_messageInfo_Move.Size(m)
+func (m *MoveMessage) XXX_Size() int {
+	return xxx_messageInfo_MoveMessage.Size(m)
 }
-func (m *Move) XXX_DiscardUnknown() {
-	xxx_messageInfo_Move.DiscardUnknown(m)
+func (m *MoveMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_MoveMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Move proto.InternalMessageInfo
+var xxx_messageInfo_MoveMessage proto.InternalMessageInfo
 
-func (m *Move) GetAiScore() float32 {
+func (m *MoveMessage) GetAiScore() float32 {
 	if m != nil {
 		return m.AiScore
 	}
 	return 0
 }
 
-func (m *Move) GetAiBid() int32 {
+func (m *MoveMessage) GetAiBid() int32 {
 	if m != nil {
 		return m.AiBid
 	}
 	return 0
 }
 
-func (m *Move) GetPlayerScore() float32 {
+func (m *MoveMessage) GetPlayerScore() float32 {
 	if m != nil {
 		return m.PlayerScore
 	}
 	return 0
 }
 
-func (m *Move) GetPlayerBid() int32 {
+func (m *MoveMessage) GetPlayerBid() int32 {
 	if m != nil {
 		return m.PlayerBid
 	}
 	return 0
 }
 
-func (m *Move) GetHandValue() int32 {
+func (m *MoveMessage) GetHandValue() int32 {
 	if m != nil {
 		return m.HandValue
 	}
 	return 0
 }
 
-type TrickCompleted struct {
-	Move                 *Move    `protobuf:"bytes,1,opt,name=Move,proto3" json:"Move,omitempty"`
-	TricksRemaining      int32    `protobuf:"varint,2,opt,name=TricksRemaining,proto3" json:"TricksRemaining,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type TrickCompletedMessage struct {
+	Move                 *MoveMessage `protobuf:"bytes,1,opt,name=Move,proto3" json:"Move,omitempty"`
+	TricksRemaining      int32        `protobuf:"varint,2,opt,name=TricksRemaining,proto3" json:"TricksRemaining,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
 }
 
-func (m *TrickCompleted) Reset()         { *m = TrickCompleted{} }
-func (m *TrickCompleted) String() string { return proto.CompactTextString(m) }
-func (*TrickCompleted) ProtoMessage()    {}
-func (*TrickCompleted) Descriptor() ([]byte, []int) {
+func (m *TrickCompletedMessage) Reset()         { *m = TrickCompletedMessage{} }
+func (m *TrickCompletedMessage) String() string { return proto.CompactTextString(m) }
+func (*TrickCompletedMessage) ProtoMessage()    {}
+func (*TrickCompletedMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{1}
 }
 
-func (m *TrickCompleted) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TrickCompleted.Unmarshal(m, b)
+func (m *TrickCompletedMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TrickCompletedMessage.Unmarshal(m, b)
 }
-func (m *TrickCompleted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TrickCompleted.Marshal(b, m, deterministic)
+func (m *TrickCompletedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TrickCompletedMessage.Marshal(b, m, deterministic)
 }
-func (m *TrickCompleted) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TrickCompleted.Merge(m, src)
+func (m *TrickCompletedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TrickCompletedMessage.Merge(m, src)
 }
-func (m *TrickCompleted) XXX_Size() int {
-	return xxx_messageInfo_TrickCompleted.Size(m)
+func (m *TrickCompletedMessage) XXX_Size() int {
+	return xxx_messageInfo_TrickCompletedMessage.Size(m)
 }
-func (m *TrickCompleted) XXX_DiscardUnknown() {
-	xxx_messageInfo_TrickCompleted.DiscardUnknown(m)
+func (m *TrickCompletedMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_TrickCompletedMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TrickCompleted proto.InternalMessageInfo
+var xxx_messageInfo_TrickCompletedMessage proto.InternalMessageInfo
 
-func (m *TrickCompleted) GetMove() *Move {
+func (m *TrickCompletedMessage) GetMove() *MoveMessage {
 	if m != nil {
 		return m.Move
 	}
 	return nil
 }
 
-func (m *TrickCompleted) GetTricksRemaining() int32 {
+func (m *TrickCompletedMessage) GetTricksRemaining() int32 {
 	if m != nil {
 		return m.TricksRemaining
 	}
 	return 0
 }
 
-type AiDecided struct {
+type AiDecidedMessage struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AiDecided) Reset()         { *m = AiDecided{} }
-func (m *AiDecided) String() string { return proto.CompactTextString(m) }
-func (*AiDecided) ProtoMessage()    {}
-func (*AiDecided) Descriptor() ([]byte, []int) {
+func (m *AiDecidedMessage) Reset()         { *m = AiDecidedMessage{} }
+func (m *AiDecidedMessage) String() string { return proto.CompactTextString(m) }
+func (*AiDecidedMessage) ProtoMessage()    {}
+func (*AiDecidedMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{2}
 }
 
-func (m *AiDecided) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AiDecided.Unmarshal(m, b)
+func (m *AiDecidedMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AiDecidedMessage.Unmarshal(m, b)
 }
-func (m *AiDecided) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AiDecided.Marshal(b, m, deterministic)
+func (m *AiDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AiDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *AiDecided) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AiDecided.Merge(m, src)
+func (m *AiDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AiDecidedMessage.Merge(m, src)
 }
-func (m *AiDecided) XXX_Size() int {
-	return xxx_messageInfo_AiDecided.Size(m)
+func (m *AiDecidedMessage) XXX_Size() int {
+	return xxx_messageInfo_AiDecidedMessage.Size(m)
 }
-func (m *AiDecided) XXX_DiscardUnknown() {
-	xxx_messageInfo_AiDecided.DiscardUnknown(m)
+func (m *AiDecidedMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_AiDecidedMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AiDecided proto.InternalMessageInfo
+var xxx_messageInfo_AiDecidedMessage proto.InternalMessageInfo
 
-type TrickDecided struct {
+type TrickDecidedMessage struct {
 	TrickPoints          int32    `protobuf:"varint,1,opt,name=TrickPoints,proto3" json:"TrickPoints,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TrickDecided) Reset()         { *m = TrickDecided{} }
-func (m *TrickDecided) String() string { return proto.CompactTextString(m) }
-func (*TrickDecided) ProtoMessage()    {}
-func (*TrickDecided) Descriptor() ([]byte, []int) {
+func (m *TrickDecidedMessage) Reset()         { *m = TrickDecidedMessage{} }
+func (m *TrickDecidedMessage) String() string { return proto.CompactTextString(m) }
+func (*TrickDecidedMessage) ProtoMessage()    {}
+func (*TrickDecidedMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{3}
 }
 
-func (m *TrickDecided) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TrickDecided.Unmarshal(m, b)
+func (m *TrickDecidedMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TrickDecidedMessage.Unmarshal(m, b)
 }
-func (m *TrickDecided) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TrickDecided.Marshal(b, m, deterministic)
+func (m *TrickDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TrickDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *TrickDecided) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TrickDecided.Merge(m, src)
+func (m *TrickDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TrickDecidedMessage.Merge(m, src)
 }
-func (m *TrickDecided) XXX_Size() int {
-	return xxx_messageInfo_TrickDecided.Size(m)
+func (m *TrickDecidedMessage) XXX_Size() int {
+	return xxx_messageInfo_TrickDecidedMessage.Size(m)
 }
-func (m *TrickDecided) XXX_DiscardUnknown() {
-	xxx_messageInfo_TrickDecided.DiscardUnknown(m)
+func (m *TrickDecidedMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_TrickDecidedMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TrickDecided proto.InternalMessageInfo
+var xxx_messageInfo_TrickDecidedMessage proto.InternalMessageInfo
 
-func (m *TrickDecided) GetTrickPoints() int32 {
+func (m *TrickDecidedMessage) GetTrickPoints() int32 {
 	if m != nil {
 		return m.TrickPoints
 	}
 	return 0
 }
 
-type PlayerDecided struct {
+type PlayerDecidedMessage struct {
 	Value                int32    `protobuf:"varint,1,opt,name=Value,proto3" json:"Value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PlayerDecided) Reset()         { *m = PlayerDecided{} }
-func (m *PlayerDecided) String() string { return proto.CompactTextString(m) }
-func (*PlayerDecided) ProtoMessage()    {}
-func (*PlayerDecided) Descriptor() ([]byte, []int) {
+func (m *PlayerDecidedMessage) Reset()         { *m = PlayerDecidedMessage{} }
+func (m *PlayerDecidedMessage) String() string { return proto.CompactTextString(m) }
+func (*PlayerDecidedMessage) ProtoMessage()    {}
+func (*PlayerDecidedMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{4}
 }
 
-func (m *PlayerDecided) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PlayerDecided.Unmarshal(m, b)
+func (m *PlayerDecidedMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PlayerDecidedMessage.Unmarshal(m, b)
 }
-func (m *PlayerDecided) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PlayerDecided.Marshal(b, m, deterministic)
+func (m *PlayerDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PlayerDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *PlayerDecided) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PlayerDecided.Merge(m, src)
+func (m *PlayerDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PlayerDecidedMessage.Merge(m, src)
 }
-func (m *PlayerDecided) XXX_Size() int {
-	return xxx_messageInfo_PlayerDecided.Size(m)
+func (m *PlayerDecidedMessage) XXX_Size() int {
+	return xxx_messageInfo_PlayerDecidedMessage.Size(m)
 }
-func (m *PlayerDecided) XXX_DiscardUnknown() {
-	xxx_messageInfo_PlayerDecided.DiscardUnknown(m)
+func (m *PlayerDecidedMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_PlayerDecidedMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_PlayerDecided proto.InternalMessageInfo
+var xxx_messageInfo_PlayerDecidedMessage proto.InternalMessageInfo
 
-func (m *PlayerDecided) GetValue() int32 {
+func (m *PlayerDecidedMessage) GetValue() int32 {
 	if m != nil {
 		return m.Value
 	}
 	return 0
 }
 
-type Results struct {
+type ResultsMessage struct {
 	AiScore              float32  `protobuf:"fixed32,1,opt,name=AiScore,proto3" json:"AiScore,omitempty"`
 	PlayerScore          float32  `protobuf:"fixed32,2,opt,name=PlayerScore,proto3" json:"PlayerScore,omitempty"`
 	AiTotalGames         int32    `protobuf:"varint,3,opt,name=AiTotalGames,proto3" json:"AiTotalGames,omitempty"`
@@ -259,99 +259,169 @@ type Results struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Results) Reset()         { *m = Results{} }
-func (m *Results) String() string { return proto.CompactTextString(m) }
-func (*Results) ProtoMessage()    {}
-func (*Results) Descriptor() ([]byte, []int) {
+func (m *ResultsMessage) Reset()         { *m = ResultsMessage{} }
+func (m *ResultsMessage) String() string { return proto.CompactTextString(m) }
+func (*ResultsMessage) ProtoMessage()    {}
+func (*ResultsMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_09dd4463dfc3c7cc, []int{5}
 }
 
-func (m *Results) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Results.Unmarshal(m, b)
+func (m *ResultsMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ResultsMessage.Unmarshal(m, b)
 }
-func (m *Results) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Results.Marshal(b, m, deterministic)
+func (m *ResultsMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ResultsMessage.Marshal(b, m, deterministic)
 }
-func (m *Results) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Results.Merge(m, src)
+func (m *ResultsMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ResultsMessage.Merge(m, src)
 }
-func (m *Results) XXX_Size() int {
-	return xxx_messageInfo_Results.Size(m)
+func (m *ResultsMessage) XXX_Size() int {
+	return xxx_messageInfo_ResultsMessage.Size(m)
 }
-func (m *Results) XXX_DiscardUnknown() {
-	xxx_messageInfo_Results.DiscardUnknown(m)
+func (m *ResultsMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_ResultsMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Results proto.InternalMessageInfo
+var xxx_messageInfo_ResultsMessage proto.InternalMessageInfo
 
-func (m *Results) GetAiScore() float32 {
+func (m *ResultsMessage) GetAiScore() float32 {
 	if m != nil {
 		return m.AiScore
 	}
 	return 0
 }
 
-func (m *Results) GetPlayerScore() float32 {
+func (m *ResultsMessage) GetPlayerScore() float32 {
 	if m != nil {
 		return m.PlayerScore
 	}
 	return 0
 }
 
-func (m *Results) GetAiTotalGames() int32 {
+func (m *ResultsMessage) GetAiTotalGames() int32 {
 	if m != nil {
 		return m.AiTotalGames
 	}
 	return 0
 }
 
-func (m *Results) GetPlayerTotalGames() int32 {
+func (m *ResultsMessage) GetPlayerTotalGames() int32 {
 	if m != nil {
 		return m.PlayerTotalGames
 	}
 	return 0
 }
 
-func (m *Results) GetAiWinPercentage() float32 {
+func (m *ResultsMessage) GetAiWinPercentage() float32 {
 	if m != nil {
 		return m.AiWinPercentage
 	}
 	return 0
 }
 
-type Error struct {
+type StartGameMessage struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StartGameMessage) Reset()         { *m = StartGameMessage{} }
+func (m *StartGameMessage) String() string { return proto.CompactTextString(m) }
+func (*StartGameMessage) ProtoMessage()    {}
+func (*StartGameMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09dd4463dfc3c7cc, []int{6}
+}
+
+func (m *StartGameMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StartGameMessage.Unmarshal(m, b)
+}
+func (m *StartGameMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StartGameMessage.Marshal(b, m, deterministic)
+}
+func (m *StartGameMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartGameMessage.Merge(m, src)
+}
+func (m *StartGameMessage) XXX_Size() int {
+	return xxx_messageInfo_StartGameMessage.Size(m)
+}
+func (m *StartGameMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_StartGameMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StartGameMessage proto.InternalMessageInfo
+
+type SetAiMessage struct {
+	AiName               string   `protobuf:"bytes,1,opt,name=AiName,proto3" json:"AiName,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetAiMessage) Reset()         { *m = SetAiMessage{} }
+func (m *SetAiMessage) String() string { return proto.CompactTextString(m) }
+func (*SetAiMessage) ProtoMessage()    {}
+func (*SetAiMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09dd4463dfc3c7cc, []int{7}
+}
+
+func (m *SetAiMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetAiMessage.Unmarshal(m, b)
+}
+func (m *SetAiMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetAiMessage.Marshal(b, m, deterministic)
+}
+func (m *SetAiMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetAiMessage.Merge(m, src)
+}
+func (m *SetAiMessage) XXX_Size() int {
+	return xxx_messageInfo_SetAiMessage.Size(m)
+}
+func (m *SetAiMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetAiMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetAiMessage proto.InternalMessageInfo
+
+func (m *SetAiMessage) GetAiName() string {
+	if m != nil {
+		return m.AiName
+	}
+	return ""
+}
+
+type ErrorMessage struct {
 	Message              string   `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Error) Reset()         { *m = Error{} }
-func (m *Error) String() string { return proto.CompactTextString(m) }
-func (*Error) ProtoMessage()    {}
-func (*Error) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{6}
+func (m *ErrorMessage) Reset()         { *m = ErrorMessage{} }
+func (m *ErrorMessage) String() string { return proto.CompactTextString(m) }
+func (*ErrorMessage) ProtoMessage()    {}
+func (*ErrorMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09dd4463dfc3c7cc, []int{8}
 }
 
-func (m *Error) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Error.Unmarshal(m, b)
+func (m *ErrorMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ErrorMessage.Unmarshal(m, b)
 }
-func (m *Error) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Error.Marshal(b, m, deterministic)
+func (m *ErrorMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ErrorMessage.Marshal(b, m, deterministic)
 }
-func (m *Error) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Error.Merge(m, src)
+func (m *ErrorMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ErrorMessage.Merge(m, src)
 }
-func (m *Error) XXX_Size() int {
-	return xxx_messageInfo_Error.Size(m)
+func (m *ErrorMessage) XXX_Size() int {
+	return xxx_messageInfo_ErrorMessage.Size(m)
 }
-func (m *Error) XXX_DiscardUnknown() {
-	xxx_messageInfo_Error.DiscardUnknown(m)
+func (m *ErrorMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_ErrorMessage.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Error proto.InternalMessageInfo
+var xxx_messageInfo_ErrorMessage proto.InternalMessageInfo
 
-func (m *Error) GetMessage() string {
+func (m *ErrorMessage) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -359,7 +429,6 @@ func (m *Error) GetMessage() string {
 }
 
 type Wrapper struct {
-	Type                 string   `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Payload              *any.Any `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -370,7 +439,7 @@ func (m *Wrapper) Reset()         { *m = Wrapper{} }
 func (m *Wrapper) String() string { return proto.CompactTextString(m) }
 func (*Wrapper) ProtoMessage()    {}
 func (*Wrapper) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{7}
+	return fileDescriptor_09dd4463dfc3c7cc, []int{9}
 }
 
 func (m *Wrapper) XXX_Unmarshal(b []byte) error {
@@ -391,13 +460,6 @@ func (m *Wrapper) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Wrapper proto.InternalMessageInfo
 
-func (m *Wrapper) GetType() string {
-	if m != nil {
-		return m.Type
-	}
-	return ""
-}
-
 func (m *Wrapper) GetPayload() *any.Any {
 	if m != nil {
 		return m.Payload
@@ -406,44 +468,47 @@ func (m *Wrapper) GetPayload() *any.Any {
 }
 
 func init() {
-	proto.RegisterType((*Move)(nil), "web.Move")
-	proto.RegisterType((*TrickCompleted)(nil), "web.TrickCompleted")
-	proto.RegisterType((*AiDecided)(nil), "web.AiDecided")
-	proto.RegisterType((*TrickDecided)(nil), "web.TrickDecided")
-	proto.RegisterType((*PlayerDecided)(nil), "web.PlayerDecided")
-	proto.RegisterType((*Results)(nil), "web.Results")
-	proto.RegisterType((*Error)(nil), "web.Error")
+	proto.RegisterType((*MoveMessage)(nil), "web.MoveMessage")
+	proto.RegisterType((*TrickCompletedMessage)(nil), "web.TrickCompletedMessage")
+	proto.RegisterType((*AiDecidedMessage)(nil), "web.AiDecidedMessage")
+	proto.RegisterType((*TrickDecidedMessage)(nil), "web.TrickDecidedMessage")
+	proto.RegisterType((*PlayerDecidedMessage)(nil), "web.PlayerDecidedMessage")
+	proto.RegisterType((*ResultsMessage)(nil), "web.ResultsMessage")
+	proto.RegisterType((*StartGameMessage)(nil), "web.StartGameMessage")
+	proto.RegisterType((*SetAiMessage)(nil), "web.SetAiMessage")
+	proto.RegisterType((*ErrorMessage)(nil), "web.ErrorMessage")
 	proto.RegisterType((*Wrapper)(nil), "web.Wrapper")
 }
 
 func init() { proto.RegisterFile("WarWithJoshAPIMessages.proto", fileDescriptor_09dd4463dfc3c7cc) }
 
 var fileDescriptor_09dd4463dfc3c7cc = []byte{
-	// 401 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xdd, 0x8a, 0xd4, 0x40,
-	0x10, 0x85, 0xc9, 0xec, 0xc4, 0x61, 0x2a, 0xeb, 0x0f, 0xcd, 0x5c, 0x44, 0x59, 0x61, 0x6c, 0x10,
-	0x06, 0x2f, 0xb2, 0xb2, 0x3e, 0x41, 0xfc, 0xc1, 0x1f, 0x18, 0x08, 0xed, 0x62, 0xf0, 0xb2, 0x93,
-	0x94, 0xd9, 0xc6, 0x4c, 0x77, 0xe8, 0xee, 0x71, 0xc9, 0x7b, 0xf8, 0x3e, 0xbe, 0x9a, 0xa4, 0x6b,
-	0xa2, 0xe3, 0x2c, 0x78, 0x97, 0xf3, 0x55, 0x1d, 0x72, 0xfa, 0x50, 0x70, 0x51, 0x4a, 0x5b, 0x2a,
-	0x7f, 0xf3, 0xc9, 0xb8, 0x9b, 0xbc, 0xf8, 0xb8, 0x45, 0xe7, 0x64, 0x8b, 0x2e, 0xeb, 0xad, 0xf1,
-	0x86, 0x9d, 0xdd, 0x62, 0xf5, 0xe4, 0x71, 0x6b, 0x4c, 0xdb, 0xe1, 0x65, 0x40, 0xd5, 0xfe, 0xdb,
-	0xa5, 0xd4, 0x03, 0xcd, 0xf9, 0xcf, 0x08, 0xe6, 0x5b, 0xf3, 0x03, 0x59, 0x0a, 0x8b, 0x5c, 0x7d,
-	0xae, 0x8d, 0xc5, 0x34, 0x5a, 0x47, 0x9b, 0x99, 0x98, 0x24, 0x5b, 0x41, 0x9c, 0xab, 0xd7, 0xaa,
-	0x49, 0x67, 0xeb, 0x68, 0x13, 0x0b, 0x12, 0x6c, 0x0d, 0x49, 0xd1, 0xc9, 0x01, 0x2d, 0x79, 0xce,
-	0x82, 0xe7, 0x18, 0xb1, 0x0b, 0x58, 0x92, 0x1c, 0xbd, 0xf3, 0xe0, 0xfd, 0x0b, 0xc6, 0xe9, 0x07,
-	0xa9, 0x9b, 0x2f, 0xb2, 0xdb, 0x63, 0x1a, 0xd3, 0xf4, 0x0f, 0xe0, 0x5f, 0xe1, 0xc1, 0xb5, 0x55,
-	0xf5, 0xf7, 0x37, 0x66, 0xd7, 0x77, 0xe8, 0xb1, 0x61, 0x4f, 0x29, 0x67, 0x08, 0x97, 0x5c, 0x2d,
-	0xb3, 0x5b, 0xac, 0xb2, 0x11, 0x08, 0x8a, 0xbf, 0x81, 0x87, 0xc1, 0xe0, 0x04, 0xee, 0xa4, 0xd2,
-	0x4a, 0xb7, 0x87, 0xb8, 0xa7, 0x98, 0x27, 0xb0, 0xcc, 0xd5, 0x5b, 0xac, 0x55, 0x83, 0x0d, 0x7f,
-	0x09, 0xe7, 0x61, 0x7e, 0xd0, 0xe3, 0xab, 0x82, 0x2e, 0x8c, 0xd2, 0xde, 0x85, 0x9f, 0xc5, 0xe2,
-	0x18, 0xf1, 0xe7, 0x70, 0x9f, 0x1e, 0x31, 0x59, 0x56, 0x10, 0xd3, 0x23, 0x68, 0x99, 0x04, 0xff,
-	0x15, 0xc1, 0x42, 0xa0, 0xdb, 0x77, 0xde, 0xfd, 0xa7, 0xda, 0x93, 0x12, 0x67, 0x77, 0x4b, 0xe4,
-	0x70, 0x9e, 0xab, 0x6b, 0xe3, 0x65, 0xf7, 0x5e, 0xee, 0xd0, 0x85, 0x9e, 0x63, 0xf1, 0x0f, 0x63,
-	0x2f, 0xe0, 0x11, 0x59, 0x8e, 0xf6, 0xa8, 0xef, 0x3b, 0x7c, 0xec, 0x29, 0x57, 0xa5, 0xd2, 0x05,
-	0xda, 0x1a, 0xb5, 0x97, 0x2d, 0x95, 0x3f, 0x13, 0xa7, 0x98, 0x3f, 0x83, 0xf8, 0x9d, 0xb5, 0xc6,
-	0x8e, 0xf1, 0x0f, 0x47, 0x15, 0xe2, 0x2f, 0xc5, 0x24, 0xf9, 0x16, 0x16, 0xa5, 0x95, 0x7d, 0x8f,
-	0x96, 0x31, 0x98, 0xfb, 0xa1, 0x9f, 0x36, 0xc2, 0x37, 0xcb, 0x60, 0xd1, 0xcb, 0xa1, 0x33, 0x92,
-	0x4e, 0x27, 0xb9, 0x5a, 0x65, 0x74, 0x88, 0xd9, 0x74, 0x88, 0x59, 0xae, 0x07, 0x31, 0x2d, 0x55,
-	0xf7, 0x02, 0x7e, 0xf5, 0x3b, 0x00, 0x00, 0xff, 0xff, 0xeb, 0x16, 0xec, 0x44, 0xd2, 0x02, 0x00,
-	0x00,
+	// 430 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xdf, 0x6a, 0xdb, 0x30,
+	0x14, 0xc6, 0x71, 0x5a, 0x37, 0xf4, 0x24, 0x6c, 0x41, 0xcb, 0x46, 0x36, 0x7a, 0x11, 0xc4, 0x18,
+	0x61, 0x0c, 0x17, 0xba, 0x8b, 0xb1, 0x4b, 0xed, 0x0f, 0xfb, 0x03, 0x1d, 0x41, 0x29, 0xcb, 0xb5,
+	0x6c, 0x9f, 0xb9, 0x62, 0xb6, 0x64, 0x24, 0x65, 0xc5, 0xcf, 0xb2, 0xf7, 0xd9, 0x73, 0x0d, 0x4b,
+	0x76, 0xe7, 0xba, 0x17, 0xbb, 0xf3, 0xf9, 0x9d, 0xf3, 0xe1, 0xf3, 0x7d, 0x47, 0x70, 0xb6, 0x17,
+	0x66, 0x2f, 0xdd, 0xf5, 0x57, 0x6d, 0xaf, 0xd9, 0xf6, 0xcb, 0x25, 0x5a, 0x2b, 0x0a, 0xb4, 0x49,
+	0x6d, 0xb4, 0xd3, 0xe4, 0xe8, 0x06, 0xd3, 0x67, 0x4f, 0x0b, 0xad, 0x8b, 0x12, 0xcf, 0x3d, 0x4a,
+	0x0f, 0x3f, 0xce, 0x85, 0x6a, 0x42, 0x9f, 0xfe, 0x8e, 0x60, 0x76, 0xa9, 0x7f, 0x61, 0x27, 0x23,
+	0x2b, 0x98, 0x32, 0xb9, 0xcb, 0xb4, 0xc1, 0x55, 0xb4, 0x8e, 0x36, 0x13, 0xde, 0x97, 0x64, 0x09,
+	0x31, 0x93, 0xef, 0x64, 0xbe, 0x9a, 0xac, 0xa3, 0x4d, 0xcc, 0x43, 0x41, 0xd6, 0x30, 0xdb, 0x96,
+	0xa2, 0x41, 0x13, 0x34, 0x47, 0x5e, 0x33, 0x44, 0xe4, 0x0c, 0x4e, 0x43, 0xd9, 0x6a, 0x8f, 0xbd,
+	0xf6, 0x1f, 0x68, 0xbb, 0x9f, 0x85, 0xca, 0xbf, 0x8b, 0xf2, 0x80, 0xab, 0x38, 0x74, 0x6f, 0x01,
+	0x2d, 0xe0, 0xf1, 0x95, 0x91, 0xd9, 0xcf, 0xf7, 0xba, 0xaa, 0x4b, 0x74, 0x98, 0xf7, 0x6b, 0x3e,
+	0x87, 0xe3, 0x76, 0x6b, 0xbf, 0xe3, 0xec, 0x62, 0x91, 0xdc, 0x60, 0x9a, 0x0c, 0x6c, 0x70, 0xdf,
+	0x25, 0x1b, 0x78, 0xe8, 0xe5, 0x96, 0x63, 0x25, 0xa4, 0x92, 0xaa, 0xe8, 0x96, 0x1f, 0x63, 0x4a,
+	0x60, 0xc1, 0xe4, 0x07, 0xcc, 0x64, 0x7e, 0xfb, 0x0f, 0xfa, 0x06, 0x1e, 0xf9, 0xb1, 0xbb, 0xb8,
+	0x75, 0xec, 0xf1, 0x56, 0x4b, 0xe5, 0xac, 0xdf, 0x20, 0xe6, 0x43, 0x44, 0x5f, 0xc1, 0x32, 0x18,
+	0x1c, 0x29, 0x97, 0x10, 0x07, 0x9f, 0x41, 0x13, 0x0a, 0xfa, 0x27, 0x82, 0x07, 0x1c, 0xed, 0xa1,
+	0x74, 0xf6, 0xff, 0x47, 0x18, 0xc5, 0x3d, 0xb9, 0x1f, 0x37, 0x85, 0x39, 0x93, 0x57, 0xda, 0x89,
+	0xf2, 0x93, 0xa8, 0xd0, 0xfa, 0x8b, 0xc4, 0xfc, 0x0e, 0x23, 0x2f, 0x61, 0x11, 0x24, 0x83, 0xb9,
+	0x70, 0x99, 0x7b, 0xbc, 0xcd, 0x90, 0xc9, 0xbd, 0x54, 0x5b, 0x34, 0x19, 0x2a, 0x27, 0x8a, 0x70,
+	0xa6, 0x09, 0x1f, 0xe3, 0x36, 0xc3, 0x9d, 0x13, 0xc6, 0xb5, 0xba, 0x3e, 0xc3, 0x17, 0x30, 0xdf,
+	0xa1, 0x63, 0xb2, 0x77, 0xf6, 0x04, 0x4e, 0x98, 0xfc, 0x26, 0xaa, 0x60, 0xec, 0x94, 0x77, 0x15,
+	0xdd, 0xc0, 0xfc, 0xa3, 0x31, 0xda, 0x0c, 0x12, 0xe8, 0x3e, 0xbb, 0xc1, 0xbe, 0xa4, 0x6f, 0x61,
+	0xba, 0x37, 0xa2, 0xae, 0xd1, 0x90, 0x04, 0xa6, 0xb5, 0x68, 0x4a, 0x2d, 0xc2, 0x9b, 0x9c, 0x5d,
+	0x2c, 0x93, 0xf0, 0xd0, 0x93, 0xfe, 0xa1, 0x27, 0x4c, 0x35, 0xbc, 0x1f, 0x4a, 0x4f, 0x3c, 0x7e,
+	0xfd, 0x37, 0x00, 0x00, 0xff, 0xff, 0x05, 0x0c, 0x1a, 0x79, 0x32, 0x03, 0x00, 0x00,
 }

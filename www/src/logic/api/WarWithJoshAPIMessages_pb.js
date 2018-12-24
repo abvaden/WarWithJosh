@@ -7,13 +7,20 @@
  */
 // GENERATED CODE -- DO NOT EDIT!
 
-goog.exportSymbol('proto.web.AiDecided', null, global);
-goog.exportSymbol('proto.web.Error', null, global);
-goog.exportSymbol('proto.web.Move', null, global);
-goog.exportSymbol('proto.web.PlayerDecided', null, global);
-goog.exportSymbol('proto.web.Results', null, global);
-goog.exportSymbol('proto.web.TrickCompleted', null, global);
-goog.exportSymbol('proto.web.TrickDecided', null, global);
+var jspb = require('google-protobuf');
+var goog = jspb;
+var global = Function('return this')();
+
+var google_protobuf_any_pb = require('google-protobuf/google/protobuf/any_pb.js');
+goog.exportSymbol('proto.web.AiDecidedMessage', null, global);
+goog.exportSymbol('proto.web.ErrorMessage', null, global);
+goog.exportSymbol('proto.web.MoveMessage', null, global);
+goog.exportSymbol('proto.web.PlayerDecidedMessage', null, global);
+goog.exportSymbol('proto.web.ResultsMessage', null, global);
+goog.exportSymbol('proto.web.SetAiMessage', null, global);
+goog.exportSymbol('proto.web.StartGameMessage', null, global);
+goog.exportSymbol('proto.web.TrickCompletedMessage', null, global);
+goog.exportSymbol('proto.web.TrickDecidedMessage', null, global);
 goog.exportSymbol('proto.web.Wrapper', null, global);
 
 /**
@@ -26,12 +33,12 @@ goog.exportSymbol('proto.web.Wrapper', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.Move = function(opt_data) {
+proto.web.MoveMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.Move, jspb.Message);
+goog.inherits(proto.web.MoveMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.Move.displayName = 'proto.web.Move';
+  proto.web.MoveMessage.displayName = 'proto.web.MoveMessage';
 }
 
 
@@ -46,8 +53,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.Move.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.Move.toObject(opt_includeInstance, this);
+proto.web.MoveMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.MoveMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -56,11 +63,11 @@ proto.web.Move.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.Move} msg The msg instance to transform.
+ * @param {!proto.web.MoveMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Move.toObject = function(includeInstance, msg) {
+proto.web.MoveMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     aiscore: +jspb.Message.getFieldWithDefault(msg, 1, 0.0),
     aibid: jspb.Message.getFieldWithDefault(msg, 2, 0),
@@ -80,23 +87,23 @@ proto.web.Move.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.Move}
+ * @return {!proto.web.MoveMessage}
  */
-proto.web.Move.deserializeBinary = function(bytes) {
+proto.web.MoveMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.Move;
-  return proto.web.Move.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.MoveMessage;
+  return proto.web.MoveMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.Move} msg The message object to deserialize into.
+ * @param {!proto.web.MoveMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.Move}
+ * @return {!proto.web.MoveMessage}
  */
-proto.web.Move.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.MoveMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -136,9 +143,9 @@ proto.web.Move.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.Move.prototype.serializeBinary = function() {
+proto.web.MoveMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.Move.serializeBinaryToWriter(this, writer);
+  proto.web.MoveMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -146,11 +153,11 @@ proto.web.Move.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.Move} message
+ * @param {!proto.web.MoveMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Move.serializeBinaryToWriter = function(message, writer) {
+proto.web.MoveMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getAiscore();
   if (f !== 0.0) {
@@ -194,13 +201,13 @@ proto.web.Move.serializeBinaryToWriter = function(message, writer) {
  * optional float AiScore = 1;
  * @return {number}
  */
-proto.web.Move.prototype.getAiscore = function() {
+proto.web.MoveMessage.prototype.getAiscore = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
 };
 
 
 /** @param {number} value */
-proto.web.Move.prototype.setAiscore = function(value) {
+proto.web.MoveMessage.prototype.setAiscore = function(value) {
   jspb.Message.setProto3FloatField(this, 1, value);
 };
 
@@ -209,13 +216,13 @@ proto.web.Move.prototype.setAiscore = function(value) {
  * optional int32 AiBid = 2;
  * @return {number}
  */
-proto.web.Move.prototype.getAibid = function() {
+proto.web.MoveMessage.prototype.getAibid = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /** @param {number} value */
-proto.web.Move.prototype.setAibid = function(value) {
+proto.web.MoveMessage.prototype.setAibid = function(value) {
   jspb.Message.setProto3IntField(this, 2, value);
 };
 
@@ -224,13 +231,13 @@ proto.web.Move.prototype.setAibid = function(value) {
  * optional float PlayerScore = 3;
  * @return {number}
  */
-proto.web.Move.prototype.getPlayerscore = function() {
+proto.web.MoveMessage.prototype.getPlayerscore = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 3, 0.0));
 };
 
 
 /** @param {number} value */
-proto.web.Move.prototype.setPlayerscore = function(value) {
+proto.web.MoveMessage.prototype.setPlayerscore = function(value) {
   jspb.Message.setProto3FloatField(this, 3, value);
 };
 
@@ -239,13 +246,13 @@ proto.web.Move.prototype.setPlayerscore = function(value) {
  * optional int32 PlayerBid = 4;
  * @return {number}
  */
-proto.web.Move.prototype.getPlayerbid = function() {
+proto.web.MoveMessage.prototype.getPlayerbid = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /** @param {number} value */
-proto.web.Move.prototype.setPlayerbid = function(value) {
+proto.web.MoveMessage.prototype.setPlayerbid = function(value) {
   jspb.Message.setProto3IntField(this, 4, value);
 };
 
@@ -254,13 +261,13 @@ proto.web.Move.prototype.setPlayerbid = function(value) {
  * optional int32 HandValue = 5;
  * @return {number}
  */
-proto.web.Move.prototype.getHandvalue = function() {
+proto.web.MoveMessage.prototype.getHandvalue = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
 /** @param {number} value */
-proto.web.Move.prototype.setHandvalue = function(value) {
+proto.web.MoveMessage.prototype.setHandvalue = function(value) {
   jspb.Message.setProto3IntField(this, 5, value);
 };
 
@@ -276,12 +283,12 @@ proto.web.Move.prototype.setHandvalue = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.TrickCompleted = function(opt_data) {
+proto.web.TrickCompletedMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.TrickCompleted, jspb.Message);
+goog.inherits(proto.web.TrickCompletedMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.TrickCompleted.displayName = 'proto.web.TrickCompleted';
+  proto.web.TrickCompletedMessage.displayName = 'proto.web.TrickCompletedMessage';
 }
 
 
@@ -296,8 +303,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.TrickCompleted.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.TrickCompleted.toObject(opt_includeInstance, this);
+proto.web.TrickCompletedMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.TrickCompletedMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -306,13 +313,13 @@ proto.web.TrickCompleted.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.TrickCompleted} msg The msg instance to transform.
+ * @param {!proto.web.TrickCompletedMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.TrickCompleted.toObject = function(includeInstance, msg) {
+proto.web.TrickCompletedMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
-    move: (f = msg.getMove()) && proto.web.Move.toObject(includeInstance, f),
+    move: (f = msg.getMove()) && proto.web.MoveMessage.toObject(includeInstance, f),
     tricksremaining: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
@@ -327,23 +334,23 @@ proto.web.TrickCompleted.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.TrickCompleted}
+ * @return {!proto.web.TrickCompletedMessage}
  */
-proto.web.TrickCompleted.deserializeBinary = function(bytes) {
+proto.web.TrickCompletedMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.TrickCompleted;
-  return proto.web.TrickCompleted.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.TrickCompletedMessage;
+  return proto.web.TrickCompletedMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.TrickCompleted} msg The message object to deserialize into.
+ * @param {!proto.web.TrickCompletedMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.TrickCompleted}
+ * @return {!proto.web.TrickCompletedMessage}
  */
-proto.web.TrickCompleted.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.TrickCompletedMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -351,8 +358,8 @@ proto.web.TrickCompleted.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.web.Move;
-      reader.readMessage(value,proto.web.Move.deserializeBinaryFromReader);
+      var value = new proto.web.MoveMessage;
+      reader.readMessage(value,proto.web.MoveMessage.deserializeBinaryFromReader);
       msg.setMove(value);
       break;
     case 2:
@@ -372,9 +379,9 @@ proto.web.TrickCompleted.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.TrickCompleted.prototype.serializeBinary = function() {
+proto.web.TrickCompletedMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.TrickCompleted.serializeBinaryToWriter(this, writer);
+  proto.web.TrickCompletedMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -382,18 +389,18 @@ proto.web.TrickCompleted.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.TrickCompleted} message
+ * @param {!proto.web.TrickCompletedMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.TrickCompleted.serializeBinaryToWriter = function(message, writer) {
+proto.web.TrickCompletedMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getMove();
   if (f != null) {
     writer.writeMessage(
       1,
       f,
-      proto.web.Move.serializeBinaryToWriter
+      proto.web.MoveMessage.serializeBinaryToWriter
     );
   }
   f = message.getTricksremaining();
@@ -407,22 +414,22 @@ proto.web.TrickCompleted.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional Move Move = 1;
- * @return {?proto.web.Move}
+ * optional MoveMessage Move = 1;
+ * @return {?proto.web.MoveMessage}
  */
-proto.web.TrickCompleted.prototype.getMove = function() {
-  return /** @type{?proto.web.Move} */ (
-    jspb.Message.getWrapperField(this, proto.web.Move, 1));
+proto.web.TrickCompletedMessage.prototype.getMove = function() {
+  return /** @type{?proto.web.MoveMessage} */ (
+    jspb.Message.getWrapperField(this, proto.web.MoveMessage, 1));
 };
 
 
-/** @param {?proto.web.Move|undefined} value */
-proto.web.TrickCompleted.prototype.setMove = function(value) {
+/** @param {?proto.web.MoveMessage|undefined} value */
+proto.web.TrickCompletedMessage.prototype.setMove = function(value) {
   jspb.Message.setWrapperField(this, 1, value);
 };
 
 
-proto.web.TrickCompleted.prototype.clearMove = function() {
+proto.web.TrickCompletedMessage.prototype.clearMove = function() {
   this.setMove(undefined);
 };
 
@@ -431,7 +438,7 @@ proto.web.TrickCompleted.prototype.clearMove = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.web.TrickCompleted.prototype.hasMove = function() {
+proto.web.TrickCompletedMessage.prototype.hasMove = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -440,13 +447,13 @@ proto.web.TrickCompleted.prototype.hasMove = function() {
  * optional int32 TricksRemaining = 2;
  * @return {number}
  */
-proto.web.TrickCompleted.prototype.getTricksremaining = function() {
+proto.web.TrickCompletedMessage.prototype.getTricksremaining = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /** @param {number} value */
-proto.web.TrickCompleted.prototype.setTricksremaining = function(value) {
+proto.web.TrickCompletedMessage.prototype.setTricksremaining = function(value) {
   jspb.Message.setProto3IntField(this, 2, value);
 };
 
@@ -462,12 +469,12 @@ proto.web.TrickCompleted.prototype.setTricksremaining = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.AiDecided = function(opt_data) {
+proto.web.AiDecidedMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.AiDecided, jspb.Message);
+goog.inherits(proto.web.AiDecidedMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.AiDecided.displayName = 'proto.web.AiDecided';
+  proto.web.AiDecidedMessage.displayName = 'proto.web.AiDecidedMessage';
 }
 
 
@@ -482,8 +489,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.AiDecided.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.AiDecided.toObject(opt_includeInstance, this);
+proto.web.AiDecidedMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.AiDecidedMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -492,11 +499,11 @@ proto.web.AiDecided.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.AiDecided} msg The msg instance to transform.
+ * @param {!proto.web.AiDecidedMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.AiDecided.toObject = function(includeInstance, msg) {
+proto.web.AiDecidedMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -512,23 +519,23 @@ proto.web.AiDecided.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.AiDecided}
+ * @return {!proto.web.AiDecidedMessage}
  */
-proto.web.AiDecided.deserializeBinary = function(bytes) {
+proto.web.AiDecidedMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.AiDecided;
-  return proto.web.AiDecided.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.AiDecidedMessage;
+  return proto.web.AiDecidedMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.AiDecided} msg The message object to deserialize into.
+ * @param {!proto.web.AiDecidedMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.AiDecided}
+ * @return {!proto.web.AiDecidedMessage}
  */
-proto.web.AiDecided.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.AiDecidedMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -548,9 +555,9 @@ proto.web.AiDecided.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.AiDecided.prototype.serializeBinary = function() {
+proto.web.AiDecidedMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.AiDecided.serializeBinaryToWriter(this, writer);
+  proto.web.AiDecidedMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -558,11 +565,11 @@ proto.web.AiDecided.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.AiDecided} message
+ * @param {!proto.web.AiDecidedMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.AiDecided.serializeBinaryToWriter = function(message, writer) {
+proto.web.AiDecidedMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -578,12 +585,12 @@ proto.web.AiDecided.serializeBinaryToWriter = function(message, writer) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.TrickDecided = function(opt_data) {
+proto.web.TrickDecidedMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.TrickDecided, jspb.Message);
+goog.inherits(proto.web.TrickDecidedMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.TrickDecided.displayName = 'proto.web.TrickDecided';
+  proto.web.TrickDecidedMessage.displayName = 'proto.web.TrickDecidedMessage';
 }
 
 
@@ -598,8 +605,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.TrickDecided.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.TrickDecided.toObject(opt_includeInstance, this);
+proto.web.TrickDecidedMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.TrickDecidedMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -608,11 +615,11 @@ proto.web.TrickDecided.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.TrickDecided} msg The msg instance to transform.
+ * @param {!proto.web.TrickDecidedMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.TrickDecided.toObject = function(includeInstance, msg) {
+proto.web.TrickDecidedMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     trickpoints: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
@@ -628,23 +635,23 @@ proto.web.TrickDecided.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.TrickDecided}
+ * @return {!proto.web.TrickDecidedMessage}
  */
-proto.web.TrickDecided.deserializeBinary = function(bytes) {
+proto.web.TrickDecidedMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.TrickDecided;
-  return proto.web.TrickDecided.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.TrickDecidedMessage;
+  return proto.web.TrickDecidedMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.TrickDecided} msg The message object to deserialize into.
+ * @param {!proto.web.TrickDecidedMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.TrickDecided}
+ * @return {!proto.web.TrickDecidedMessage}
  */
-proto.web.TrickDecided.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.TrickDecidedMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -668,9 +675,9 @@ proto.web.TrickDecided.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.TrickDecided.prototype.serializeBinary = function() {
+proto.web.TrickDecidedMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.TrickDecided.serializeBinaryToWriter(this, writer);
+  proto.web.TrickDecidedMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -678,11 +685,11 @@ proto.web.TrickDecided.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.TrickDecided} message
+ * @param {!proto.web.TrickDecidedMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.TrickDecided.serializeBinaryToWriter = function(message, writer) {
+proto.web.TrickDecidedMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getTrickpoints();
   if (f !== 0) {
@@ -698,13 +705,13 @@ proto.web.TrickDecided.serializeBinaryToWriter = function(message, writer) {
  * optional int32 TrickPoints = 1;
  * @return {number}
  */
-proto.web.TrickDecided.prototype.getTrickpoints = function() {
+proto.web.TrickDecidedMessage.prototype.getTrickpoints = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /** @param {number} value */
-proto.web.TrickDecided.prototype.setTrickpoints = function(value) {
+proto.web.TrickDecidedMessage.prototype.setTrickpoints = function(value) {
   jspb.Message.setProto3IntField(this, 1, value);
 };
 
@@ -720,12 +727,12 @@ proto.web.TrickDecided.prototype.setTrickpoints = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.PlayerDecided = function(opt_data) {
+proto.web.PlayerDecidedMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.PlayerDecided, jspb.Message);
+goog.inherits(proto.web.PlayerDecidedMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.PlayerDecided.displayName = 'proto.web.PlayerDecided';
+  proto.web.PlayerDecidedMessage.displayName = 'proto.web.PlayerDecidedMessage';
 }
 
 
@@ -740,8 +747,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.PlayerDecided.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.PlayerDecided.toObject(opt_includeInstance, this);
+proto.web.PlayerDecidedMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.PlayerDecidedMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -750,11 +757,11 @@ proto.web.PlayerDecided.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.PlayerDecided} msg The msg instance to transform.
+ * @param {!proto.web.PlayerDecidedMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.PlayerDecided.toObject = function(includeInstance, msg) {
+proto.web.PlayerDecidedMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     value: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
@@ -770,23 +777,23 @@ proto.web.PlayerDecided.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.PlayerDecided}
+ * @return {!proto.web.PlayerDecidedMessage}
  */
-proto.web.PlayerDecided.deserializeBinary = function(bytes) {
+proto.web.PlayerDecidedMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.PlayerDecided;
-  return proto.web.PlayerDecided.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.PlayerDecidedMessage;
+  return proto.web.PlayerDecidedMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.PlayerDecided} msg The message object to deserialize into.
+ * @param {!proto.web.PlayerDecidedMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.PlayerDecided}
+ * @return {!proto.web.PlayerDecidedMessage}
  */
-proto.web.PlayerDecided.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.PlayerDecidedMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -810,9 +817,9 @@ proto.web.PlayerDecided.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.PlayerDecided.prototype.serializeBinary = function() {
+proto.web.PlayerDecidedMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.PlayerDecided.serializeBinaryToWriter(this, writer);
+  proto.web.PlayerDecidedMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -820,11 +827,11 @@ proto.web.PlayerDecided.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.PlayerDecided} message
+ * @param {!proto.web.PlayerDecidedMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.PlayerDecided.serializeBinaryToWriter = function(message, writer) {
+proto.web.PlayerDecidedMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getValue();
   if (f !== 0) {
@@ -840,13 +847,13 @@ proto.web.PlayerDecided.serializeBinaryToWriter = function(message, writer) {
  * optional int32 Value = 1;
  * @return {number}
  */
-proto.web.PlayerDecided.prototype.getValue = function() {
+proto.web.PlayerDecidedMessage.prototype.getValue = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /** @param {number} value */
-proto.web.PlayerDecided.prototype.setValue = function(value) {
+proto.web.PlayerDecidedMessage.prototype.setValue = function(value) {
   jspb.Message.setProto3IntField(this, 1, value);
 };
 
@@ -862,12 +869,12 @@ proto.web.PlayerDecided.prototype.setValue = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.Results = function(opt_data) {
+proto.web.ResultsMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.Results, jspb.Message);
+goog.inherits(proto.web.ResultsMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.Results.displayName = 'proto.web.Results';
+  proto.web.ResultsMessage.displayName = 'proto.web.ResultsMessage';
 }
 
 
@@ -882,8 +889,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.Results.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.Results.toObject(opt_includeInstance, this);
+proto.web.ResultsMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.ResultsMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -892,11 +899,11 @@ proto.web.Results.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.Results} msg The msg instance to transform.
+ * @param {!proto.web.ResultsMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Results.toObject = function(includeInstance, msg) {
+proto.web.ResultsMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     aiscore: +jspb.Message.getFieldWithDefault(msg, 1, 0.0),
     playerscore: +jspb.Message.getFieldWithDefault(msg, 2, 0.0),
@@ -916,23 +923,23 @@ proto.web.Results.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.Results}
+ * @return {!proto.web.ResultsMessage}
  */
-proto.web.Results.deserializeBinary = function(bytes) {
+proto.web.ResultsMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.Results;
-  return proto.web.Results.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.ResultsMessage;
+  return proto.web.ResultsMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.Results} msg The message object to deserialize into.
+ * @param {!proto.web.ResultsMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.Results}
+ * @return {!proto.web.ResultsMessage}
  */
-proto.web.Results.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.ResultsMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -972,9 +979,9 @@ proto.web.Results.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.Results.prototype.serializeBinary = function() {
+proto.web.ResultsMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.Results.serializeBinaryToWriter(this, writer);
+  proto.web.ResultsMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -982,11 +989,11 @@ proto.web.Results.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.Results} message
+ * @param {!proto.web.ResultsMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Results.serializeBinaryToWriter = function(message, writer) {
+proto.web.ResultsMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getAiscore();
   if (f !== 0.0) {
@@ -1030,13 +1037,13 @@ proto.web.Results.serializeBinaryToWriter = function(message, writer) {
  * optional float AiScore = 1;
  * @return {number}
  */
-proto.web.Results.prototype.getAiscore = function() {
+proto.web.ResultsMessage.prototype.getAiscore = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
 };
 
 
 /** @param {number} value */
-proto.web.Results.prototype.setAiscore = function(value) {
+proto.web.ResultsMessage.prototype.setAiscore = function(value) {
   jspb.Message.setProto3FloatField(this, 1, value);
 };
 
@@ -1045,13 +1052,13 @@ proto.web.Results.prototype.setAiscore = function(value) {
  * optional float PlayerScore = 2;
  * @return {number}
  */
-proto.web.Results.prototype.getPlayerscore = function() {
+proto.web.ResultsMessage.prototype.getPlayerscore = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 2, 0.0));
 };
 
 
 /** @param {number} value */
-proto.web.Results.prototype.setPlayerscore = function(value) {
+proto.web.ResultsMessage.prototype.setPlayerscore = function(value) {
   jspb.Message.setProto3FloatField(this, 2, value);
 };
 
@@ -1060,13 +1067,13 @@ proto.web.Results.prototype.setPlayerscore = function(value) {
  * optional int32 AiTotalGames = 3;
  * @return {number}
  */
-proto.web.Results.prototype.getAitotalgames = function() {
+proto.web.ResultsMessage.prototype.getAitotalgames = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
 /** @param {number} value */
-proto.web.Results.prototype.setAitotalgames = function(value) {
+proto.web.ResultsMessage.prototype.setAitotalgames = function(value) {
   jspb.Message.setProto3IntField(this, 3, value);
 };
 
@@ -1075,13 +1082,13 @@ proto.web.Results.prototype.setAitotalgames = function(value) {
  * optional int32 PlayerTotalGames = 4;
  * @return {number}
  */
-proto.web.Results.prototype.getPlayertotalgames = function() {
+proto.web.ResultsMessage.prototype.getPlayertotalgames = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /** @param {number} value */
-proto.web.Results.prototype.setPlayertotalgames = function(value) {
+proto.web.ResultsMessage.prototype.setPlayertotalgames = function(value) {
   jspb.Message.setProto3IntField(this, 4, value);
 };
 
@@ -1090,13 +1097,13 @@ proto.web.Results.prototype.setPlayertotalgames = function(value) {
  * optional float AiWinPercentage = 5;
  * @return {number}
  */
-proto.web.Results.prototype.getAiwinpercentage = function() {
+proto.web.ResultsMessage.prototype.getAiwinpercentage = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 5, 0.0));
 };
 
 
 /** @param {number} value */
-proto.web.Results.prototype.setAiwinpercentage = function(value) {
+proto.web.ResultsMessage.prototype.setAiwinpercentage = function(value) {
   jspb.Message.setProto3FloatField(this, 5, value);
 };
 
@@ -1112,12 +1119,12 @@ proto.web.Results.prototype.setAiwinpercentage = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.web.Error = function(opt_data) {
+proto.web.StartGameMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.web.Error, jspb.Message);
+goog.inherits(proto.web.StartGameMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.web.Error.displayName = 'proto.web.Error';
+  proto.web.StartGameMessage.displayName = 'proto.web.StartGameMessage';
 }
 
 
@@ -1132,8 +1139,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.web.Error.prototype.toObject = function(opt_includeInstance) {
-  return proto.web.Error.toObject(opt_includeInstance, this);
+proto.web.StartGameMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.StartGameMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -1142,11 +1149,269 @@ proto.web.Error.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.web.Error} msg The msg instance to transform.
+ * @param {!proto.web.StartGameMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Error.toObject = function(includeInstance, msg) {
+proto.web.StartGameMessage.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.web.StartGameMessage}
+ */
+proto.web.StartGameMessage.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.web.StartGameMessage;
+  return proto.web.StartGameMessage.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.web.StartGameMessage} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.web.StartGameMessage}
+ */
+proto.web.StartGameMessage.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.web.StartGameMessage.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.web.StartGameMessage.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.web.StartGameMessage} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.web.StartGameMessage.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.web.SetAiMessage = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.web.SetAiMessage, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.web.SetAiMessage.displayName = 'proto.web.SetAiMessage';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.web.SetAiMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.SetAiMessage.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.web.SetAiMessage} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.web.SetAiMessage.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    ainame: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.web.SetAiMessage}
+ */
+proto.web.SetAiMessage.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.web.SetAiMessage;
+  return proto.web.SetAiMessage.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.web.SetAiMessage} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.web.SetAiMessage}
+ */
+proto.web.SetAiMessage.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAiname(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.web.SetAiMessage.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.web.SetAiMessage.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.web.SetAiMessage} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.web.SetAiMessage.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getAiname();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string AiName = 1;
+ * @return {string}
+ */
+proto.web.SetAiMessage.prototype.getAiname = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.web.SetAiMessage.prototype.setAiname = function(value) {
+  jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.web.ErrorMessage = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.web.ErrorMessage, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.web.ErrorMessage.displayName = 'proto.web.ErrorMessage';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.web.ErrorMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.web.ErrorMessage.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.web.ErrorMessage} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.web.ErrorMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     message: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
@@ -1162,23 +1427,23 @@ proto.web.Error.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.web.Error}
+ * @return {!proto.web.ErrorMessage}
  */
-proto.web.Error.deserializeBinary = function(bytes) {
+proto.web.ErrorMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.web.Error;
-  return proto.web.Error.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.web.ErrorMessage;
+  return proto.web.ErrorMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.web.Error} msg The message object to deserialize into.
+ * @param {!proto.web.ErrorMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.web.Error}
+ * @return {!proto.web.ErrorMessage}
  */
-proto.web.Error.deserializeBinaryFromReader = function(msg, reader) {
+proto.web.ErrorMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1202,9 +1467,9 @@ proto.web.Error.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.web.Error.prototype.serializeBinary = function() {
+proto.web.ErrorMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.web.Error.serializeBinaryToWriter(this, writer);
+  proto.web.ErrorMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1212,11 +1477,11 @@ proto.web.Error.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.web.Error} message
+ * @param {!proto.web.ErrorMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.web.Error.serializeBinaryToWriter = function(message, writer) {
+proto.web.ErrorMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getMessage();
   if (f.length > 0) {
@@ -1232,13 +1497,13 @@ proto.web.Error.serializeBinaryToWriter = function(message, writer) {
  * optional string Message = 1;
  * @return {string}
  */
-proto.web.Error.prototype.getMessage = function() {
+proto.web.ErrorMessage.prototype.getMessage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /** @param {string} value */
-proto.web.Error.prototype.setMessage = function(value) {
+proto.web.ErrorMessage.prototype.setMessage = function(value) {
   jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1290,8 +1555,7 @@ proto.web.Wrapper.prototype.toObject = function(opt_includeInstance) {
  */
 proto.web.Wrapper.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    payload: (f = msg.getPayload()) && proto.google.protobuf.Any.toObject(includeInstance, f)
+    payload: (f = msg.getPayload()) && google_protobuf_any_pb.Any.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1328,13 +1592,9 @@ proto.web.Wrapper.deserializeBinaryFromReader = function(msg, reader) {
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setType(value);
-      break;
     case 2:
-      var value = new proto.google.protobuf.Any;
-      reader.readMessage(value,proto.google.protobuf.Any.deserializeBinaryFromReader);
+      var value = new google_protobuf_any_pb.Any;
+      reader.readMessage(value,google_protobuf_any_pb.Any.deserializeBinaryFromReader);
       msg.setPayload(value);
       break;
     default:
@@ -1366,36 +1626,14 @@ proto.web.Wrapper.prototype.serializeBinary = function() {
  */
 proto.web.Wrapper.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
   f = message.getPayload();
   if (f != null) {
     writer.writeMessage(
       2,
       f,
-      proto.google.protobuf.Any.serializeBinaryToWriter
+      google_protobuf_any_pb.Any.serializeBinaryToWriter
     );
   }
-};
-
-
-/**
- * optional string type = 1;
- * @return {string}
- */
-proto.web.Wrapper.prototype.getType = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/** @param {string} value */
-proto.web.Wrapper.prototype.setType = function(value) {
-  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1405,7 +1643,7 @@ proto.web.Wrapper.prototype.setType = function(value) {
  */
 proto.web.Wrapper.prototype.getPayload = function() {
   return /** @type{?proto.google.protobuf.Any} */ (
-    jspb.Message.getWrapperField(this, proto.google.protobuf.Any, 2));
+    jspb.Message.getWrapperField(this, google_protobuf_any_pb.Any, 2));
 };
 
 
@@ -1429,3 +1667,4 @@ proto.web.Wrapper.prototype.hasPayload = function() {
 };
 
 
+goog.object.extend(exports, proto.web);

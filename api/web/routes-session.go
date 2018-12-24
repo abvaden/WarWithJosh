@@ -2,6 +2,7 @@ package web
 
 import (
 	"WarWithJosh/api/services"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -15,28 +16,49 @@ var upgrader = websocket.Upgrader{
 
 // NewSessionHandler ...
 func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.GameEngine) {
-	c, err := upgrader.Upgrade(w, r, nil)
+	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		ServerError(err, &w)
 		return
 	}
 
-	defer c.Close()
-
-	send := func(message Wrapper) {
+	send := func(message *Wrapper) {
 		var data []byte
-		c.WriteMessage(2, data)
+		writer, err := ws.NextWriter(2)
+		if err != nil {
+			log.Println("Error while getting next writer")
+			return
+		}
+		writtenBytes, err := writer.Write(data)
+		if err != nil || writtenBytes != len(data) {
+			log.Println("Failed to fully write message")
+			return
+		}
+
+		writer.Close()
 	}
 	newMessageChan := make(chan Wrapper)
 	closeChan := make(chan bool)
 
-	_, err = SessionServiceFactory(send, newMessageChan, closeChan)
+	sessionService, err := SessionServiceFactory(engine, send, newMessageChan, closeChan)
+
+	defer sessionService.Close()
+	defer ws.Close()
 
 	for {
-		_, data, _ := c.ReadMessage()
-		wrapper := new(Wrapper)
-		err = wrapper.XXX_Unmarshal(data)
+		messageType, data, err := ws.ReadMessage()
+		if err != nil {
+			return
+		}
 
-		newMessageChan <- *wrapper
+		if messageType == 2 {
+			wrapper := new(Wrapper)
+			err = wrapper.XXX_Unmarshal(data)
+			newMessageChan <- *wrapper
+		} else if messageType == 1 {
+			log.Println(data)
+		} else {
+			log.Println(messageType)
+		}
 	}
 }

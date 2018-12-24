@@ -34,8 +34,7 @@ func TestRedisDataRepository_SaveGetSession(t *testing.T) {
 		return
 	}
 
-	testSessionID := testSession.ID
-	recalledSession, err := repository.GetSession(&testSessionID)
+	recalledSession, err := repository.GetSession(testSession.ID)
 
 	if err != nil {
 		t.Error(err)
@@ -61,7 +60,6 @@ func TestRedisDataRepository_UpdateSession(t *testing.T) {
 		return
 	}
 
-	sessionID := session.ID
 	session.StartTime = time.Now().Unix()
 	session.IsComplete = false
 	session.Game.CompletedHands = []models.Move{}
@@ -72,7 +70,7 @@ func TestRedisDataRepository_UpdateSession(t *testing.T) {
 		return
 	}
 
-	recalledSession, err := repository.GetSession(&sessionID)
+	recalledSession, err := repository.GetSession(session.ID)
 	if err != nil {
 		t.Error(err)
 		return

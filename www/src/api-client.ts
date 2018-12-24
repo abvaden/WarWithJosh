@@ -1,9 +1,11 @@
 import * as Constants from "./constants"
 import { injectable } from 'inversify';
+import { Wrapper, ErrorMessage } from './logic/api/WarWithJoshAPIMessages_pb';
+import { Any } from 'google-protobuf/google/protobuf/any_pb';
 
 export const IAPIClient_IOC_KEY = Symbol.for("APIClient")
 export interface IAPIClient {
-    StartNewSession(): Promise<string>
+    StartNewSession(): Promise<ISessionMessagePump>
     AddSessionMove(sessionId: string, move: Move): Promise<void>
     EndSession(sessionId: string): Promise<void>
     ValidPlayerTypes(): Promise<string[]>
@@ -41,17 +43,57 @@ export class NetworkAPIClient implements IAPIClient {
         this._apiBasePath = (basePath === undefined) ? window.location.href : basePath
     }
 
-    async StartNewSession(): Promise<string> {
-        const newSessionUrl = this._apiBasePath + "/api/v1/session/new";
-        const r = await fetch(newSessionUrl, {
-            mode: "cors"
-        });
-        if (r.status !== 200) {
-            throw Error(this.generateError(r));
-        }
+    StartNewSession(): Promise<ISessionMessagePump> {
+        return new Promise((resolve, reject) => {
+            const ws = new WebSocket(this._apiBasePath.replace("http", "ws") + "/api/v1/session/new");
 
-        const response = <NewSessionResponse>(await r.json());
-        return response["session-id"];
+            const initialConnectMessages: Uint8Array[] = [];
+            const messagePump = new MessagePump((data) => {
+                if (!ws.OPEN) {
+                    initialConnectMessages.push(data);
+                    return;
+                }
+
+                ws.send(data);
+            });
+            ws.addEventListener("open", (e) => {
+                if (initialConnectMessages.length > 0) {
+                    var message: Uint8Array | undefined;
+                    while (initialConnectMessages.length > 0) {
+                        message = initialConnectMessages.shift();
+                        if (message) {
+                            ws.send(message);
+                        }
+                    }
+                }
+                resolve(messagePump);
+            });
+            ws.addEventListener("close", (e) => {
+                const wrapperMessage = new Wrapper();
+                const errorMessage = new ErrorMessage();
+                errorMessage.setMessage("Underlying connection to server closed");
+                var value = new Any();
+                value.setValue(errorMessage.serializeBinary());
+                value.setTypeUrl("web.ErrorMessage");
+
+                wrapperMessage.setPayload(value);
+                messagePump.enqueueNextMessage(value.serializeBinary());
+            });
+            ws.addEventListener("error", (e) => {
+                const wrapperMessage = new Wrapper();
+                const errorMessage = new ErrorMessage();
+                errorMessage.setMessage("Underlying connection to server closed");
+                var value = new Any();
+                value.setTypeUrl("web.ErrorMessage");
+                value.setValue(errorMessage.serializeBinary());
+
+                wrapperMessage.setPayload(value);
+                messagePump.enqueueNextMessage(value.serializeBinary());
+            });
+            ws.addEventListener("message", (e) => {
+                console.dir(e);
+            });
+        });
     }    
     
     async AddSessionMove(sessionId: string, move: Move): Promise<void> {
@@ -109,7 +151,7 @@ export class NetworkAPIClient implements IAPIClient {
                     reject("Timeout");
                 }, timeOutMs);
                 const sendTime = new Date();
-                const pingUrl = this._apiBasePath + "/api/ping";
+                const pingUrl = this._apiBasePath + "/api/v1/ping";
                 const r = await fetch(pingUrl, {
                     method: "GET"
                 });
@@ -155,5 +197,57 @@ export class NetworkAPIClient implements IAPIClient {
         } else {
             return "Unknown error while calling server"
         }
+    }
+}
+
+export interface ISessionMessagePump {
+    nextMessage(): Promise<Wrapper>;
+    send(message: Wrapper): void;
+}
+
+class MessagePump implements ISessionMessagePump {
+    private _nextMessageResolve: undefined | ((message: Wrapper) => void);
+
+    private readonly _messages: Wrapper[] = [];
+    private readonly _forward: (message: Uint8Array) => void;
+
+    constructor(forward: (message: Uint8Array) => void) {
+        this._forward = forward;
+    }
+
+    nextMessage(): Promise<Wrapper> {
+        const firstMessage = this._messages.shift();
+        if (firstMessage !== undefined) {
+            return Promise.resolve<Wrapper>(firstMessage);
+        }
+        
+        const promise = new Promise<Wrapper>((resolve) => {
+            // When entering the promise we need to first check that there is no pending resolve.
+            // Since this will happen after the current event loop is cleared, it is a message could
+            // have been enqueued while the previous stack was completing.
+            const firstMessage = this._messages.shift();
+            if (firstMessage !== undefined) {
+                resolve(firstMessage);
+            }
+            this._nextMessageResolve = resolve;
+        });
+
+        return promise;
+    }    
+    
+    enqueueNextMessage(data: Uint8Array): void {
+        const wrapper = Wrapper.deserializeBinary(data);
+        if (this._nextMessageResolve) {
+            const resolve = this._nextMessageResolve;
+            this._nextMessageResolve = undefined;
+            resolve(wrapper);
+        } else {
+            this._messages.push(wrapper);
+        }
+    }
+
+    send(message: Wrapper): void {
+        const data = message.serializeBinary();
+        this._forward(data);
     }
 }

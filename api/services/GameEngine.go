@@ -54,13 +54,13 @@ func (engine *GameEngine) StartNewSession() (*models.Session, error) {
 }
 
 // SetAi ... Sets the Ai that the session will be played against
-func (engine *GameEngine) SetAi(sessionID, aiTypeID *string) error {
+func (engine *GameEngine) SetAi(sessionID, aiTypeID string) error {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err
 	}
 
-	session.AI.AiID = *aiTypeID
+	session.AI.AiID = aiTypeID
 	err = engine.repository.UpdateSession(session)
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func (engine *GameEngine) SetAi(sessionID, aiTypeID *string) error {
 }
 
 // SetPlayerDetails ...
-func (engine *GameEngine) SetPlayerDetails(sessionID *string, player *models.Player) (*models.Session, error) {
+func (engine *GameEngine) SetPlayerDetails(sessionID string, player *models.Player) (*models.Session, error) {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (engine *GameEngine) SetPlayerDetails(sessionID *string, player *models.Pla
 
 // DeterminePlayerMove ... Sets the players value for the current hand, and returns a move if the hand was completed by the player
 // determining their hand
-func (engine *GameEngine) DeterminePlayerMove(sessionID *string, value uint8) (*models.Move, error) {
+func (engine *GameEngine) DeterminePlayerMove(sessionID string, value uint8) (*models.Move, error) {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (engine *GameEngine) DeterminePlayerMove(sessionID *string, value uint8) (*
 }
 
 // DetermineAiNextMove ... Determins the Ai's next move
-func (engine *GameEngine) DetermineAiNextMove(sessionID *string) (*models.Move, error) {
+func (engine *GameEngine) DetermineAiNextMove(sessionID string) (*models.Move, error) {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return nil, err
@@ -151,7 +151,7 @@ func (engine *GameEngine) DetermineAiNextMove(sessionID *string) (*models.Move, 
 }
 
 // StartNextHand ...
-func (engine *GameEngine) StartNextHand(sessionID *string) (uint8, error) {
+func (engine *GameEngine) StartNextHand(sessionID string) (uint8, error) {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return 0, err
@@ -171,7 +171,7 @@ func (engine *GameEngine) StartNextHand(sessionID *string) (uint8, error) {
 }
 
 // EndSession ..
-func (engine *GameEngine) EndSession(sessionID *string) error {
+func (engine *GameEngine) EndSession(sessionID string) error {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err
@@ -188,7 +188,7 @@ func (engine *GameEngine) EndSession(sessionID *string) error {
 	return nil
 }
 
-func (engine *GameEngine) addSessionMove(sessionID *string, move *models.Move) error {
+func (engine *GameEngine) addSessionMove(sessionID string, move *models.Move) error {
 	session, err := engine.repository.GetSession(sessionID)
 	if err != nil {
 		return err

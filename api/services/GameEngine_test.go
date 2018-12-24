@@ -75,26 +75,25 @@ func TestGameEngineService_SampleHand(t *testing.T) {
 	}
 
 	aiType := "Random"
-	sessionID := session.ID
-	err = engine.SetAi(&sessionID, &aiType)
+	err = engine.SetAi(session.ID, aiType)
 	if err != nil {
 		t.Error("Should not error")
 		return
 	}
 
-	_, err = engine.StartNextHand(&sessionID)
+	_, err = engine.StartNextHand(session.ID)
 	if err != nil {
 		t.Error("Should not error")
 		return
 	}
 
-	move, err := engine.DeterminePlayerMove(&sessionID, 5)
+	move, err := engine.DeterminePlayerMove(session.ID, 5)
 	if move != nil {
 		t.Error("Should not error")
 		return
 	}
 
-	move, err = engine.DetermineAiNextMove(&sessionID)
+	move, err = engine.DetermineAiNextMove(session.ID)
 	if move == nil {
 		t.Error("Move should not be nil")
 	}
@@ -106,21 +105,20 @@ func TestGameEngineService_SampleGame(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	sessionID := &session.ID
 
 	// Starts the initial hand of the game
-	_, err = engine.StartNextHand(sessionID)
+	_, err = engine.StartNextHand(session.ID)
 	if err != nil {
 		t.Error("Should not error")
 		return
 	}
 	for i := uint8(13); i > 0; i-- {
-		move, err := engine.DeterminePlayerMove(sessionID, i)
+		move, err := engine.DeterminePlayerMove(session.ID, i)
 		if err != nil {
 			t.Error("Should not error")
 			return
 		}
-		move, err = engine.DetermineAiNextMove(sessionID)
+		move, err = engine.DetermineAiNextMove(session.ID)
 		if err != nil {
 			t.Error("Should not error")
 			return
@@ -143,32 +141,31 @@ func TestGameEngineService_CanNotPlaySameCardTwice(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	sessionID := &session.ID
 
 	// Starts the initial hand of the game
-	_, err = engine.StartNextHand(sessionID)
+	_, err = engine.StartNextHand(session.ID)
 	if err != nil {
 		t.Error("Should not error")
 		return
 	}
 	for i := uint8(1); i <= 13; i++ {
 		if i == 3 {
-			_, err = engine.DeterminePlayerMove(sessionID, 2)
+			_, err = engine.DeterminePlayerMove(session.ID, 2)
 			if err == nil {
 				t.Error("Player should not be able to play the same card twice")
 			}
 
-			// Test succesful we can exit the test now
+			// Test successful we can exit the test now
 			return
 		}
 
-		move, err := engine.DeterminePlayerMove(sessionID, i)
+		move, err := engine.DeterminePlayerMove(session.ID, i)
 		if err != nil {
 			t.Error("Should not error")
 			return
 		}
 
-		move, err = engine.DetermineAiNextMove(sessionID)
+		move, err = engine.DetermineAiNextMove(session.ID)
 		if err != nil {
 			t.Error("Should not error")
 			return
@@ -191,32 +188,31 @@ func TestGameEngineService_OnceMoveDecidedCanNotBeChanged(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	sessionID := &session.ID
 
 	// Starts the initial hand of the game
-	_, err = engine.StartNextHand(sessionID)
+	_, err = engine.StartNextHand(session.ID)
 	if err != nil {
 		t.Error("Should not error")
 		return
 	}
 	for i := uint8(13); i > 0; i-- {
-		move, err := engine.DeterminePlayerMove(sessionID, i)
+		move, err := engine.DeterminePlayerMove(session.ID, i)
 		if err != nil {
 			t.Error("Should not error")
 			return
 		}
 
 		if i == 4 {
-			_, err = engine.DeterminePlayerMove(sessionID, i+1)
+			_, err = engine.DeterminePlayerMove(session.ID, i+1)
 			if err == nil {
 				t.Error("Should not be able to change a card after one has been decided")
 			}
 
-			// Test succesful we can exit the test now
+			// Test successful we can exit the test now
 			return
 		}
 
-		move, err = engine.DetermineAiNextMove(sessionID)
+		move, err = engine.DetermineAiNextMove(session.ID)
 		if err != nil {
 			t.Error("Should not error")
 			return
@@ -240,20 +236,19 @@ func TestGameEngineService_MustPlayValidCard(t *testing.T) {
 		return
 	}
 
-	sessionID := &session.ID
-	_, err = engine.StartNextHand(sessionID)
+	_, err = engine.StartNextHand(session.ID)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	_, err = engine.DeterminePlayerMove(sessionID, 0)
+	_, err = engine.DeterminePlayerMove(session.ID, 0)
 	if err == nil {
 		t.Error("Should error on values < 1")
 		return
 	}
 
-	_, err = engine.DeterminePlayerMove(sessionID, 14)
+	_, err = engine.DeterminePlayerMove(session.ID, 14)
 	if err == nil {
 		t.Error("Should error on values > 13")
 		return
@@ -270,8 +265,7 @@ func startSessionAgainstRandom() (*models.Session, *GameEngine, error) {
 	}
 
 	aiType := "Random"
-	sessionID := session.ID
-	err = engine.SetAi(&sessionID, &aiType)
+	err = engine.SetAi(session.ID, aiType)
 	if err != nil {
 		return nil, nil, errors.New("Should not error when setting Ai to random")
 	}

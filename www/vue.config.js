@@ -5,10 +5,11 @@ module.exports = {
     productionSourceMap: false,
     devServer: {
         proxy: {
-          '/api': {
+          '/WarWithJosh/api': {
             target: 'http://localhost:3000',
             ws: true,
-            changeOrigin: true
+            changeOrigin: true,
+            pathRewrite: {'WarWithJosh/api/(.*)' : '/api/$1'}
           },
         },
     },

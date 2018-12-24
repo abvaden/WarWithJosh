@@ -86,10 +86,10 @@ func (repository *RedisDataRepository) AddSession() (*models.Session, error) {
 }
 
 // GetSession ...
-func (repository *RedisDataRepository) GetSession(sessionID *string) (*models.Session, error) {
+func (repository *RedisDataRepository) GetSession(sessionID string) (*models.Session, error) {
 	client := repository.redisClient
 
-	sessionString, err := client.HGet(sessionKey, *sessionID).Result()
+	sessionString, err := client.HGet(sessionKey, sessionID).Result()
 	if err != nil {
 		return new(models.Session), errors.New("Error while getting session")
 	}

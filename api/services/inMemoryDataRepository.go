@@ -45,8 +45,8 @@ func (repository *InMemoryRepository) AddSession() (*models.Session, error) {
 }
 
 // GetSession ...
-func (repository *InMemoryRepository) GetSession(sessionID *string) (*models.Session, error) {
-	storedSession, ok := repository.sessions[*sessionID]
+func (repository *InMemoryRepository) GetSession(sessionID string) (*models.Session, error) {
+	storedSession, ok := repository.sessions[sessionID]
 	if !ok {
 		return nil, errors.New("Session not found")
 	}
