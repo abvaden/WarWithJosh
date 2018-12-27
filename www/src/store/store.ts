@@ -6,7 +6,7 @@ import * as Tutorial from './Tutorial.module';
 import * as Scoreboard from './Scoreboard.module';
 import { ScoreboardModule } from './Scoreboard.module';
 import { Container } from 'inversify';
-import { IGameService, IGameService_IOC_Key, GameStartParams, Callbacks } from '@/logic/services/Interfaces';
+import { IGameService, IGameService_IOC_Key, Callbacks } from '@/logic/services/Interfaces';
 import { IGameFactoryInputs } from '@/gops/game';
 
 
@@ -109,12 +109,8 @@ export const createStore = (container: Container) => {
                 Dialog.setLoading(store, true);
                 Game.resetGame(store);
 
-                const startGameParams: GameStartParams = {
-                    offline: true,
-                };
                 const handlers: Callbacks = {
-                    onGameStarted: (gameId) => {
-                        Game.set_gameId(store, gameId);
+                    onGameStarted: () => {
 
                         Game.set_playerName(store, {player1: true, name: "Joshua"});
                         Game.set_playerName(store, {player1: false, name: "Joe User"});
@@ -212,7 +208,7 @@ export const createStore = (container: Container) => {
                 };
 
 
-                gameService.startGame(handlers, startGameParams);
+                gameService.startGame(handlers);
             });
         },
         playCard(context: RootContext, payload: number): void {

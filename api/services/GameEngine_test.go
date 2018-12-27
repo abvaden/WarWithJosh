@@ -1,14 +1,15 @@
 package services
 
 import (
-	"WarWithJosh/api/models"
 	"errors"
 	"testing"
+
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 // GameEngineService_StartNewSession ...
 func TestGameEngineService_StartNewSession(t *testing.T) {
-	repository := InMemoryRepositoryFactory()
+	repository, _ := InMemoryRepositoryFactory()
 	engine := GameEngineFactory(repository)
 
 	session, err := engine.StartNewSession()
@@ -65,7 +66,7 @@ func TestGameEngineService_StartNewSession(t *testing.T) {
 }
 
 func TestGameEngineService_SampleHand(t *testing.T) {
-	repository := InMemoryRepositoryFactory()
+	repository, _ := InMemoryRepositoryFactory()
 	engine := GameEngineFactory(repository)
 
 	session, err := engine.StartNewSession()
@@ -255,8 +256,42 @@ func TestGameEngineService_MustPlayValidCard(t *testing.T) {
 	}
 }
 
+func TestGameEngineService_HandsRemaining(t *testing.T) {
+	session, engine, err := startSessionAgainstRandom()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	handsRemaining, err := engine.HandsRemaining(session.ID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if handsRemaining != 13 {
+		t.Error("Hands remaining should be 13 when a game is first started")
+		return
+	}
+
+	_, err = engine.StartNextHand(session.ID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	handsRemaining, err = engine.HandsRemaining(session.ID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if handsRemaining != 12 {
+		t.Error("Hands remaining should decriment as soon as the current trick is started")
+		return
+	}
+}
+
 func startSessionAgainstRandom() (*models.Session, *GameEngine, error) {
-	repository := InMemoryRepositoryFactory()
+	repository, _ := InMemoryRepositoryFactory()
 	engine := GameEngineFactory(repository)
 
 	session, err := engine.StartNewSession()

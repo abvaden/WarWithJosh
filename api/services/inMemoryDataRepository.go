@@ -1,11 +1,12 @@
 package services
 
 import (
-	"WarWithJosh/api/models"
 	"errors"
 
+	"github.com/abvaden/WarWithJosh/api/models"
+
 	"github.com/jinzhu/copier"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // InMemoryRepository ...
@@ -15,11 +16,11 @@ type InMemoryRepository struct {
 }
 
 // InMemoryRepositoryFactory ... Create a new data repository not backed by a persistent mechanism. This should prove useful in testing
-func InMemoryRepositoryFactory() *InMemoryRepository {
+func InMemoryRepositoryFactory() (*InMemoryRepository, error) {
 	repository := InMemoryRepository{}
 	repository.sessions = make(map[string]*models.Session)
 
-	return &repository
+	return &repository, nil
 }
 
 // AddSession ...

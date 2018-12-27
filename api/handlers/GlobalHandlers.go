@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"WarWithJosh/api/events"
-	"WarWithJosh/api/interfaces"
+	"github.com/abvaden/WarWithJosh/api/events"
+	"github.com/abvaden/WarWithJosh/api/interfaces"
 )
 
 // GlobalHandlersFactory ... Create a new set of GlobalHandlers

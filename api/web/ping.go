@@ -1,8 +1,9 @@
 package web
 
 import (
-	"WarWithJosh/api/services"
 	"net/http"
+
+	"github.com/abvaden/WarWithJosh/api/services"
 )
 
 // PingHandler ...

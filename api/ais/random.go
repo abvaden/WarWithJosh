@@ -1,8 +1,9 @@
 package ais
 
 import (
-	"WarWithJosh/api/models"
 	"math/rand"
+
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 // RandomPlayer ...

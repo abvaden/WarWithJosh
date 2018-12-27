@@ -115,7 +115,7 @@ proto.web.MoveMessage.deserializeBinaryFromReader = function(msg, reader) {
       msg.setAiscore(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setAibid(value);
       break;
     case 3:
@@ -123,11 +123,11 @@ proto.web.MoveMessage.deserializeBinaryFromReader = function(msg, reader) {
       msg.setPlayerscore(value);
       break;
     case 4:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setPlayerbid(value);
       break;
     case 5:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setHandvalue(value);
       break;
     default:
@@ -168,7 +168,7 @@ proto.web.MoveMessage.serializeBinaryToWriter = function(message, writer) {
   }
   f = message.getAibid();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       2,
       f
     );
@@ -182,14 +182,14 @@ proto.web.MoveMessage.serializeBinaryToWriter = function(message, writer) {
   }
   f = message.getPlayerbid();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       4,
       f
     );
   }
   f = message.getHandvalue();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       5,
       f
     );
@@ -213,7 +213,7 @@ proto.web.MoveMessage.prototype.setAiscore = function(value) {
 
 
 /**
- * optional int32 AiBid = 2;
+ * optional uint32 AiBid = 2;
  * @return {number}
  */
 proto.web.MoveMessage.prototype.getAibid = function() {
@@ -243,7 +243,7 @@ proto.web.MoveMessage.prototype.setPlayerscore = function(value) {
 
 
 /**
- * optional int32 PlayerBid = 4;
+ * optional uint32 PlayerBid = 4;
  * @return {number}
  */
 proto.web.MoveMessage.prototype.getPlayerbid = function() {
@@ -258,7 +258,7 @@ proto.web.MoveMessage.prototype.setPlayerbid = function(value) {
 
 
 /**
- * optional int32 HandValue = 5;
+ * optional uint32 HandValue = 5;
  * @return {number}
  */
 proto.web.MoveMessage.prototype.getHandvalue = function() {
@@ -363,7 +363,7 @@ proto.web.TrickCompletedMessage.deserializeBinaryFromReader = function(msg, read
       msg.setMove(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setTricksremaining(value);
       break;
     default:
@@ -405,7 +405,7 @@ proto.web.TrickCompletedMessage.serializeBinaryToWriter = function(message, writ
   }
   f = message.getTricksremaining();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       2,
       f
     );
@@ -444,7 +444,7 @@ proto.web.TrickCompletedMessage.prototype.hasMove = function() {
 
 
 /**
- * optional int32 TricksRemaining = 2;
+ * optional uint32 TricksRemaining = 2;
  * @return {number}
  */
 proto.web.TrickCompletedMessage.prototype.getTricksremaining = function() {
@@ -659,7 +659,7 @@ proto.web.TrickDecidedMessage.deserializeBinaryFromReader = function(msg, reader
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setTrickpoints(value);
       break;
     default:
@@ -693,7 +693,7 @@ proto.web.TrickDecidedMessage.serializeBinaryToWriter = function(message, writer
   var f = undefined;
   f = message.getTrickpoints();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       1,
       f
     );
@@ -702,7 +702,7 @@ proto.web.TrickDecidedMessage.serializeBinaryToWriter = function(message, writer
 
 
 /**
- * optional int32 TrickPoints = 1;
+ * optional uint32 TrickPoints = 1;
  * @return {number}
  */
 proto.web.TrickDecidedMessage.prototype.getTrickpoints = function() {
@@ -801,7 +801,7 @@ proto.web.PlayerDecidedMessage.deserializeBinaryFromReader = function(msg, reade
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setValue(value);
       break;
     default:
@@ -835,7 +835,7 @@ proto.web.PlayerDecidedMessage.serializeBinaryToWriter = function(message, write
   var f = undefined;
   f = message.getValue();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       1,
       f
     );
@@ -844,7 +844,7 @@ proto.web.PlayerDecidedMessage.serializeBinaryToWriter = function(message, write
 
 
 /**
- * optional int32 Value = 1;
+ * optional uint32 Value = 1;
  * @return {number}
  */
 proto.web.PlayerDecidedMessage.prototype.getValue = function() {
@@ -955,11 +955,11 @@ proto.web.ResultsMessage.deserializeBinaryFromReader = function(msg, reader) {
       msg.setPlayerscore(value);
       break;
     case 3:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setAitotalgames(value);
       break;
     case 4:
-      var value = /** @type {number} */ (reader.readInt32());
+      var value = /** @type {number} */ (reader.readUint32());
       msg.setPlayertotalgames(value);
       break;
     case 5:
@@ -1011,14 +1011,14 @@ proto.web.ResultsMessage.serializeBinaryToWriter = function(message, writer) {
   }
   f = message.getAitotalgames();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       3,
       f
     );
   }
   f = message.getPlayertotalgames();
   if (f !== 0) {
-    writer.writeInt32(
+    writer.writeUint32(
       4,
       f
     );
@@ -1064,7 +1064,7 @@ proto.web.ResultsMessage.prototype.setPlayerscore = function(value) {
 
 
 /**
- * optional int32 AiTotalGames = 3;
+ * optional uint32 AiTotalGames = 3;
  * @return {number}
  */
 proto.web.ResultsMessage.prototype.getAitotalgames = function() {
@@ -1079,7 +1079,7 @@ proto.web.ResultsMessage.prototype.setAitotalgames = function(value) {
 
 
 /**
- * optional int32 PlayerTotalGames = 4;
+ * optional uint32 PlayerTotalGames = 4;
  * @return {number}
  */
 proto.web.ResultsMessage.prototype.getPlayertotalgames = function() {

@@ -1,8 +1,10 @@
 package web
 
 import (
-	"WarWithJosh/api/services"
 	"log"
+
+	"github.com/abvaden/WarWithJosh/api/models"
+	"github.com/abvaden/WarWithJosh/api/services"
 
 	proto "github.com/golang/protobuf/proto"
 	ptypes "github.com/golang/protobuf/ptypes"
@@ -48,6 +50,7 @@ func (service *SessionService) newMessageHandler(wrapper Wrapper) {
 	typeURL := payload.GetTypeUrl()
 	data := payload.GetValue()
 
+	log.Println(typeURL)
 	var err error
 
 	switch typeURL {
@@ -55,39 +58,40 @@ func (service *SessionService) newMessageHandler(wrapper Wrapper) {
 		message := new(StartGameMessage)
 		err := ptypes.UnmarshalAny(wrapper.Payload, message)
 		if err != nil {
-			go service.handleMessageParseError(&err)
+			service.handleMessageParseError(&err)
 		}
 		go service.handleStartGameMessage(message)
 	case "web.PlayerDecidedMessage":
 		message := new(PlayerDecidedMessage)
 		err = message.XXX_Unmarshal(data)
 		if err != nil {
-			go service.handlePlayerDecided(message)
+			service.handleMessageParseError(&err)
 		}
+		service.handlePlayerDecided(message)
 		break
-	case "web.SetAi":
+	case "web.SetAiMessage":
 		message := new(SetAiMessage)
 		err = message.XXX_Unmarshal(data)
 		if err != nil {
-			go service.handleMessageParseError(&err)
+			service.handleMessageParseError(&err)
 		}
-		go service.handleSetAi(message)
+		service.handleSetAi(message)
 		break
-	case "web.Error":
+	case "web.ErrorMessage":
 		message := new(ErrorMessage)
 		err = message.XXX_Unmarshal(data)
 		if err != nil {
-			go service.handleError(message)
+			service.handleError(message)
 		}
 		break
+	default:
+		service.handleInternalError(nil, "Message type "+typeURL+" not known")
 	}
 
 	if err != nil {
 		log.Println("Unknown type url " + typeURL)
 		return
 	}
-
-	log.Println(typeURL)
 }
 
 // Close ...
@@ -121,16 +125,19 @@ func (service *SessionService) handleError(message *ErrorMessage) {
 
 func (service *SessionService) handleStartGameMessage(message *StartGameMessage) {
 	trickPoints, err := service.engine.StartNextHand(service.sessionID)
+
 	if err != nil {
 		service.handleInternalError(&err, "Error while starting game")
 		return
 	}
 
 	trickDecided := new(TrickDecidedMessage)
-	trickDecided.TrickPoints = int32(trickPoints)
+	trickDecided.TrickPoints = uint32(trickPoints)
 
 	trickDecidedMessage, _ := makeWrapper(trickDecided)
 	service.send(trickDecidedMessage)
+
+	service.doAiMove()
 }
 
 func (service *SessionService) handleSetAi(message *SetAiMessage) {
@@ -139,6 +146,82 @@ func (service *SessionService) handleSetAi(message *SetAiMessage) {
 }
 
 func (service *SessionService) handlePlayerDecided(message *PlayerDecidedMessage) {
+	playerValue := uint8(message.GetValue())
+	move, err := service.engine.DeterminePlayerMove(service.sessionID, playerValue)
+	if err != nil {
+		service.handleInternalError(&err, "Error while handling player move")
+		return
+	}
+
+	if move != nil {
+		service.handleMoveComplete(move)
+	}
+}
+
+func (service *SessionService) doAiMove() {
+	move, err := service.engine.DetermineAiNextMove(service.sessionID)
+	if err != nil {
+		service.handleInternalError(&err, "Error while determining next AI move")
+		return
+	}
+
+	aiDecided := new(AiDecidedMessage)
+	aiDecidedMessage, _ := makeWrapper(aiDecided)
+	service.send(aiDecidedMessage)
+
+	if move != nil {
+		service.handleMoveComplete(move)
+	}
+}
+
+func (service *SessionService) handleMoveComplete(move *models.Move) {
+	handsRemaining, err := service.engine.HandsRemaining(service.sessionID)
+	if err != nil {
+		service.handleInternalError(&err, "Error while handling completed move")
+		return
+	}
+
+	protoMove := new(MoveMessage)
+	protoMove.AiBid = uint32(move.AiBid)
+	protoMove.AiScore = move.AiScore
+	protoMove.HandValue = uint32(move.HandValue)
+	protoMove.PlayerBid = uint32(move.PlayerBid)
+	protoMove.PlayerScore = move.PlayerScore
+
+	trickComplete := new(TrickCompletedMessage)
+	trickComplete.Move = protoMove
+	trickComplete.TricksRemaining = uint32(handsRemaining)
+
+	trickCompletedMessage, err := makeWrapper(trickComplete)
+	if err != nil {
+		service.handleInternalError(&err, "Error while handling completed move")
+		return
+	}
+	service.send(trickCompletedMessage)
+
+	if handsRemaining == 0 {
+		service.doGameComplete()
+		return
+	}
+
+	trickPoints, err := service.engine.StartNextHand(service.sessionID)
+	if err != nil {
+		service.handleInternalError(&err, "Error while starting next hand")
+		return
+	}
+
+	trickDecided := new(TrickDecidedMessage)
+	trickDecided.TrickPoints = uint32(trickPoints)
+
+	trickDecidedMessage, _ := makeWrapper(trickDecided)
+	service.send(trickDecidedMessage)
+
+	service.doAiMove()
+}
+
+func (service *SessionService) doGameComplete() {
+	service.engine.EndSession(service.sessionID)
+	service.end <- true
 }
 
 func makeWrapper(message proto.Message) (*Wrapper, error) {

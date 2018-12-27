@@ -1,9 +1,10 @@
 package services
 
 import (
-	"WarWithJosh/api/models"
 	"testing"
 	"time"
+
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 const testserver = "localhost:6379"

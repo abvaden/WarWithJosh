@@ -1,7 +1,7 @@
 package events
 
 import (
-	"WarWithJosh/api/models"
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 // SessionEndedEventName ..

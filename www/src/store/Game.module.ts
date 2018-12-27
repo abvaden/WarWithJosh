@@ -1,9 +1,10 @@
-import { Module, ActionContext } from 'vuex';
+import { ActionContext } from 'vuex';
 import { getStoreAccessors } from 'vuex-typescript';
-import { IAPIClient, IAPIClient_IOC_KEY } from '@/api-client';
-import { IGameService, IGameService_IOC_Key } from '@/logic/services/Interfaces';
 import { Container } from 'inversify';
+
 import { RootState } from './store';
+import { IGameService, IGameService_IOC_Key } from '@/logic/services/Interfaces';
+
 
 export interface INumberOption {
     value: number;
@@ -28,7 +29,6 @@ export interface GameState {
 
     handRevealTime: Date,
     
-    activeGameId: string | undefined,
     game_loading: boolean,
     trickPoints: number | undefined,
     remainingTricks: number,
@@ -127,9 +127,6 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
             handRevealTime(state: GameState) {
                 return state.handRevealTime;
             },
-            activeGameId(state: GameState) {
-                return state.activeGameId;
-            },
             game_loading(state: GameState) {
                 return state.game_loading;
             },
@@ -150,9 +147,6 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
                 } else {
                     state.player2_name = payload.name;
                 }
-            },
-            gameId(state: GameState, payload: string | undefined) {
-                state.activeGameId = payload;
             },
             gameBegun(state: GameState, payload: boolean) {
                 state.hasBegun = payload;
@@ -224,7 +218,6 @@ const gameFactory = (container: Container, bootstrap: boolean = false) => {
         },
         actions: {
             async endGame(context: GameContext): Promise<void> {               
-                set_gameId(context, undefined);
                 set_gameBegun(context, false);
             },
             async startGame(context: GameContext): Promise<void> {
@@ -281,7 +274,6 @@ export const player2_handValue = read(game.getters.player2_handValue);
 export const player2_cards = read(game.getters.player2_cards);
 export const player2_handReady = read(game.getters.player2_handReady);
 
-export const activeGameId = read(game.getters.activeGameId);
 export const game_loading = read(game.getters.game_loading);
 export const trickPoints = read(game.getters.trickPoints);
 export const remainingTricks = read(game.getters.remainingTricks);
@@ -289,7 +281,6 @@ export const hasBegun = read(game.getters.hasBegun);
 
 // Mutations
 export const set_playerName = commit(game.mutations.playerName);
-export const set_gameId = commit(game.mutations.gameId);
 export const set_gameBegun = commit(game.mutations.gameBegun);
 export const set_playerCardValue = commit(game.mutations.playerCardValue);
 export const set_playerReady = commit(game.mutations.playerReady);

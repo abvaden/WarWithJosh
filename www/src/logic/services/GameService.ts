@@ -1,10 +1,11 @@
 import { injectable, inject } from 'inversify';
-import { IGameService, Callbacks, GameStartParams, IConnectionService_IOC_Key, IConnectionService, ILogger, ILogger_IOC_Key } from '@/logic/services/Interfaces';
+import { IGameService, Callbacks, IConnectionService_IOC_Key, IConnectionService, ILogger, ILogger_IOC_Key, TrickResults } from '@/logic/services/Interfaces';
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
 import { playerFactory, PlayerType, IPlayerFactoryInputs, InteractivePlayer } from '@/gops/player';
-import { IAPIClient_IOC_KEY, IAPIClient } from '@/api-client';
-import { Wrapper, SetAiMessage, StartGameMessage } from '../api/WarWithJoshAPIMessages_pb';
+import { IAPIClient_IOC_KEY, IAPIClient, ISessionMessagePump } from '@/logic/api/api-client';
+import { Wrapper, SetAiMessage, StartGameMessage, TrickDecidedMessage, AiDecidedMessage, PlayerDecidedMessage, TrickCompletedMessage, ErrorMessage } from '../api/WarWithJoshAPIMessages_pb';
 import { Any } from 'google-protobuf/google/protobuf/any_pb';
+import * as jspb from "google-protobuf";
 
 
 @injectable()
@@ -14,6 +15,7 @@ export class GameService implements IGameService {
     private readonly _connectionService: IConnectionService;
     
     private _interactivePlayer: InteractivePlayer | undefined;
+    private _messagePump: ISessionMessagePump | undefined;
 
     constructor(@inject(IConnectionService_IOC_Key)connectionService: IConnectionService,
                 @inject(IAPIClient_IOC_KEY) apiClient: IAPIClient,
@@ -23,7 +25,7 @@ export class GameService implements IGameService {
         this._logger = logger;
     }
 
-    startGame(handlers: Callbacks, params: GameStartParams): void {
+    startGame(handlers: Callbacks): void {
         var isOnline = this._connectionService.Online();
         if (isOnline) {
             this.startOnlineGame(handlers)
@@ -35,6 +37,14 @@ export class GameService implements IGameService {
     interactivePlayerDecideMove(value: number): void {
         if (this._interactivePlayer) {
             this._interactivePlayer.decideNextMove(value);
+            return;
+        }
+        else if (this._messagePump) {
+            const playerDecidedMessage = new PlayerDecidedMessage();
+            playerDecidedMessage.setValue(value);
+            this._messagePump.send(playerDecidedMessage, "web.PlayerDecidedMessage");
+        } else {
+            return;
         }
     }
 
@@ -53,7 +63,7 @@ export class GameService implements IGameService {
             Callbacks: {
                 afterMove: (value: number) => {
                     if (handlers.onAiDecided) {
-                        handlers.onAiDecided(value);
+                        handlers.onAiDecided();
                     }
                 }
             }
@@ -97,7 +107,7 @@ export class GameService implements IGameService {
 
         const internalGame = await gameFactory(gameInputs);
         if (handlers.onGameStarted) {
-            handlers.onGameStarted("offline");
+            handlers.onGameStarted();
         }
         
         const gameResults = await internalGame();
@@ -108,23 +118,89 @@ export class GameService implements IGameService {
 
     private async startOnlineGame(handlers: Callbacks): Promise<void> {
         const messagePump = await this._apiClient.StartNewSession();
+        this._messagePump = messagePump;
 
         const setAiMessage = new SetAiMessage();
         setAiMessage.setAiname("Random")
-        const any = new Any();
-        any.setTypeUrl("web.SetAiMessage");
-        any.setValue(setAiMessage.serializeBinary())
-
-        const wrapper = new Wrapper();
-        wrapper.setPayload(any);
+        messagePump.send(setAiMessage, "web.SetAiMessage");
+        
 
         const startGameMessage = new StartGameMessage();
-        const any2 = new Any();
-        any2.setTypeUrl("web.StartGameMessage")
-        any2.setValue(startGameMessage.serializeBinary());
-        const wrapper2 = new Wrapper();
-        wrapper.setPayload(any2);
+        messagePump.send(startGameMessage, "web.StartGameMessage");
 
-        messagePump.send(wrapper2);
+        if (handlers.onGameStarted) {
+            handlers.onGameStarted();
+        }
+
+
+        let loop = true;
+        while (loop) {
+            const message = await messagePump.nextMessage();
+            const payload = message.getPayload();
+            if (!payload) {
+                loop = false;
+                if (handlers.onError) {
+                    handlers.onError("Error while communicating with the server");
+                }
+                messagePump.close();
+                break;
+            }
+            console.log(payload.getTypeName());
+
+            const value = payload.getValue() as Uint8Array;
+            switch (payload.getTypeName()){
+                case "web.TrickDecidedMessage": {
+                    this.handleTrickDecidedMessage(TrickDecidedMessage.deserializeBinary(value), handlers);
+                    break;
+                }
+                case "web.AiDecidedMessage": {
+                    this.handleAIDecidedMessage(AiDecidedMessage.deserializeBinary(value), handlers);
+                    break;
+                }
+                case "web.TrickCompletedMessage": {
+                    this.handleTrickCompletedMessage(TrickCompletedMessage.deserializeBinary(value), handlers);
+                    break;
+                }
+                case "web.ErrorMessage": {
+                    const errorMessage = ErrorMessage.deserializeBinary(value);
+                    // when we get an error message we should end the game because the game is likely in a bad state
+                    break;
+                }
+            }
+        }
+    }
+
+    private handleTrickDecidedMessage(message: TrickDecidedMessage, handlers: Callbacks): void {
+        if (!handlers.onTrickPointsDecided) {
+            return;
+        }
+        handlers.onTrickPointsDecided(message.getTrickpoints());
+    }
+
+    private handleAIDecidedMessage(message: AiDecidedMessage, handlers: Callbacks): void {
+        if (!handlers.onAiDecided) {
+            return;
+        }
+        handlers.onAiDecided();
+    }
+
+    private handleTrickCompletedMessage(message: TrickCompletedMessage, handlers: Callbacks): void {
+        if (!handlers.onTrickCompleted) {
+            return;
+        }
+        const move = message.getMove();
+        if (!move) {
+            // Should do some kind of error here
+            return 
+        }
+        const trickResults: TrickResults = {
+            player1_value: move.getAibid(),
+            player2_value: move.getPlayerbid(),
+            trickPoints: move.getHandvalue(),
+            player1_score: move.getAiscore(),
+            player2_score: move.getPlayerscore(),
+            trickNumber: 13 - message.getTricksremaining()
+        }
+        handlers.onTrickCompleted(trickResults);
     }
 }

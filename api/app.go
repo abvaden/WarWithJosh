@@ -1,18 +1,21 @@
 package main
 
 import (
-	"WarWithJosh/api/events"
-	"WarWithJosh/api/handlers"
-	"WarWithJosh/api/services"
-	"WarWithJosh/api/web"
 	"log"
 	"net/http"
+
+	"github.com/abvaden/WarWithJosh/api/handlers"
+	"github.com/abvaden/WarWithJosh/api/services"
+	"github.com/abvaden/WarWithJosh/api/web"
+
+	"github.com/abvaden/WarWithJosh/api/events"
 )
 
 func main() {
 	fs := http.FileServer(http.Dir("./www"))
 
-	dataRepository, err := services.RedisRepositoryFactory("localhost:6379")
+	//dataRepository, err := services.RedisRepositoryFactory("localhost:6379")
+	dataRepository, err := services.InMemoryRepositoryFactory()
 	if err != nil {
 		panic(err)
 	}

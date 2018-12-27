@@ -1,6 +1,7 @@
-import * as Constants from "./constants"
+import * as Constants from "../../constants"
 import { injectable } from 'inversify';
-import { Wrapper, ErrorMessage } from './logic/api/WarWithJoshAPIMessages_pb';
+import * as jspb from "google-protobuf";
+import { Wrapper, ErrorMessage } from './WarWithJoshAPIMessages_pb';
 import { Any } from 'google-protobuf/google/protobuf/any_pb';
 
 export const IAPIClient_IOC_KEY = Symbol.for("APIClient")
@@ -12,6 +13,11 @@ export interface IAPIClient {
     Ping(timeOut: number): Promise<{success: boolean, errorMessage?: string}>
 }
 
+export interface ISessionMessagePump {
+    nextMessage(): Promise<Wrapper>;
+    send(message: jspb.Message, messageType: string): void;
+    close(): void;
+}
 
 export interface Move {
     "ai-score": number | undefined
@@ -46,7 +52,7 @@ export class NetworkAPIClient implements IAPIClient {
     StartNewSession(): Promise<ISessionMessagePump> {
         return new Promise((resolve, reject) => {
             const ws = new WebSocket(this._apiBasePath.replace("http", "ws") + "/api/v1/session/new");
-
+            ws.binaryType = "arraybuffer";
             const initialConnectMessages: Uint8Array[] = [];
             const messagePump = new MessagePump((data) => {
                 if (!ws.OPEN) {
@@ -55,6 +61,8 @@ export class NetworkAPIClient implements IAPIClient {
                 }
 
                 ws.send(data);
+            }, () => {
+                ws.close();
             });
             ws.addEventListener("open", (e) => {
                 if (initialConnectMessages.length > 0) {
@@ -91,7 +99,7 @@ export class NetworkAPIClient implements IAPIClient {
                 messagePump.enqueueNextMessage(value.serializeBinary());
             });
             ws.addEventListener("message", (e) => {
-                console.dir(e);
+                messagePump.enqueueNextMessage(e.data);
             });
         });
     }    
@@ -200,19 +208,16 @@ export class NetworkAPIClient implements IAPIClient {
     }
 }
 
-export interface ISessionMessagePump {
-    nextMessage(): Promise<Wrapper>;
-    send(message: Wrapper): void;
-}
-
 class MessagePump implements ISessionMessagePump {
     private _nextMessageResolve: undefined | ((message: Wrapper) => void);
 
+    private readonly _close: () => void;
     private readonly _messages: Wrapper[] = [];
     private readonly _forward: (message: Uint8Array) => void;
 
-    constructor(forward: (message: Uint8Array) => void) {
+    constructor(forward: (message: Uint8Array) => void, close: () => void) {
         this._forward = forward;
+        this._close = close;
     }
 
     nextMessage(): Promise<Wrapper> {
@@ -246,8 +251,16 @@ class MessagePump implements ISessionMessagePump {
         }
     }
 
-    send(message: Wrapper): void {
-        const data = message.serializeBinary();
-        this._forward(data);
+    send(message:jspb.Message, type: string): void {
+        const any = new Any();
+        any.setTypeUrl(type);
+        any.setValue(message.serializeBinary());
+        const wrapper = new Wrapper();
+        wrapper.setPayload(any);
+        this._forward(wrapper.serializeBinary());
+    }
+
+    close(): void {
+        this._close();
     }
 }

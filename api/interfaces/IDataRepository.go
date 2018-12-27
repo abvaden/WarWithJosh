@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"WarWithJosh/api/models"
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 // IDataRepository ... Abstraction over the persistance of app data

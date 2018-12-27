@@ -1,13 +1,14 @@
 package services
 
 import (
-	"WarWithJosh/api/models"
 	"bytes"
 	"errors"
 	"strings"
 
+	"github.com/abvaden/WarWithJosh/api/models"
+	uuid "github.com/satori/go.uuid"
+
 	"github.com/go-redis/redis"
-	"github.com/satori/go.uuid"
 	"github.com/ugorji/go/codec"
 )
 

@@ -1,9 +1,12 @@
 package web
 
 import (
-	"WarWithJosh/api/services"
 	"log"
 	"net/http"
+
+	"github.com/golang/protobuf/proto"
+
+	"github.com/abvaden/WarWithJosh/api/services"
 
 	"github.com/gorilla/websocket"
 )
@@ -23,7 +26,12 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 	}
 
 	send := func(message *Wrapper) {
-		var data []byte
+		data, err := proto.Marshal(message)
+		if err != nil {
+			log.Panic("Error while marshaling message")
+			return
+		}
+
 		writer, err := ws.NextWriter(2)
 		if err != nil {
 			log.Println("Error while getting next writer")
@@ -41,12 +49,16 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 	closeChan := make(chan bool)
 
 	sessionService, err := SessionServiceFactory(engine, send, newMessageChan, closeChan)
+	go readPump(sessionService, ws, newMessageChan)
+}
 
+func readPump(sessionService *SessionService, ws *websocket.Conn, newMessageChan chan Wrapper) {
 	defer sessionService.Close()
 	defer ws.Close()
 
 	for {
 		messageType, data, err := ws.ReadMessage()
+
 		if err != nil {
 			return
 		}
@@ -56,8 +68,10 @@ func NewSessionHandler(w http.ResponseWriter, r *http.Request, engine *services.
 			err = wrapper.XXX_Unmarshal(data)
 			newMessageChan <- *wrapper
 		} else if messageType == 1 {
+			log.Println("Received message type 1")
 			log.Println(data)
 		} else {
+			log.Println("Received other message type")
 			log.Println(messageType)
 		}
 	}

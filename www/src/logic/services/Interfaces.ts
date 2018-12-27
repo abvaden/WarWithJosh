@@ -3,9 +3,6 @@ export const ILogger_IOC_Key = Symbol.for("ILogger");
 export const IConnectionService_IOC_Key = Symbol.for("IConnectionService");
 export const IResultsService_IOC_Key = Symbol.for("IResultsService");
 
-export interface GameStartParams {
-    offline: boolean;
-}
 export interface TrickResults {
     player1_value: number;
     player2_value: number;
@@ -15,15 +12,15 @@ export interface TrickResults {
     trickNumber: number;
 }
 export interface Callbacks {
-    onGameStarted?: (gameId: string) => void;
+    onGameStarted?: () => void;
     onGameCompleted?: (player1: number, player2: number) => void;
     onTrickPointsDecided?: (trickPoints: number) => void;
-    onAiDecided?: (value: number) => void;
+    onAiDecided?: () => void;
     onTrickCompleted?: (trickResults: TrickResults) => void;
     onError?: (error: string) => void;
 }
 export interface IGameService {
-    startGame(handlers: Callbacks, params: GameStartParams): void;
+    startGame(handlers: Callbacks): void;
     validPlayerTypes(): Promise<string[]>;
     interactivePlayerDecideMove(value: number): void;
     endGame(): void;

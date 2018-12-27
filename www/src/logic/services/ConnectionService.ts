@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { IConnectionService, ConnectionChangeEvent, ILogger_IOC_Key, ILogger } from "./Interfaces";
-import { IAPIClient_IOC_KEY, IAPIClient } from '@/api-client';
+import { IAPIClient_IOC_KEY, IAPIClient } from '@/logic/api/api-client';
 
 const onlinePoleTime = 15000;
 const offlinePoleTime = 5000;

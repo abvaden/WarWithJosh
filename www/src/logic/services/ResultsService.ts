@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { ILogger, IResultsService, ILogger_IOC_Key, IConnectionService_IOC_Key, IConnectionService } from './Interfaces';
-import { IAPIClient, IAPIClient_IOC_KEY } from '@/api-client';
+import { IAPIClient, IAPIClient_IOC_KEY } from '@/logic/api/api-client';
 
 @injectable()
 export class ResultsService implements IResultsService {

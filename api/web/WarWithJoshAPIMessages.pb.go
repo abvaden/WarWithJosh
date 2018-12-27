@@ -3,12 +3,10 @@
 
 package web
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	any "github.com/golang/protobuf/ptypes/any"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
+import any "github.com/golang/protobuf/ptypes/any"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -19,14 +17,14 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type MoveMessage struct {
 	AiScore              float32  `protobuf:"fixed32,1,opt,name=AiScore,proto3" json:"AiScore,omitempty"`
-	AiBid                int32    `protobuf:"varint,2,opt,name=AiBid,proto3" json:"AiBid,omitempty"`
+	AiBid                uint32   `protobuf:"varint,2,opt,name=AiBid,proto3" json:"AiBid,omitempty"`
 	PlayerScore          float32  `protobuf:"fixed32,3,opt,name=PlayerScore,proto3" json:"PlayerScore,omitempty"`
-	PlayerBid            int32    `protobuf:"varint,4,opt,name=PlayerBid,proto3" json:"PlayerBid,omitempty"`
-	HandValue            int32    `protobuf:"varint,5,opt,name=HandValue,proto3" json:"HandValue,omitempty"`
+	PlayerBid            uint32   `protobuf:"varint,4,opt,name=PlayerBid,proto3" json:"PlayerBid,omitempty"`
+	HandValue            uint32   `protobuf:"varint,5,opt,name=HandValue,proto3" json:"HandValue,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -36,17 +34,16 @@ func (m *MoveMessage) Reset()         { *m = MoveMessage{} }
 func (m *MoveMessage) String() string { return proto.CompactTextString(m) }
 func (*MoveMessage) ProtoMessage()    {}
 func (*MoveMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{0}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{0}
 }
-
 func (m *MoveMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MoveMessage.Unmarshal(m, b)
 }
 func (m *MoveMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MoveMessage.Marshal(b, m, deterministic)
 }
-func (m *MoveMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MoveMessage.Merge(m, src)
+func (dst *MoveMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MoveMessage.Merge(dst, src)
 }
 func (m *MoveMessage) XXX_Size() int {
 	return xxx_messageInfo_MoveMessage.Size(m)
@@ -64,7 +61,7 @@ func (m *MoveMessage) GetAiScore() float32 {
 	return 0
 }
 
-func (m *MoveMessage) GetAiBid() int32 {
+func (m *MoveMessage) GetAiBid() uint32 {
 	if m != nil {
 		return m.AiBid
 	}
@@ -78,14 +75,14 @@ func (m *MoveMessage) GetPlayerScore() float32 {
 	return 0
 }
 
-func (m *MoveMessage) GetPlayerBid() int32 {
+func (m *MoveMessage) GetPlayerBid() uint32 {
 	if m != nil {
 		return m.PlayerBid
 	}
 	return 0
 }
 
-func (m *MoveMessage) GetHandValue() int32 {
+func (m *MoveMessage) GetHandValue() uint32 {
 	if m != nil {
 		return m.HandValue
 	}
@@ -94,7 +91,7 @@ func (m *MoveMessage) GetHandValue() int32 {
 
 type TrickCompletedMessage struct {
 	Move                 *MoveMessage `protobuf:"bytes,1,opt,name=Move,proto3" json:"Move,omitempty"`
-	TricksRemaining      int32        `protobuf:"varint,2,opt,name=TricksRemaining,proto3" json:"TricksRemaining,omitempty"`
+	TricksRemaining      uint32       `protobuf:"varint,2,opt,name=TricksRemaining,proto3" json:"TricksRemaining,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
@@ -104,17 +101,16 @@ func (m *TrickCompletedMessage) Reset()         { *m = TrickCompletedMessage{} }
 func (m *TrickCompletedMessage) String() string { return proto.CompactTextString(m) }
 func (*TrickCompletedMessage) ProtoMessage()    {}
 func (*TrickCompletedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{1}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{1}
 }
-
 func (m *TrickCompletedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TrickCompletedMessage.Unmarshal(m, b)
 }
 func (m *TrickCompletedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TrickCompletedMessage.Marshal(b, m, deterministic)
 }
-func (m *TrickCompletedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TrickCompletedMessage.Merge(m, src)
+func (dst *TrickCompletedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TrickCompletedMessage.Merge(dst, src)
 }
 func (m *TrickCompletedMessage) XXX_Size() int {
 	return xxx_messageInfo_TrickCompletedMessage.Size(m)
@@ -132,7 +128,7 @@ func (m *TrickCompletedMessage) GetMove() *MoveMessage {
 	return nil
 }
 
-func (m *TrickCompletedMessage) GetTricksRemaining() int32 {
+func (m *TrickCompletedMessage) GetTricksRemaining() uint32 {
 	if m != nil {
 		return m.TricksRemaining
 	}
@@ -149,17 +145,16 @@ func (m *AiDecidedMessage) Reset()         { *m = AiDecidedMessage{} }
 func (m *AiDecidedMessage) String() string { return proto.CompactTextString(m) }
 func (*AiDecidedMessage) ProtoMessage()    {}
 func (*AiDecidedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{2}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{2}
 }
-
 func (m *AiDecidedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AiDecidedMessage.Unmarshal(m, b)
 }
 func (m *AiDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AiDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *AiDecidedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AiDecidedMessage.Merge(m, src)
+func (dst *AiDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AiDecidedMessage.Merge(dst, src)
 }
 func (m *AiDecidedMessage) XXX_Size() int {
 	return xxx_messageInfo_AiDecidedMessage.Size(m)
@@ -171,7 +166,7 @@ func (m *AiDecidedMessage) XXX_DiscardUnknown() {
 var xxx_messageInfo_AiDecidedMessage proto.InternalMessageInfo
 
 type TrickDecidedMessage struct {
-	TrickPoints          int32    `protobuf:"varint,1,opt,name=TrickPoints,proto3" json:"TrickPoints,omitempty"`
+	TrickPoints          uint32   `protobuf:"varint,1,opt,name=TrickPoints,proto3" json:"TrickPoints,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -181,17 +176,16 @@ func (m *TrickDecidedMessage) Reset()         { *m = TrickDecidedMessage{} }
 func (m *TrickDecidedMessage) String() string { return proto.CompactTextString(m) }
 func (*TrickDecidedMessage) ProtoMessage()    {}
 func (*TrickDecidedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{3}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{3}
 }
-
 func (m *TrickDecidedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TrickDecidedMessage.Unmarshal(m, b)
 }
 func (m *TrickDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TrickDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *TrickDecidedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TrickDecidedMessage.Merge(m, src)
+func (dst *TrickDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TrickDecidedMessage.Merge(dst, src)
 }
 func (m *TrickDecidedMessage) XXX_Size() int {
 	return xxx_messageInfo_TrickDecidedMessage.Size(m)
@@ -202,7 +196,7 @@ func (m *TrickDecidedMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TrickDecidedMessage proto.InternalMessageInfo
 
-func (m *TrickDecidedMessage) GetTrickPoints() int32 {
+func (m *TrickDecidedMessage) GetTrickPoints() uint32 {
 	if m != nil {
 		return m.TrickPoints
 	}
@@ -210,7 +204,7 @@ func (m *TrickDecidedMessage) GetTrickPoints() int32 {
 }
 
 type PlayerDecidedMessage struct {
-	Value                int32    `protobuf:"varint,1,opt,name=Value,proto3" json:"Value,omitempty"`
+	Value                uint32   `protobuf:"varint,1,opt,name=Value,proto3" json:"Value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -220,17 +214,16 @@ func (m *PlayerDecidedMessage) Reset()         { *m = PlayerDecidedMessage{} }
 func (m *PlayerDecidedMessage) String() string { return proto.CompactTextString(m) }
 func (*PlayerDecidedMessage) ProtoMessage()    {}
 func (*PlayerDecidedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{4}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{4}
 }
-
 func (m *PlayerDecidedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlayerDecidedMessage.Unmarshal(m, b)
 }
 func (m *PlayerDecidedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_PlayerDecidedMessage.Marshal(b, m, deterministic)
 }
-func (m *PlayerDecidedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PlayerDecidedMessage.Merge(m, src)
+func (dst *PlayerDecidedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PlayerDecidedMessage.Merge(dst, src)
 }
 func (m *PlayerDecidedMessage) XXX_Size() int {
 	return xxx_messageInfo_PlayerDecidedMessage.Size(m)
@@ -241,7 +234,7 @@ func (m *PlayerDecidedMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PlayerDecidedMessage proto.InternalMessageInfo
 
-func (m *PlayerDecidedMessage) GetValue() int32 {
+func (m *PlayerDecidedMessage) GetValue() uint32 {
 	if m != nil {
 		return m.Value
 	}
@@ -251,8 +244,8 @@ func (m *PlayerDecidedMessage) GetValue() int32 {
 type ResultsMessage struct {
 	AiScore              float32  `protobuf:"fixed32,1,opt,name=AiScore,proto3" json:"AiScore,omitempty"`
 	PlayerScore          float32  `protobuf:"fixed32,2,opt,name=PlayerScore,proto3" json:"PlayerScore,omitempty"`
-	AiTotalGames         int32    `protobuf:"varint,3,opt,name=AiTotalGames,proto3" json:"AiTotalGames,omitempty"`
-	PlayerTotalGames     int32    `protobuf:"varint,4,opt,name=PlayerTotalGames,proto3" json:"PlayerTotalGames,omitempty"`
+	AiTotalGames         uint32   `protobuf:"varint,3,opt,name=AiTotalGames,proto3" json:"AiTotalGames,omitempty"`
+	PlayerTotalGames     uint32   `protobuf:"varint,4,opt,name=PlayerTotalGames,proto3" json:"PlayerTotalGames,omitempty"`
 	AiWinPercentage      float32  `protobuf:"fixed32,5,opt,name=AiWinPercentage,proto3" json:"AiWinPercentage,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -263,17 +256,16 @@ func (m *ResultsMessage) Reset()         { *m = ResultsMessage{} }
 func (m *ResultsMessage) String() string { return proto.CompactTextString(m) }
 func (*ResultsMessage) ProtoMessage()    {}
 func (*ResultsMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{5}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{5}
 }
-
 func (m *ResultsMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResultsMessage.Unmarshal(m, b)
 }
 func (m *ResultsMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ResultsMessage.Marshal(b, m, deterministic)
 }
-func (m *ResultsMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ResultsMessage.Merge(m, src)
+func (dst *ResultsMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ResultsMessage.Merge(dst, src)
 }
 func (m *ResultsMessage) XXX_Size() int {
 	return xxx_messageInfo_ResultsMessage.Size(m)
@@ -298,14 +290,14 @@ func (m *ResultsMessage) GetPlayerScore() float32 {
 	return 0
 }
 
-func (m *ResultsMessage) GetAiTotalGames() int32 {
+func (m *ResultsMessage) GetAiTotalGames() uint32 {
 	if m != nil {
 		return m.AiTotalGames
 	}
 	return 0
 }
 
-func (m *ResultsMessage) GetPlayerTotalGames() int32 {
+func (m *ResultsMessage) GetPlayerTotalGames() uint32 {
 	if m != nil {
 		return m.PlayerTotalGames
 	}
@@ -329,17 +321,16 @@ func (m *StartGameMessage) Reset()         { *m = StartGameMessage{} }
 func (m *StartGameMessage) String() string { return proto.CompactTextString(m) }
 func (*StartGameMessage) ProtoMessage()    {}
 func (*StartGameMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{6}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{6}
 }
-
 func (m *StartGameMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StartGameMessage.Unmarshal(m, b)
 }
 func (m *StartGameMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StartGameMessage.Marshal(b, m, deterministic)
 }
-func (m *StartGameMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StartGameMessage.Merge(m, src)
+func (dst *StartGameMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StartGameMessage.Merge(dst, src)
 }
 func (m *StartGameMessage) XXX_Size() int {
 	return xxx_messageInfo_StartGameMessage.Size(m)
@@ -361,17 +352,16 @@ func (m *SetAiMessage) Reset()         { *m = SetAiMessage{} }
 func (m *SetAiMessage) String() string { return proto.CompactTextString(m) }
 func (*SetAiMessage) ProtoMessage()    {}
 func (*SetAiMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{7}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{7}
 }
-
 func (m *SetAiMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SetAiMessage.Unmarshal(m, b)
 }
 func (m *SetAiMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SetAiMessage.Marshal(b, m, deterministic)
 }
-func (m *SetAiMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetAiMessage.Merge(m, src)
+func (dst *SetAiMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetAiMessage.Merge(dst, src)
 }
 func (m *SetAiMessage) XXX_Size() int {
 	return xxx_messageInfo_SetAiMessage.Size(m)
@@ -400,17 +390,16 @@ func (m *ErrorMessage) Reset()         { *m = ErrorMessage{} }
 func (m *ErrorMessage) String() string { return proto.CompactTextString(m) }
 func (*ErrorMessage) ProtoMessage()    {}
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{8}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{8}
 }
-
 func (m *ErrorMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ErrorMessage.Unmarshal(m, b)
 }
 func (m *ErrorMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ErrorMessage.Marshal(b, m, deterministic)
 }
-func (m *ErrorMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ErrorMessage.Merge(m, src)
+func (dst *ErrorMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ErrorMessage.Merge(dst, src)
 }
 func (m *ErrorMessage) XXX_Size() int {
 	return xxx_messageInfo_ErrorMessage.Size(m)
@@ -439,17 +428,16 @@ func (m *Wrapper) Reset()         { *m = Wrapper{} }
 func (m *Wrapper) String() string { return proto.CompactTextString(m) }
 func (*Wrapper) ProtoMessage()    {}
 func (*Wrapper) Descriptor() ([]byte, []int) {
-	return fileDescriptor_09dd4463dfc3c7cc, []int{9}
+	return fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54, []int{9}
 }
-
 func (m *Wrapper) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Wrapper.Unmarshal(m, b)
 }
 func (m *Wrapper) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Wrapper.Marshal(b, m, deterministic)
 }
-func (m *Wrapper) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Wrapper.Merge(m, src)
+func (dst *Wrapper) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Wrapper.Merge(dst, src)
 }
 func (m *Wrapper) XXX_Size() int {
 	return xxx_messageInfo_Wrapper.Size(m)
@@ -480,35 +468,37 @@ func init() {
 	proto.RegisterType((*Wrapper)(nil), "web.Wrapper")
 }
 
-func init() { proto.RegisterFile("WarWithJoshAPIMessages.proto", fileDescriptor_09dd4463dfc3c7cc) }
+func init() {
+	proto.RegisterFile("WarWithJoshAPIMessages.proto", fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54)
+}
 
-var fileDescriptor_09dd4463dfc3c7cc = []byte{
-	// 430 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xdf, 0x6a, 0xdb, 0x30,
-	0x14, 0xc6, 0x71, 0x5a, 0x37, 0xf4, 0x24, 0x6c, 0x41, 0xcb, 0x46, 0x36, 0x7a, 0x11, 0xc4, 0x18,
-	0x61, 0x0c, 0x17, 0xba, 0x8b, 0xb1, 0x4b, 0xed, 0x0f, 0xfb, 0x03, 0x1d, 0x41, 0x29, 0xcb, 0xb5,
-	0x6c, 0x9f, 0xb9, 0x62, 0xb6, 0x64, 0x24, 0x65, 0xc5, 0xcf, 0xb2, 0xf7, 0xd9, 0x73, 0x0d, 0x4b,
-	0x76, 0xe7, 0xba, 0x17, 0xbb, 0xf3, 0xf9, 0x9d, 0xf3, 0xe1, 0xf3, 0x7d, 0x47, 0x70, 0xb6, 0x17,
-	0x66, 0x2f, 0xdd, 0xf5, 0x57, 0x6d, 0xaf, 0xd9, 0xf6, 0xcb, 0x25, 0x5a, 0x2b, 0x0a, 0xb4, 0x49,
-	0x6d, 0xb4, 0xd3, 0xe4, 0xe8, 0x06, 0xd3, 0x67, 0x4f, 0x0b, 0xad, 0x8b, 0x12, 0xcf, 0x3d, 0x4a,
-	0x0f, 0x3f, 0xce, 0x85, 0x6a, 0x42, 0x9f, 0xfe, 0x8e, 0x60, 0x76, 0xa9, 0x7f, 0x61, 0x27, 0x23,
-	0x2b, 0x98, 0x32, 0xb9, 0xcb, 0xb4, 0xc1, 0x55, 0xb4, 0x8e, 0x36, 0x13, 0xde, 0x97, 0x64, 0x09,
-	0x31, 0x93, 0xef, 0x64, 0xbe, 0x9a, 0xac, 0xa3, 0x4d, 0xcc, 0x43, 0x41, 0xd6, 0x30, 0xdb, 0x96,
-	0xa2, 0x41, 0x13, 0x34, 0x47, 0x5e, 0x33, 0x44, 0xe4, 0x0c, 0x4e, 0x43, 0xd9, 0x6a, 0x8f, 0xbd,
-	0xf6, 0x1f, 0x68, 0xbb, 0x9f, 0x85, 0xca, 0xbf, 0x8b, 0xf2, 0x80, 0xab, 0x38, 0x74, 0x6f, 0x01,
-	0x2d, 0xe0, 0xf1, 0x95, 0x91, 0xd9, 0xcf, 0xf7, 0xba, 0xaa, 0x4b, 0x74, 0x98, 0xf7, 0x6b, 0x3e,
-	0x87, 0xe3, 0x76, 0x6b, 0xbf, 0xe3, 0xec, 0x62, 0x91, 0xdc, 0x60, 0x9a, 0x0c, 0x6c, 0x70, 0xdf,
-	0x25, 0x1b, 0x78, 0xe8, 0xe5, 0x96, 0x63, 0x25, 0xa4, 0x92, 0xaa, 0xe8, 0x96, 0x1f, 0x63, 0x4a,
-	0x60, 0xc1, 0xe4, 0x07, 0xcc, 0x64, 0x7e, 0xfb, 0x0f, 0xfa, 0x06, 0x1e, 0xf9, 0xb1, 0xbb, 0xb8,
-	0x75, 0xec, 0xf1, 0x56, 0x4b, 0xe5, 0xac, 0xdf, 0x20, 0xe6, 0x43, 0x44, 0x5f, 0xc1, 0x32, 0x18,
-	0x1c, 0x29, 0x97, 0x10, 0x07, 0x9f, 0x41, 0x13, 0x0a, 0xfa, 0x27, 0x82, 0x07, 0x1c, 0xed, 0xa1,
-	0x74, 0xf6, 0xff, 0x47, 0x18, 0xc5, 0x3d, 0xb9, 0x1f, 0x37, 0x85, 0x39, 0x93, 0x57, 0xda, 0x89,
-	0xf2, 0x93, 0xa8, 0xd0, 0xfa, 0x8b, 0xc4, 0xfc, 0x0e, 0x23, 0x2f, 0x61, 0x11, 0x24, 0x83, 0xb9,
-	0x70, 0x99, 0x7b, 0xbc, 0xcd, 0x90, 0xc9, 0xbd, 0x54, 0x5b, 0x34, 0x19, 0x2a, 0x27, 0x8a, 0x70,
-	0xa6, 0x09, 0x1f, 0xe3, 0x36, 0xc3, 0x9d, 0x13, 0xc6, 0xb5, 0xba, 0x3e, 0xc3, 0x17, 0x30, 0xdf,
-	0xa1, 0x63, 0xb2, 0x77, 0xf6, 0x04, 0x4e, 0x98, 0xfc, 0x26, 0xaa, 0x60, 0xec, 0x94, 0x77, 0x15,
-	0xdd, 0xc0, 0xfc, 0xa3, 0x31, 0xda, 0x0c, 0x12, 0xe8, 0x3e, 0xbb, 0xc1, 0xbe, 0xa4, 0x6f, 0x61,
-	0xba, 0x37, 0xa2, 0xae, 0xd1, 0x90, 0x04, 0xa6, 0xb5, 0x68, 0x4a, 0x2d, 0xc2, 0x9b, 0x9c, 0x5d,
-	0x2c, 0x93, 0xf0, 0xd0, 0x93, 0xfe, 0xa1, 0x27, 0x4c, 0x35, 0xbc, 0x1f, 0x4a, 0x4f, 0x3c, 0x7e,
-	0xfd, 0x37, 0x00, 0x00, 0xff, 0xff, 0x05, 0x0c, 0x1a, 0x79, 0x32, 0x03, 0x00, 0x00,
+var fileDescriptor_WarWithJoshAPIMessages_c33b5070fbfa4b54 = []byte{
+	// 431 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x84, 0x92, 0x5d, 0x6f, 0xd3, 0x30,
+	0x14, 0x86, 0xd5, 0xee, 0xa3, 0xda, 0x69, 0x0b, 0x95, 0x29, 0xa8, 0xa0, 0x5d, 0x4c, 0x16, 0x42,
+	0x15, 0x42, 0x99, 0x34, 0x2e, 0x10, 0x97, 0xe6, 0x43, 0x7c, 0x48, 0x43, 0x91, 0x3b, 0x91, 0x6b,
+	0x37, 0x39, 0x64, 0x16, 0xa9, 0x1d, 0xd9, 0x2e, 0x28, 0xbf, 0x85, 0xff, 0xc3, 0xef, 0x22, 0xb1,
+	0x93, 0x91, 0x65, 0x17, 0xbb, 0xcb, 0x79, 0xce, 0x79, 0x95, 0xf3, 0xbe, 0xc7, 0x70, 0x9a, 0x08,
+	0x93, 0x48, 0x77, 0xfd, 0x55, 0xdb, 0x6b, 0x16, 0x7f, 0xb9, 0x44, 0x6b, 0x45, 0x8e, 0x36, 0x2a,
+	0x8d, 0x76, 0x9a, 0x1c, 0xfc, 0xc6, 0xed, 0xb3, 0xa7, 0xb9, 0xd6, 0x79, 0x81, 0xe7, 0x1e, 0x6d,
+	0xf7, 0x3f, 0xce, 0x85, 0xaa, 0x42, 0x9f, 0xfe, 0x19, 0xc1, 0xf4, 0x52, 0xff, 0xc2, 0x56, 0x46,
+	0x56, 0x30, 0x61, 0x72, 0x93, 0x6a, 0x83, 0xab, 0xd1, 0xd9, 0x68, 0x3d, 0xe6, 0x5d, 0x49, 0x96,
+	0x70, 0xc4, 0xe4, 0x3b, 0x99, 0xad, 0xc6, 0x35, 0x9f, 0xf3, 0x50, 0x90, 0x33, 0x98, 0xc6, 0x85,
+	0xa8, 0xd0, 0x04, 0xcd, 0x81, 0xd7, 0xf4, 0x11, 0x39, 0x85, 0x93, 0x50, 0x36, 0xda, 0x43, 0xaf,
+	0xfd, 0x0f, 0x9a, 0xee, 0x67, 0xa1, 0xb2, 0xef, 0xa2, 0xd8, 0xe3, 0xea, 0x28, 0x74, 0x6f, 0x00,
+	0xcd, 0xe1, 0xf1, 0x95, 0x91, 0xe9, 0xcf, 0xf7, 0x7a, 0x57, 0x16, 0xe8, 0x30, 0xeb, 0xd6, 0x7c,
+	0x0e, 0x87, 0xcd, 0xd6, 0x7e, 0xc7, 0xe9, 0xc5, 0x22, 0xaa, 0x5d, 0x46, 0x3d, 0x1b, 0xdc, 0x77,
+	0xc9, 0x1a, 0x1e, 0x7a, 0xb9, 0xe5, 0xb8, 0x13, 0x52, 0x49, 0x95, 0xb7, 0xcb, 0x0f, 0x31, 0x25,
+	0xb0, 0x60, 0xf2, 0x03, 0xa6, 0x32, 0xbb, 0xf9, 0x07, 0x7d, 0x03, 0x8f, 0xfc, 0xd8, 0x6d, 0xdc,
+	0x38, 0xf6, 0x38, 0xd6, 0x52, 0x39, 0xeb, 0x37, 0x98, 0xf3, 0x3e, 0xa2, 0xaf, 0x60, 0x19, 0x0c,
+	0x0e, 0x94, 0x75, 0x82, 0xc1, 0x67, 0xd0, 0x84, 0x82, 0xfe, 0x1d, 0xc1, 0x03, 0x8e, 0x76, 0x5f,
+	0x38, 0x7b, 0xff, 0x11, 0x06, 0x71, 0x8f, 0xef, 0xc6, 0x4d, 0x61, 0xc6, 0xe4, 0x95, 0x76, 0xa2,
+	0xf8, 0x24, 0x76, 0x68, 0xfd, 0x45, 0xe6, 0xfc, 0x16, 0x23, 0x2f, 0x61, 0x11, 0x24, 0xbd, 0xb9,
+	0x70, 0x99, 0x3b, 0xbc, 0xc9, 0x90, 0xc9, 0x44, 0xaa, 0x18, 0x4d, 0x8a, 0xca, 0xd5, 0xeb, 0xf9,
+	0x33, 0x8d, 0xf9, 0x10, 0x37, 0x19, 0x6e, 0x9c, 0x30, 0xae, 0xd1, 0x75, 0x19, 0xbe, 0x80, 0xd9,
+	0x06, 0x1d, 0x93, 0x9d, 0xb3, 0x27, 0x70, 0xcc, 0xe4, 0xb7, 0x7a, 0xc0, 0x1b, 0x3b, 0xe1, 0x6d,
+	0x45, 0xd7, 0x30, 0xfb, 0x68, 0x8c, 0x36, 0xbd, 0x04, 0xda, 0xcf, 0x76, 0xb0, 0x2b, 0xe9, 0x5b,
+	0x98, 0x24, 0x46, 0x94, 0x25, 0x1a, 0x12, 0xc1, 0xa4, 0x14, 0x55, 0xa1, 0x45, 0x78, 0x93, 0xd3,
+	0x8b, 0x65, 0x14, 0x1e, 0x7a, 0xd4, 0x3d, 0xf4, 0x88, 0xa9, 0x8a, 0x77, 0x43, 0xdb, 0x63, 0x8f,
+	0x5f, 0xff, 0x0b, 0x00, 0x00, 0xff, 0xff, 0x37, 0x37, 0x8e, 0xd1, 0x32, 0x03, 0x00, 0x00,
 }

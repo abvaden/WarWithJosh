@@ -1,7 +1,7 @@
 package services
 
 import (
-	"WarWithJosh/api/interfaces"
+	"github.com/abvaden/WarWithJosh/api/interfaces"
 )
 
 // SessionService ...

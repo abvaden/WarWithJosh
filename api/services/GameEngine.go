@@ -1,12 +1,13 @@
 package services
 
 import (
-	"WarWithJosh/api/ais"
-	"WarWithJosh/api/interfaces"
-	"WarWithJosh/api/models"
 	"errors"
 	"math/rand"
 	"time"
+
+	"github.com/abvaden/WarWithJosh/api/ais"
+	"github.com/abvaden/WarWithJosh/api/interfaces"
+	"github.com/abvaden/WarWithJosh/api/models"
 )
 
 // GameEngine .. Business engine for interacting with WarWithJosh entities
@@ -168,6 +169,17 @@ func (engine *GameEngine) StartNextHand(sessionID string) (uint8, error) {
 
 	err = engine.repository.UpdateSession(session)
 	return session.Game.CurrentHandPoints, err
+}
+
+// HandsRemaining ...
+func (engine *GameEngine) HandsRemaining(sessionID string) (uint8, error) {
+	session, err := engine.repository.GetSession(sessionID)
+	if err != nil {
+		return 0, err
+	}
+
+	handsRemainging := len(session.Game.WellCards)
+	return uint8(handsRemainging), nil
 }
 
 // EndSession ..

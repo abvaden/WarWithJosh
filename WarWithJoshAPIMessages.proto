@@ -6,33 +6,33 @@ import "google/protobuf/any.proto";
 
 message MoveMessage {
   float AiScore = 1;
-  int32 AiBid = 2;
+  uint32 AiBid = 2;
   float PlayerScore = 3;
-  int32 PlayerBid = 4;
-  int32 HandValue = 5;  
+  uint32 PlayerBid = 4;
+  uint32 HandValue = 5;  
 }
 
 message TrickCompletedMessage {
   MoveMessage Move = 1;
-  int32 TricksRemaining = 2;
+  uint32 TricksRemaining = 2;
 }
 
 message AiDecidedMessage {
 }
 
 message TrickDecidedMessage{
-  int32 TrickPoints = 1;
+  uint32 TrickPoints = 1;
 }
 
 message PlayerDecidedMessage {
-  int32 Value = 1;
+  uint32 Value = 1;
 }
 
 message ResultsMessage {
   float AiScore = 1;
   float PlayerScore = 2;
-  int32 AiTotalGames =  3;
-  int32 PlayerTotalGames = 4;
+  uint32 AiTotalGames =  3;
+  uint32 PlayerTotalGames = 4;
   float AiWinPercentage = 5;
 }
 
