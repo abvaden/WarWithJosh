@@ -121,15 +121,18 @@ export const createStore = (container: Container) => {
                         Dialog.setLoading(store, false);
                         Dialog.closeActiveDialog(store);
                     },
-                    onAiDecided: (value: number) => {
+                    onAiDecided: () => {
                         if (context.state.afterTrickReveal) {
                             context.commit('pendingAiReady', true);
                         } else {
                             Game.set_playerReady(store, {player1: true, isReady: true});
                         }
                     },
-                    onError: (errorMessage) => {
-
+                    onError: (errorMessage: string) => {
+                        Dialog.setErrorMessage(store, errorMessage);
+                        Dialog.openDialog(store, Dialog.DialogType.Error)
+                        Game.endGame(store);
+                        Game.resetGame(store);
                     },
                     onGameCompleted: (player1Score: number, player2Score: number) => {
                         Scoreboard.setPlayerScore(store, { player1: true, score: player1Score});
@@ -208,7 +211,7 @@ export const createStore = (container: Container) => {
                 };
 
 
-                gameService.startGame(handlers);
+                gameService.startGame(handlers, "Random");
             });
         },
         playCard(context: RootContext, payload: number): void {
@@ -217,6 +220,8 @@ export const createStore = (container: Container) => {
             gameService.interactivePlayerDecideMove(payload);
         },
         endGame(context: RootContext) {
+            const gameService = container.get<IGameService>(IGameService_IOC_Key);
+            gameService.endGame();
             Game.endGame(store);
             
             Game.resetGame(store);

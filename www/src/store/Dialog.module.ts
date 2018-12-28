@@ -84,6 +84,9 @@ const dialog = {
         winnerDetails(state: IDialogState, payload: WinnerDialogState) {
             state.winner = payload;
         },
+        setErrorMessage(state: IDialogState, payload: string) {
+            state.error.message = payload;
+        }
     },
     actions: {
         closeActiveDialog(context: DialogContext) {
@@ -124,6 +127,7 @@ export const winnerState = read(dialog.getters.winnerState);
 const setDialogOpen = commit(dialog.mutations.setDialogOpen);
 export const setLoading = commit(dialog.mutations.setLoading);
 export const setWinnerDetails = commit(dialog.mutations.winnerDetails);
+export const setErrorMessage = commit(dialog.mutations.setErrorMessage);
 
 // Actions
 export const closeActiveDialog = dispatch(dialog.actions.closeActiveDialog);

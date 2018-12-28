@@ -20,7 +20,7 @@ export interface Callbacks {
     onError?: (error: string) => void;
 }
 export interface IGameService {
-    startGame(handlers: Callbacks): void;
+    startGame(handlers: Callbacks, aiType: string): void;
     validPlayerTypes(): Promise<string[]>;
     interactivePlayerDecideMove(value: number): void;
     endGame(): void;

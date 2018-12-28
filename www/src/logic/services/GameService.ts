@@ -3,9 +3,7 @@ import { IGameService, Callbacks, IConnectionService_IOC_Key, IConnectionService
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
 import { playerFactory, PlayerType, IPlayerFactoryInputs, InteractivePlayer } from '@/gops/player';
 import { IAPIClient_IOC_KEY, IAPIClient, ISessionMessagePump } from '@/logic/api/api-client';
-import { Wrapper, SetAiMessage, StartGameMessage, TrickDecidedMessage, AiDecidedMessage, PlayerDecidedMessage, TrickCompletedMessage, ErrorMessage } from '../api/WarWithJoshAPIMessages_pb';
-import { Any } from 'google-protobuf/google/protobuf/any_pb';
-import * as jspb from "google-protobuf";
+import { TrickDecidedMessage, AiDecidedMessage, TrickCompletedMessage, ErrorMessage, ResultsMessage, EndSessionMessage } from '../api/WarWithJoshAPIMessages_pb';
 
 
 @injectable()
@@ -15,7 +13,7 @@ export class GameService implements IGameService {
     private readonly _connectionService: IConnectionService;
     
     private _interactivePlayer: InteractivePlayer | undefined;
-    private _messagePump: ISessionMessagePump | undefined;
+    private _session: ISessionMessagePump | undefined;
 
     constructor(@inject(IConnectionService_IOC_Key)connectionService: IConnectionService,
                 @inject(IAPIClient_IOC_KEY) apiClient: IAPIClient,
@@ -25,7 +23,7 @@ export class GameService implements IGameService {
         this._logger = logger;
     }
 
-    startGame(handlers: Callbacks): void {
+    startGame(handlers: Callbacks, aiType: string): void {
         var isOnline = this._connectionService.Online();
         if (isOnline) {
             this.startOnlineGame(handlers)
@@ -37,12 +35,9 @@ export class GameService implements IGameService {
     interactivePlayerDecideMove(value: number): void {
         if (this._interactivePlayer) {
             this._interactivePlayer.decideNextMove(value);
-            return;
         }
-        else if (this._messagePump) {
-            const playerDecidedMessage = new PlayerDecidedMessage();
-            playerDecidedMessage.setValue(value);
-            this._messagePump.send(playerDecidedMessage, "web.PlayerDecidedMessage");
+        else if (this._session) {
+            this._apiClient.SetPlayerDecided(value, this._session);
         } else {
             return;
         }
@@ -50,11 +45,19 @@ export class GameService implements IGameService {
 
     endGame(): void {
         this._interactivePlayer = undefined;
-        throw new Error("Method not implemented.");
+        if (this._session !== undefined) {
+            this._apiClient.EndSession(this._session);
+        }
     }
 
     async validPlayerTypes(): Promise<string[]> {
-        throw new Error("Not implemented");
+        if (this._connectionService.Online()) {
+            return this._apiClient.ValidPlayerTypes();
+        } else {
+            return [
+                "Random"
+            ];
+        }
     }
 
     private async startOfflineGame(handlers: Callbacks): Promise<void> {
@@ -118,15 +121,10 @@ export class GameService implements IGameService {
 
     private async startOnlineGame(handlers: Callbacks): Promise<void> {
         const messagePump = await this._apiClient.StartNewSession();
-        this._messagePump = messagePump;
+        this._session = messagePump;
 
-        const setAiMessage = new SetAiMessage();
-        setAiMessage.setAiname("Random")
-        messagePump.send(setAiMessage, "web.SetAiMessage");
-        
-
-        const startGameMessage = new StartGameMessage();
-        messagePump.send(startGameMessage, "web.StartGameMessage");
+        this._apiClient.SetAiType("Random", this._session);
+        this._apiClient.StartGame(this._session);
 
         if (handlers.onGameStarted) {
             handlers.onGameStarted();
@@ -145,7 +143,6 @@ export class GameService implements IGameService {
                 messagePump.close();
                 break;
             }
-            console.log(payload.getTypeName());
 
             const value = payload.getValue() as Uint8Array;
             switch (payload.getTypeName()){
@@ -161,9 +158,18 @@ export class GameService implements IGameService {
                     this.handleTrickCompletedMessage(TrickCompletedMessage.deserializeBinary(value), handlers);
                     break;
                 }
+                case "web.ResultsMessage": {
+                    this.handleGameResultsMessage(ResultsMessage.deserializeBinary(value), handlers);
+                    break;
+                }
+                case "web.EndSessionMessage": {
+                    this.handleEndSessionMessage(EndSessionMessage.deserializeBinary(value), handlers);
+                    break;
+                }
                 case "web.ErrorMessage": {
                     const errorMessage = ErrorMessage.deserializeBinary(value);
-                    // when we get an error message we should end the game because the game is likely in a bad state
+                    this.handleErrorMessage(errorMessage, handlers);
+                    this._apiClient.EndSession(this._session);
                     break;
                 }
             }
@@ -202,5 +208,27 @@ export class GameService implements IGameService {
             trickNumber: 13 - message.getTricksremaining()
         }
         handlers.onTrickCompleted(trickResults);
+    }
+
+    private handleGameResultsMessage(message: ResultsMessage, handlers: Callbacks): void {
+        if (!handlers.onGameCompleted) {
+            return;
+        }
+
+        const player1Score = message.getAiscore();
+        const player2Score = message.getPlayerscore();
+        handlers.onGameCompleted(player1Score, player2Score);
+    }
+
+    private handleEndSessionMessage(message: EndSessionMessage, handlers: Callbacks): void {
+    }
+
+    private handleErrorMessage(message: ErrorMessage, handlers: Callbacks): void {
+        if (!handlers.onError) {
+            return;
+        }
+
+        const errorMessage = message.getMessage();
+        handlers.onError(errorMessage);
     }
 }

@@ -32,5 +32,10 @@ func main() {
 	web.Routes(gameEngine)
 
 	log.Println("Listening...")
-	http.ListenAndServe(":3000", nil)
+	err = http.ListenAndServe(":3000", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Print("Graceful shutdown")
 }

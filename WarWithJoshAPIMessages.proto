@@ -39,6 +39,9 @@ message ResultsMessage {
 message StartGameMessage {
 }
 
+message EndSessionMessage {
+}
+
 message SetAiMessage {
   string AiName = 1;
 }

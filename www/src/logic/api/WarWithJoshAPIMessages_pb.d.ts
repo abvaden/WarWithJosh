@@ -174,6 +174,22 @@ export namespace StartGameMessage {
   }
 }
 
+export class EndSessionMessage extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): EndSessionMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: EndSessionMessage): EndSessionMessage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: EndSessionMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): EndSessionMessage;
+  static deserializeBinaryFromReader(message: EndSessionMessage, reader: jspb.BinaryReader): EndSessionMessage;
+}
+
+export namespace EndSessionMessage {
+  export type AsObject = {
+  }
+}
+
 export class SetAiMessage extends jspb.Message {
   getAiname(): string;
   setAiname(value: string): void;

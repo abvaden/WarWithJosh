@@ -1,43 +1,26 @@
 import * as Constants from "../../constants"
 import { injectable } from 'inversify';
 import * as jspb from "google-protobuf";
-import { Wrapper, ErrorMessage } from './WarWithJoshAPIMessages_pb';
+import { Wrapper, ErrorMessage, EndSessionMessage, PlayerDecidedMessage, SetAiMessage, StartGameMessage } from './WarWithJoshAPIMessages_pb';
 import { Any } from 'google-protobuf/google/protobuf/any_pb';
+import { EventEmitter } from 'events';
 
 export const IAPIClient_IOC_KEY = Symbol.for("APIClient")
 export interface IAPIClient {
-    StartNewSession(): Promise<ISessionMessagePump>
-    AddSessionMove(sessionId: string, move: Move): Promise<void>
-    EndSession(sessionId: string): Promise<void>
-    ValidPlayerTypes(): Promise<string[]>
-    Ping(timeOut: number): Promise<{success: boolean, errorMessage?: string}>
+    StartNewSession(): Promise<ISessionMessagePump>;
+    SetPlayerDecided(value: number, session: ISessionMessagePump): void;
+    SetAiType(aiType: string, session: ISessionMessagePump): void
+    StartGame(session: ISessionMessagePump): void
+    EndSession(session: ISessionMessagePump): void;
+    ValidPlayerTypes(): Promise<string[]>;
+    Ping(timeOut: number): Promise<{success: boolean, errorMessage?: string}>;
 }
 
 export interface ISessionMessagePump {
     nextMessage(): Promise<Wrapper>;
     send(message: jspb.Message, messageType: string): void;
+    on(event: "close", callback: () => void): void;
     close(): void;
-}
-
-export interface Move {
-    "ai-score": number | undefined
-    "ai-bid": number
-    "player-score": number | undefined
-    "player-bid": number
-    "hand-value": number
-}
-
-interface AddMoveRequest {
-    "session-id": string
-    "move": Move
-}
-
-interface NewSessionResponse {
-    "session-id": string
-}
-
-interface EndSessionRequest {
-    "session-id": string
 }
 
 @injectable()
@@ -77,15 +60,13 @@ export class NetworkAPIClient implements IAPIClient {
                 resolve(messagePump);
             });
             ws.addEventListener("close", (e) => {
-                const wrapperMessage = new Wrapper();
                 const errorMessage = new ErrorMessage();
-                errorMessage.setMessage("Underlying connection to server closed");
-                var value = new Any();
-                value.setValue(errorMessage.serializeBinary());
-                value.setTypeUrl("web.ErrorMessage");
-
-                wrapperMessage.setPayload(value);
-                messagePump.enqueueNextMessage(value.serializeBinary());
+                errorMessage.setMessage("Connection to server lost");
+                const any = new Any();
+                any.pack(errorMessage.serializeBinary(), "web.ErrorMessage", "proto")
+                const wrapper = new Wrapper();
+                wrapper.setPayload(any);
+                messagePump.enqueueNextMessage(wrapper.serializeBinary());
             });
             ws.addEventListener("error", (e) => {
                 const wrapperMessage = new Wrapper();
@@ -104,37 +85,27 @@ export class NetworkAPIClient implements IAPIClient {
         });
     }    
     
-    async AddSessionMove(sessionId: string, move: Move): Promise<void> {
-        const addMoveUrl = this._apiBasePath + "/api/v1/session/add-move";
-        const request: AddMoveRequest = {
-            "session-id": sessionId,
-            "move": move
-        };
-        const r = await fetch(addMoveUrl, {
-            body: JSON.stringify(request),
-            method: "POST"
-        });
+    SetPlayerDecided(value: number, session: ISessionMessagePump): void {
+        const playerDecidedMessage = new PlayerDecidedMessage();
+        playerDecidedMessage.setValue(value);
+        session.send(playerDecidedMessage, "web.PlayerDecidedMessage");
+    }
 
-        if (r.status != 200) {
-            throw new Error(this.generateError(r));
-        }
-        return;
+    SetAiType(aiType: string, session: ISessionMessagePump): void {
+        const setAiMessage = new SetAiMessage();
+        setAiMessage.setAiname(aiType)
+        session.send(setAiMessage, "web.SetAiMessage");
+    }
+
+    StartGame(session: ISessionMessagePump): void {
+        const startGameMessage = new StartGameMessage();
+        session.send(startGameMessage, "web.StartGameMessage");
     }
     
-    async EndSession(sessionId: string): Promise<void> {
-        const endSessionUrl = this._apiBasePath + "/api/v1/session/end";
-        const request: EndSessionRequest = {
-            "session-id": sessionId,
-        };
-        const r = await fetch(endSessionUrl, {
-            body: JSON.stringify(request),
-            method: "POST"
-        });
-
-        if (r.status != 200) {
-            throw new Error(this.generateError(r));
-        }
-        return;
+    EndSession(session: ISessionMessagePump): void {
+        const endMessage = new EndSessionMessage();
+        session.send(endMessage, "web.EndSessionMessage");
+        session.close();
     }
 
     async ValidPlayerTypes(): Promise<string[]> {
@@ -161,7 +132,7 @@ export class NetworkAPIClient implements IAPIClient {
                 const sendTime = new Date();
                 const pingUrl = this._apiBasePath + "/api/v1/ping";
                 const r = await fetch(pingUrl, {
-                    method: "GET"
+                    method: "GET",
                 });
 
                 if (r.status != 200) {
@@ -208,9 +179,9 @@ export class NetworkAPIClient implements IAPIClient {
     }
 }
 
-class MessagePump implements ISessionMessagePump {
+export class MessagePump implements ISessionMessagePump {
     private _nextMessageResolve: undefined | ((message: Wrapper) => void);
-
+    private readonly _emitter: EventEmitter = new EventEmitter();
     private readonly _close: () => void;
     private readonly _messages: Wrapper[] = [];
     private readonly _forward: (message: Uint8Array) => void;
@@ -253,14 +224,18 @@ class MessagePump implements ISessionMessagePump {
 
     send(message:jspb.Message, type: string): void {
         const any = new Any();
-        any.setTypeUrl(type);
-        any.setValue(message.serializeBinary());
+        any.pack(message.serializeBinary(), type, "proto")
         const wrapper = new Wrapper();
         wrapper.setPayload(any);
         this._forward(wrapper.serializeBinary());
     }
 
+    on(event: "close", callback: () => void) {
+        this._emitter.on(event, callback);
+    }
+
     close(): void {
         this._close();
+        this._emitter.emit("close");
     }
 }
