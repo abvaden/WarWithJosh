@@ -8,8 +8,16 @@
 
             <div class="popup-body" v-if="popup_display_body">
                 <p>
-                    Welcome to War with Josh <br /><br />
-                    If you are new here we suggest trying out the tutorial first.
+                    Welcome to War with Josh <br />
+                    <br />
+                    If you are new here we suggest trying out the tutorial first.<br />
+                    <br />
+                    Go ahead and select an AI to play against<br />
+                    <br />
+                    <input type="radio" name="aiType" value="Random" checked/>Random
+                    <input type="radio" name="aiType" value="DFS" disabled />DFS
+                    <input type="radio" name="aiType" value="DFS" disabled />BFS
+                    <input type="radio" name="aiType" value="DFS" disabled />MiniMax
                 </p>
             </div>
 
@@ -17,12 +25,12 @@
                 <div class="progress"></div>
             </div>
 
-            <div class="popup-body error" v-else-if="popup_display_error">
+            <!-- <div class="popup-body error" v-else-if="popup_display_error">
                 <p>
                     Welcome to War with Josh <br /><br />
                     If you are new here we suggest trying out the tutorial first.
                 </p>
-            </div>
+            </div> -->
 
             <div class="popup-footer">
                 <!-- <span id="disable-checkbox"><input type="checkbox" v-bind:checked="popup_continue_to_display" id="disable-checkbox-input" @change="toggle_display_popup($event)"><label for="disable-checkbox-input">Disable Tutorial</label></span> -->

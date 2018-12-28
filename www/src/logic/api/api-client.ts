@@ -1,6 +1,6 @@
 import * as Constants from "../../constants"
 import { injectable } from 'inversify';
-import * as jspb from "google-protobuf";
+import { Message, } from "google-protobuf";
 import { Wrapper, ErrorMessage, EndSessionMessage, PlayerDecidedMessage, SetAiMessage, StartGameMessage } from './WarWithJoshAPIMessages_pb';
 import { Any } from 'google-protobuf/google/protobuf/any_pb';
 import { EventEmitter } from 'events';
@@ -18,7 +18,7 @@ export interface IAPIClient {
 
 export interface ISessionMessagePump {
     nextMessage(): Promise<Wrapper>;
-    send(message: jspb.Message, messageType: string): void;
+    send(message: Message, messageType: string): void;
     on(event: "close", callback: () => void): void;
     close(): void;
 }
@@ -222,7 +222,7 @@ export class MessagePump implements ISessionMessagePump {
         }
     }
 
-    send(message:jspb.Message, type: string): void {
+    send(message: Message, type: string): void {
         const any = new Any();
         any.pack(message.serializeBinary(), type, "proto")
         const wrapper = new Wrapper();
