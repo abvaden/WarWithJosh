@@ -2,25 +2,25 @@
   <div class="fullscreen-game">
     <!-- Player 1 Area -->
     <div id="menu-button" class="player-area-top" v-on:click.stop="menu_button_click">&equiv;</div>
-    <PlayerArea id="plyer-area-top" class="player-area player-area-top" v-bind:player_name="player1_name" v-bind:cards="Game.player1_cards" />
+    <PlayerArea id="plyer-area-top" class="player-area player-area-top" v-bind:player_name="player1_name" v-bind:cards="player1_cards" />
     
     <!-- Points Columns -->
     <PointsArea class="points-area" />
 
     <!-- Playing card area -->
     <PointCards class="points-card-area" />
-    <PlayerHandCard class="points-card-area" v-bind:ready="Game.player1_handReady" v-bind:play="player1_play" v-bind:value="Game.player1_handValue" />
-    <PlayerHandCardBottom class="points-card-area" v-bind:ready="Game.player2_handReady" v-bind:play="player2_play" v-bind:value="Game.player2_handValue" />
+    <PlayerHandCard class="points-card-area" v-bind:ready="player1_handReady" v-bind:play="player1_play" v-bind:value="player1_handValue" />
+    <PlayerHandCardBottom class="points-card-area" v-bind:ready="player2_handReady" v-bind:play="player2_play" v-bind:value="player2_handValue" />
 
     <!-- Player 2 Area -->
-    <PlayerArea class="player-area-bottom" v-bind:player_name="Game.player2_name" v-bind:cards="Game.player2_cards" v-bind:selectable="true" v-bind:bottom="true" v-on:selected="cardSelected($event)"/>
+    <PlayerArea class="player-area-bottom" v-bind:player_name="player2_name" v-bind:cards="player2_cards" v-bind:selectable="true" v-bind:bottom="true" v-on:selected="cardSelected($event)"/>
 
     <!-- Tutorial -->
     <div v-bind:class="['player-area-top', {'hidden-area': hide_top_player_area }]"></div>
     <div v-bind:class="['player-area-bottom', {'hidden-area': hide_bottom_player_area }]"></div>
     <div v-bind:class="['points-card-area', {'hidden-area': hide_points_card_area }]"></div>
     <div v-bind:class="['points-area', {'hidden-area': hide_points_area }]"></div>
-    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-top-container" v-if="Tutorial.stage == 'Opponent' && Tutorial.is_running"> 
+    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-top-container" v-if="tutorial_stage == 'Opponent' && tutorial_is_running"> 
       <span class="tutorial-text-font" 
             id="tutorial-player-area-top-text">
             This is your opponent's hand. <br />
@@ -29,7 +29,7 @@
       </span>
       <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="2"/>
     </div>
-    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-bottom-container" v-if="Tutorial.stage == 'Player' && Tutorial.is_running"> 
+    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-player-area-bottom-container" v-if="tutorial_stage == 'Player' && tutorial_is_running"> 
       <span class="tutorial-text-font" 
             id="tutorial-player-area-top-text">
             This is your hand. <br /> <br />
@@ -39,7 +39,7 @@
       </span>
       <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="3"/>
     </div>
-    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-well-cards-container" v-if="Tutorial.stage == 'Well-Cards' && Tutorial.is_running"> 
+    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-well-cards-container" v-if="tutorial_stage == 'Well-Cards' && tutorial_is_running"> 
       <span class="tutorial-text-font" 
             id="tutorial-player-area-top-text">
             These are Well cards <br />
@@ -48,7 +48,7 @@
       </span>
       <NextButton v-on:click="advance_tutorial_click" style="float: right;" :total-count="4" :current-count="1"/>
     </div>
-    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-points-area-container" v-if="(Tutorial.stage == 'Cumulative-Points') && Tutorial.is_running"> 
+    <div class="tutorial-text-layer tutorial-text-container" id="tutorial-points-area-container" v-if="(tutorial_stage == 'Cumulative-Points') && tutorial_is_running"> 
       <span class="tutorial-text-font" 
             id="tutorial-player-area-top-text">
             This is the score board <br />
@@ -69,64 +69,86 @@ import NextButton from "./NextButton.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
 
+import { playCard, endGame, advanceTutorial } from "../store/Game.module";
+import { is_running as TutorialIsRunning, stage as TutorialStage } from "../store/Tutorial.module";
+import { player1_handValue, player2_handValue, player1_handReady, player2_handReady, player1_name, player2_name, player1_cards, INumberOption, player2_cards } from "../store/GameBoard.module";
 
-import * as TutorialModule from "../store/Tutorial.module";
-import * as GameModule from "../store/Game.module";
 import { openDialog, DialogType } from "../store/Dialog.module";
+import { mapState } from 'vuex';
 
 export default Vue.extend({
   components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea, NextButton },
-  data() {
-    return {
-      Game: this.$store.state.GameModule as GameModule.GameState,
-      Tutorial: this.$store.state.TutorialModule as TutorialModule.ITutorialState,
-    };
-  },
   methods: {
     cardSelected(value: number) {
-      this.$store.dispatch("playCard", value);
-      // GameModule.playCard(this.$store, { player1: false, Value: value});
+      playCard(this.$store, value);
     },
     menu_button_click() {
-      this.$store.dispatch("endGame");
+      endGame(this.$store);
     },
     advance_tutorial_click() {
-      this.$store.dispatch("advanceTutorial");
+      advanceTutorial(this.$store);
     },
   },
   computed: {
+    player1_handReady(): boolean {
+      return player1_handReady(this.$store);
+    },
     player1_name(): string {
-      return GameModule.player1_name(this.$store);
+      return player1_name(this.$store);
     },
     player1_play(): boolean {
-      return this.Game.player1_handReady && (this.Game.player1_handValue !== undefined);
+      return player1_handReady(this.$store) && (player1_handValue(this.$store) !== undefined);
+    },
+    player1_handValue(): number | undefined {
+      return player1_handValue(this.$store);
+    },
+    player1_cards(): INumberOption[] {
+      return player1_cards(this.$store)
+    },
+    player2_handReady(): boolean {
+      return player2_handReady(this.$store);
+    },
+    player2_name(): string {
+      return player2_name(this.$store);
     },
     player2_play(): boolean {
-      return this.Game.player2_handReady && (this.Game.player2_handValue !== undefined);
+      return player2_handReady(this.$store) && (player2_handValue(this.$store) !== undefined);
+    },
+    player2_handValue(): number | undefined {
+      return player2_handValue(this.$store);
+    },
+    player2_cards(): INumberOption[] {
+      return player2_cards(this.$store);
     },
     hide_top_player_area(): boolean {
-      if (!this.Tutorial.is_running) {
+      if (!TutorialIsRunning(this.$store)) {
         return false;
       }
-      return this.Tutorial.stage != "Opponent";
+      return TutorialStage(this.$store) != "Opponent";
     },
     hide_bottom_player_area(): boolean {
-      if (!this.Tutorial.is_running) {
+      if (!TutorialIsRunning(this.$store)) {
         return false;
       }
-      return this.Tutorial.stage != "Player";
+      return TutorialStage(this.$store) != "Player";
     },
     hide_points_card_area(): boolean {
-      if (!this.Tutorial.is_running) {
+      if (!TutorialIsRunning(this.$store)) {
         return false;
       }
-      return this.Tutorial.stage != "Well-Cards";
+      return TutorialStage(this.$store) != "Well-Cards";
     },
     hide_points_area(): boolean {
-      if (!this.Tutorial.is_running) {
+      if (!TutorialIsRunning(this.$store)) {
         return false;
       }
-      return this.Tutorial.stage != "Cumulative-Points";
+      return TutorialStage(this.$store) != "Cumulative-Points";
+    },
+    tutorial_stage(): string {
+      return TutorialStage(this.$store);
+    },
+    tutorial_is_running(): boolean {
+      return TutorialIsRunning(this.$store);
     }
   }
 });

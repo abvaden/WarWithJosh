@@ -1,32 +1,27 @@
 import "reflect-metadata";
 
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import App from './App.vue';
-// import './registerServiceWorker';
-import { Container } from 'inversify';
-import { UIModule } from '@/Bootstrap';
+import { router } from './router';
+import { store } from "./store/store";
 
-import { createStore } from "./store/store";
+//import './registerServiceWorker';
+
 
 import './assets/styles/global.css';
 import './assets/styles/buttons.css';
-import { IConnectionService, IConnectionService_IOC_Key } from './logic/services/Interfaces';
 
-
-const container = new Container();
-container.load(UIModule);
-
-const store = createStore(container);
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
-const connectionService = container.get<IConnectionService>(IConnectionService_IOC_Key);
-connectionService.Start();
+Vue.use(VueRouter);
 
 new Vue({
   render: (h) => {
     return h(App);
   },
+  router,
   store,
 }).$mount('#app');

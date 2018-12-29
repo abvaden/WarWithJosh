@@ -1,295 +1,266 @@
-import { ActionContext } from 'vuex';
-import { getStoreAccessors } from 'vuex-typescript';
+import { Module, ActionContext } from "vuex";
+import * as GameBoard from './GameBoard.module';
+import { GameBoardModule } from "./GameBoard.module";
+import * as Dialog from './Dialog.module';
+import * as Tutorial from './Tutorial.module';
+import * as Scoreboard from './Scoreboard.module';
+import { ScoreboardModule } from './Scoreboard.module';
+import { IGameService, IGameService_IOC_Key, Callbacks } from '@/logic/services/Interfaces';
+
+
 import { Container } from 'inversify';
-
+import { UIModule } from '@/Bootstrap';
+import { IConnectionService, IConnectionService_IOC_Key } from '../logic/services/Interfaces';
+import { getStoreAccessors } from 'vuex-typescript';
 import { RootState } from './store';
-import { IGameService, IGameService_IOC_Key } from '@/logic/services/Interfaces';
 
 
-export interface INumberOption {
-    value: number;
-    text: string;
-    disabled: boolean;
-}
-
+type GameContext = ActionContext<GameState | any, RootState>;
 export interface GameState {
-    player1_name: string,
-    player1_ready: boolean,
-    player1_points: number | undefined,
-    player1_handValue: number | undefined,
-    player1_cards: Array<INumberOption>,
-    player1_handReady: boolean,
+    Container: Container;
+    gameService: IGameService,
+    afterTrickReveal: (() => void) | undefined,
+    afterTrickRevealTimer: number | undefined,
+    pendingTrickPoints: undefined | number,
+    pendingAiReady: boolean,
+    trickRevealAnimationTime: number,
+}
 
-    player2_name: string,
-    player2_ready: boolean,
-    player2_handReady: boolean,
-    player2_handValue: number | undefined,
-    player2_points: number | undefined,
-    player2_cards: Array<INumberOption>,
+export const game = {
+    namespaced: true,
+    state: () => {
+        const container = new Container();
+        container.load(UIModule);
 
-    handRevealTime: Date,
+        const connectionService = container.get<IConnectionService>(IConnectionService_IOC_Key);
+        connectionService.Start();
+
+        return {
+            Container: container,
+            gameService: container.get<IGameService>(IGameService_IOC_Key),
+            afterTrickReveal: undefined,
+            afterTrickRevealTimer: undefined,
+            pendingTrickPoints: undefined,
+            pendingAiReady: false,
+            trickRevealAnimationTime: 1250,
+        };
+    },
+    mutations: {
+        afterTrickRevealAnimation(state: GameState, payload: {callback: () => void, timer: number | undefined}) {
+            state.afterTrickReveal = payload.callback;
+            state.afterTrickRevealTimer = payload.timer
+        },
+        pendingTrickPoints(state: GameState, payload: number | undefined) {
+            state.pendingTrickPoints = payload;
+        },
+        pendingAiReady(state: GameState, payload: boolean) {
+            state.pendingAiReady = payload;
+        },
+    },
+    actions: {
+        startTutorial(context: GameContext): void {
+            Scoreboard.reset(context);
+
+            GameBoard.set_trickPoints(context, 5);
+            GameBoard.set_remainingTricks(context, 12);
+
+            GameBoard.resetGame(context);
+            GameBoard.set_playerName(context, {player1: true, name: "Joshua"});
+            GameBoard.set_playerName(context, {player1: false, name: "Joe User"});
+            GameBoard.set_gameBegun(context, true);
+
+
+            Tutorial.startTutorial(context);
+            Scoreboard.setPlayerName(context, {player1: true, name: "Joshua"});
+            Scoreboard.setPlayerName(context, {player1: false, name: "Joe User"});
+            Scoreboard.setPlayerScore(context, {player1: true, score: 0});
+            Scoreboard.setPlayerScore(context, {player1: false, score: 0});
+
+            Dialog.closeActiveDialog(context);
+        },
+        advanceTutorial(context: GameContext) {
+            Tutorial.advance_tutorial(context);
+            const stage  = Tutorial.stage(context);
+            switch (stage) {
+                case ("Opponent"): {
+                    break;
+                }
+                case("Player"): {
+                    GameBoard.set_playerReady(context, {player1: true, isReady: true});
+                    break;
+                }
+                case ("Cumulative-Points"): {
+                    GameBoard.set_playerReady(context, {player1: true, isReady: true});
+                    GameBoard.set_playerReady(context, {player1: true, isReady: true});
     
-    game_loading: boolean,
-    trickPoints: number | undefined,
-    remainingTricks: number,
-    hasBegun: boolean,
-}
+                    GameBoard.set_playerCardValue(context, {player1: true, value: 3});
+                    GameBoard.set_playerCardValue(context, {player1: true, value: 7});
 
-interface IMultiPlayerInterface {
-    player1: boolean;
-}
+                    Scoreboard.handCompleted(context, {
+                        trickNumber: 0,
+                        player1_score: 0,
+                        player2_score: 5,
+                        player1_value: 3,
+                        player2_value: 7,
+                    });
+                    break;
+                }
+                case("End"): {
+                    GameBoard.resetGame(context);
+                    Tutorial.set_isRunning(context, false);
+                    Scoreboard.reset(context);
+                    Dialog.openDialog(context, Dialog.DialogType.Tutorial);
+                }
+            }
+        },
+        async startGame(context: GameContext): Promise<void> {
+            return new Promise<void>(async (resolve, reject) => {
+                Dialog.setLoading(context, true);
+                GameBoard.resetGame(context);
 
-interface SetPlayerHandValuePayload extends IMultiPlayerInterface {
-    value: number | undefined;
-}
-interface SetPlayerReadyPayload extends IMultiPlayerInterface {
-    isReady: boolean;
-}
-interface PlayCardPayload extends IMultiPlayerInterface {
-    number: number;
-}
-interface PlayerDecidedPayload extends IMultiPlayerInterface {
-    Value: number | undefined;
-}
+                const handlers: Callbacks = {
+                    onGameStarted: () => {
 
-function makeFreshCards(): INumberOption[] {
-    const cards = [];
-    for  (let i = 1; i <= 13; i++) {
-        cards.push({
-            value: i,
-            text: i.toString(),
-            disabled: false,
-        });
-    }
-    return cards;
-}
+                        GameBoard.set_playerName(context, {player1: true, name: "Joshua"});
+                        GameBoard.set_playerName(context, {player1: false, name: "Joe User"});
+                        Scoreboard.setPlayerName(context, {player1: true, name: "Joshua"});
+                        Scoreboard.setPlayerName(context, {player1: false, name: "Joe User"});
+                        GameBoard.startGame(context);
 
-type GameContext = ActionContext<GameState, RootState>;
-const gameFactory = (container: Container, bootstrap: boolean = false) => {
-    let gameService: IGameService;
-    if (!bootstrap) {
-        gameService = container.get<IGameService>(IGameService_IOC_Key);
-    }
-    const game = {
-        namespaced: true,
-        state: {
-            player1_name: "",
-            player1_ready: false,
-            player1_points: undefined,
-            player1_handValue: undefined,
-            player1_cards: makeFreshCards(),
-            player1_handReady: false,
+                        Dialog.setLoading(context, false);
+                        Dialog.closeActiveDialog(context);
+                    },
+                    onAiDecided: () => {
+                        if (context.state.afterTrickReveal) {
+                            context.commit('pendingAiReady', true);
+                        } else {
+                            GameBoard.set_playerReady(context, {player1: true, isReady: true});
+                        }
+                    },
+                    onError: (errorMessage: string) => {
+                        Dialog.setErrorMessage(context, errorMessage);
+                        Dialog.openDialog(context, Dialog.DialogType.Error)
+                        GameBoard.endGame(context);
+                        GameBoard.resetGame(context);
+                    },
+                    onGameCompleted: (player1Score: number, player2Score: number) => {
+                        Scoreboard.setPlayerScore(context, { player1: true, score: player1Score});
+                        Scoreboard.setPlayerScore(context, { player1: false, score: player2Score});
+                        Dialog.setWinnerDetails(context, {
+                            player1_name: GameBoard.player1_name(context),
+                            player2_name: GameBoard.player2_name(context),
+                            player1_score: Scoreboard.getPlayer1Score(context) as number,
+                            player2_score: Scoreboard.getPlayer2Score(context) as number,
+                        })
+                        Dialog.openDialog(context, Dialog.DialogType.Winner);
+                    },
+                    onTrickCompleted: (results) => {
+                        // If we are waiting for the animation to complete from the last time then
+                        // "cancel" the animation by eagerly executing the after animation state transition
+                        // and canceling the timeout associated with the state transition
+                        if (context.state.afterTrickReveal) {
+                            clearTimeout(context.state.afterTrickRevealTimer);
+                            context.state.afterTrickReveal();
+                            context.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
+                        }
+                        
+                        if (!GameBoard.player1_handReady(context)) {
+                            GameBoard.set_playerReady(context, {player1: true, isReady: true});
+                        }
 
-            player2_name: "",
-            player2_ready: false,
-            player2_handReady: false,
-            player2_handValue: undefined,
-            player2_points: undefined,
-            player2_cards: makeFreshCards(),
+                        // Reveal the cards that the players used for this hand
+                        GameBoard.set_playerCardValue(context, {player1: true, value: results.player1_value});
+                        GameBoard.set_playerCardValue(context, {player1: false, value: results.player2_value});
+
+                        // Card reveal is handled through an animation, this timeout ensures that the animation
+                        // has completed and that the user can view the results of the trick before clearing the
+                        // board of the cards dealt in that trick
+                        const afterAnimationCallback = () => {
+                            Scoreboard.handCompleted(context, {
+                                trickNumber: results.trickNumber,
+                                player1_score: results.player1_score,
+                                player2_score: results.player2_score,
+                                player1_value: results.player1_value,
+                                player2_value: results.player2_value,
+                            });
+                            GameBoard.set_playerReady(context, {player1: true, isReady: false});
+                            GameBoard.set_playerReady(context, {player1: false, isReady: false});
+                            GameBoard.set_playerCardValue(context, {player1: true, value: undefined});
+                            GameBoard.set_playerCardValue(context, {player1: false, value: undefined});
+                            GameBoard.set_disablePlayerCard(context, {player1: true, number: results.player1_value});
+                            GameBoard.set_disablePlayerCard(context, {player1: false, number: results.player2_value});
+                            GameBoard.set_remainingTricks(context, 12 - results.trickNumber);
+                            
+                            context.commit('afterTrickRevealAnimation', {callback: undefined, timer: undefined});
+                            if (context.state.pendingTrickPoints) {
+                                GameBoard.set_trickPoints(context, context.state.pendingTrickPoints);
+                                context.commit('pendingTrickPoints', undefined);
+                            } else {
+                                GameBoard.set_trickPoints(context, undefined);
+                            }
+
+                            if (context.state.pendingAiReady) {
+                                context.commit('pendingAiReady', false);
+                                GameBoard.set_playerReady(context, {player1: true, isReady: true});
+                            }
+                        };
+                        const timer = setTimeout(afterAnimationCallback, context.state.trickRevealAnimationTime);
+                        context.commit('afterTrickRevealAnimation', {callback: afterAnimationCallback, timer: timer});
+                    },
+                    onTrickPointsDecided: (points: number) => {
+                        if(GameBoard.remainingTricks(context) === 13) {
+                            GameBoard.set_remainingTricks(context, 12);
+                        }
+                        if (context.state.afterTrickReveal) {
+                            context.commit('pendingTrickPoints', points);
+                        } else {
+                            GameBoard.set_trickPoints(context, points);
+                        }
+                    },
+                };
+
+
+                context.state.gameService.startGame(handlers, "Random");
+            });
+        },
+        playCard(context: GameContext, payload: number): void {
+            GameBoard.set_playerReady(context, {player1: false, isReady: true});
+            context.state.gameService.interactivePlayerDecideMove(payload);
+        },
+        endGame(context: GameContext) {
+            context.state.gameService.endGame();
+            GameBoard.endGame(context);
             
-            activeGameId: undefined,
-            game_loading: false,
-            trickPoints: undefined,
-            remainingTricks: 0,
-            hasBegun: false,
+            GameBoard.resetGame(context);
+
+            Dialog.openDialog(context, Dialog.DialogType.Tutorial);
         },
-        getters: {
-            player1_name(state: GameState) {
-                return state.player1_name;
-            },
-            player1_points(state: GameState) {
-                return state.player1_points;
-            },
-            player1_handValue(state: GameState) {
-                return state.player1_handValue;
-            },
-            player1_cards(state: GameState) {
-                return state.player1_cards;
-            },
-            player1_handReady(state: GameState) {
-                return state.player1_handReady;
-            },
-            player2_name(state: GameState) {
-                return state.player2_name;
-            },
-            player2_points(state: GameState) {
-                return state.player2_points;
-            },
-            player2_handValue(state: GameState) {
-                return state.player2_handValue;
-            },
-            player2_cards(state: GameState) {
-                return state.player2_cards;
-            },
-            player2_handReady(state: GameState) {
-                return state.player2_handReady;
-            },
-            handRevealTime(state: GameState) {
-                return state.handRevealTime;
-            },
-            game_loading(state: GameState) {
-                return state.game_loading;
-            },
-            trickPoints(state: GameState) {
-                return state.trickPoints;
-            },
-            remainingTricks(state: GameState) {
-                return state.remainingTricks;
-            },
-            hasBegun(state: GameState) {
-                return state.hasBegun;
-            },
-        },
-        mutations: {
-            playerName(state: GameState, payload: {player1: boolean, name: string}) {
-                if (payload.player1) {
-                    state.player1_name = payload.name;
-                } else {
-                    state.player2_name = payload.name;
-                }
-            },
-            gameBegun(state: GameState, payload: boolean) {
-                state.hasBegun = payload;
-            },
-            playerCardValue(state: GameState, payload: {player1: boolean, value: number | undefined}) {
-                if (payload.player1) {
-                    state.player1_handValue = payload.value;
-                } else {
-                    state.player2_handValue = payload.value;
-                }
-            },
-            disablePlayerCard(state: GameState, payload: PlayCardPayload) {
-                let cardDeck: Array<INumberOption>;
-                if (payload.player1){
-                    cardDeck = state.player1_cards;
-                } else {
-                    cardDeck = state.player2_cards;
-                }
-
-                const cardIndex = cardDeck.findIndex(x => x.value === payload.number);
-                const cardOption = cardDeck[cardIndex];
-                if (cardOption === undefined) {
-                    // Card was already disabled and could not be selected
-                    return;
-                } 
-
-                cardOption.disabled = true;
-            },
-            trickPoints(state: GameState, payload: number | undefined) {
-                state.trickPoints = payload;
-            },
-            remainingTricks(state: GameState, payload: number) {
-                state.remainingTricks = payload;
-            },
-            playerReady(state: GameState, payload: SetPlayerReadyPayload) {
-                if (payload.player1) {
-                    state.player1_handReady = payload.isReady;
-                } else {
-                    state.player2_handReady = payload.isReady;
-                }
-            },
-            player_hand_value(state: GameState, payload: SetPlayerHandValuePayload) {
-                if (payload.player1) {
-                    state.player1_handValue = payload.value;
-                } else {
-                    state.player2_handValue = payload.value;
-                }
-            },
-            resetGame(state: GameState) {
-                state.hasBegun = false;
-
-                state.remainingTricks = 13;
-                
-                state.player1_handReady = false;
-                state.player1_handValue = undefined;
-                state.player1_points = undefined;
-                state.player1_name = "";
-                
-                state.player2_handReady = false;
-                state.player2_handValue = undefined;
-                state.player2_points = undefined;
-                state.player2_name = "";
-
-                for (let i = 0; i < 13; i++) {
-                    state.player1_cards[i].disabled = false;
-                    state.player2_cards[i].disabled = false;
-                }
-            },
-        },
-        actions: {
-            async endGame(context: GameContext): Promise<void> {               
-                set_gameBegun(context, false);
-            },
-            async startGame(context: GameContext): Promise<void> {
-                set_gameBegun(context, true);
-            },
-            async playerDecided(context: GameContext, payload: PlayerDecidedPayload): Promise<void> {
-                set_playerReady(context, {
-                    player1: payload.player1,
-                    isReady: true
-                });
-        
-                if (!payload.player1) {
-                    if (payload.Value === undefined) {
-                        throw new Error("A decide command for player 2 must have a value");
-                    }
-                    gameService.interactivePlayerDecideMove(payload.Value);
-                }
-            },
-            async startNextTrick(context: GameContext, payload: number): Promise<void> {
-                set_trickPoints(context, payload);
-                set_remainingTricks(context, context.state.remainingTricks - 1);
-                set_playerReady(context, {player1: true, isReady: false});
-                set_playerReady(context, {player1: false, isReady: false});
-                set_playerCardValue(context, {player1: true, value: undefined});
-                set_playerCardValue(context, {player1: false, value: undefined});
-            },
-            async revealHands(context: GameContext, payload: { player1Value: number, player2Value: number}) {
-                throw new Error("Not implemented");
-            },
-        },
-    };
-
-    return game;
+        reset(context: GameContext) {
+            GameBoard.resetGame(context);
+            Scoreboard.reset(context);
+            Dialog.openDialog(context, Dialog.DialogType.Tutorial);
+        }
+    },
+    modules: {
+        GameBoardModule,
+        ScoreboardModule,
+        TutorialModule: Tutorial.TutorialModule,
+        DialogModule: Dialog.DialogModule,
+    },
 };
 
+export const GameModule: Module<GameState, RootState> = game;
 
+const { commit, read, dispatch} = getStoreAccessors<GameState, RootState>("Game");
 
-export const GameModuleFactory = (container: Container) => {
-    return gameFactory(container,false);
-}
-
-const { commit, read, dispatch } = getStoreAccessors<GameState, RootState>("GameModule");
-const game = gameFactory(new Container(), true);
 // Getters
-export const player1_name = read(game.getters.player1_name);
-export const player1_points = read(game.getters.player1_points);
-export const player1_handValue = read(game.getters.player1_handValue);
-export const player1_cards = read(game.getters.player1_cards);
-export const player1_handReady = read(game.getters.player1_handReady);
-
-export const player2_name = read(game.getters.player2_name);
-export const player2_points = read(game.getters.player2_points);
-export const player2_handValue = read(game.getters.player2_handValue);
-export const player2_cards = read(game.getters.player2_cards);
-export const player2_handReady = read(game.getters.player2_handReady);
-
-export const game_loading = read(game.getters.game_loading);
-export const trickPoints = read(game.getters.trickPoints);
-export const remainingTricks = read(game.getters.remainingTricks);
-export const hasBegun = read(game.getters.hasBegun);
-
-// Mutations
-export const set_playerName = commit(game.mutations.playerName);
-export const set_gameBegun = commit(game.mutations.gameBegun);
-export const set_playerCardValue = commit(game.mutations.playerCardValue);
-export const set_playerReady = commit(game.mutations.playerReady);
-export const set_trickPoints = commit(game.mutations.trickPoints);
-export const set_remainingTricks = commit(game.mutations.remainingTricks);
-export const set_disablePlayerCard = commit(game.mutations.disablePlayerCard);
-export const resetGame = commit(game.mutations.resetGame);
 
 // Actions
+export const startTutorial = dispatch(game.actions.startTutorial);
+export const advanceTutorial = dispatch(game.actions.advanceTutorial);
 export const startGame = dispatch(game.actions.startGame);
+export const playCard = dispatch(game.actions.playCard);
 export const endGame = dispatch(game.actions.endGame);
-export const playCard = dispatch(game.actions.playerDecided);
+export const reset = dispatch(game.actions.reset);
+
+// Mutations

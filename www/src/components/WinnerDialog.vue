@@ -31,17 +31,18 @@
 
 <script lang="ts">
 import Vue, {VNode} from "vue";
+import { reset, startGame} from "../store/Game.module";
 import { winnerDialogOpen, winnerState } from "../store/Dialog.module";
-import { player2_name, player1_name, resetGame } from "../store/Game.module";
+import { player2_name, player1_name, resetGame } from "../store/GameBoard.module";
 
 export default Vue.extend({
     methods: {
         resetButtonClick(): void {
-            this.$store.dispatch("reset");
-            this.$store.dispatch("startGame");
+            reset(this.$store);
+            startGame(this.$store);
         },
         homeButtonClick(): void {
-            this.$store.dispatch("reset");
+            reset(this.$store);
         },
     },
     computed: {

@@ -75,7 +75,7 @@ const tutorial =  {
 };
 export const TutorialModule: Module<ITutorialState, RootState> = tutorial;
 
-const { commit, read, dispatch } = getStoreAccessors<ITutorialState, RootState>("TutorialModule");
+const { commit, read, dispatch } = getStoreAccessors<ITutorialState, RootState>("Game/TutorialModule");
 
 // Getters
 export const is_running = read(tutorial.getters.is_running);

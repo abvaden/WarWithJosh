@@ -113,7 +113,7 @@ const dialog = {
 
 export const DialogModule: Module<IDialogState, RootState> = dialog;
 
-const { commit, read, dispatch } = getStoreAccessors<IDialogState, RootState>("DialogModule");
+const { commit, read, dispatch } = getStoreAccessors<IDialogState, RootState>("Game/DialogModule");
 
 // Getters
 export const winnerDialogOpen = read(dialog.getters.winnerDialogOpen);

@@ -16,14 +16,14 @@
 
 <script lang="ts">
 import Vue, { VNode } from "vue";
-import * as GameModule from "../store/Game.module";
+import { hasBegun, remainingTricks, trickPoints} from "../store/GameBoard.module";
 
 export default Vue.extend({
     computed: {
       pointCards():  Array<{ index: number; isHidden: boolean; face: string; }> {
-        const hasBegun = GameModule.hasBegun(this.$store);
-        const remainingTricks = GameModule.remainingTricks(this.$store);
-        const totalCards = hasBegun ? (remainingTricks + 1) : 13;
+        const gameHasBegun = hasBegun(this.$store);
+        const gameRemainingTricks = remainingTricks(this.$store);
+        const totalCards = gameHasBegun ? (gameRemainingTricks + 1) : 13;
         const cards = [];
         for (let i = 0 ; i < totalCards; i++) {
             cards.push({
@@ -32,10 +32,10 @@ export default Vue.extend({
                 face: "-",
             });
         }
-        const trickPoints = GameModule.trickPoints(this.$store);
-        if (hasBegun && (trickPoints != 0) && (trickPoints != undefined)) {
+        const gameTrickPoints = trickPoints(this.$store);
+        if (gameHasBegun && (gameTrickPoints != 0) && (gameTrickPoints != undefined)) {
           cards[cards.length - 1].isHidden = false;
-          cards[cards.length - 1].face = trickPoints.toString();
+          cards[cards.length - 1].face = gameTrickPoints.toString();
         }
 
         return cards;

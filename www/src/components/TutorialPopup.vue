@@ -43,18 +43,18 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { startGame as StartInteractiveGame, startTutorial } from "../store/Game.module";
 import { tutorialDialogOpen, loading } from "../store/Dialog.module";
-import { startGame } from "../store/Game.module";
+import { startGame as startGame } from "../store/GameBoard.module";
 
 
 export default Vue.extend({
   methods: {
       start_game_click(): void {
-          this.$store.dispatch("startGame");
+        StartInteractiveGame(this.$store);
       },
       tutorial_button_click(): void {
-        const store = this.$store;
-        store.dispatch("startTutorial");
+        startTutorial(this.$store);
       }
   },
   computed: {

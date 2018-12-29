@@ -75,7 +75,7 @@ const scoreboard = {
 };
 
 export const ScoreboardModule: Module<ScoreboardState, RootState> = scoreboard;
-const { commit, read, dispatch } = getStoreAccessors<ScoreboardState, RootState>("ScoreboardModule");
+const { commit, read, dispatch } = getStoreAccessors<ScoreboardState, RootState>("Game/ScoreboardModule");
 
 // Getters
 export const getPlayer1Score = read(scoreboard.getters.player1Score);
