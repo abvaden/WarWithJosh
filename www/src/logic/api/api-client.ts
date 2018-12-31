@@ -1,9 +1,7 @@
 import * as Constants from "../../constants"
 import { injectable } from 'inversify';
-import { Message, } from "google-protobuf";
-import { Wrapper, ErrorMessage, EndSessionMessage, PlayerDecidedMessage, SetAiMessage, StartGameMessage } from './WarWithJoshAPIMessages_pb';
-import { Any } from 'google-protobuf/google/protobuf/any_pb';
 import { EventEmitter } from 'events';
+import { web, google } from "./WarWithJoshMessages";
 
 export const IAPIClient_IOC_KEY = Symbol.for("APIClient")
 export interface IAPIClient {
@@ -16,12 +14,24 @@ export interface IAPIClient {
     Ping(timeOut: number): Promise<{success: boolean, errorMessage?: string}>;
 }
 
-export interface ISessionMessagePump {
-    nextMessage(): Promise<Wrapper>;
-    send(message: Message, messageType: string): void;
+export interface ISessionMessagePump{
+    nextMessage(): Promise<web.Wrapper>;
+    send(message: Uint8Array, messageType: string): void;
     on(event: "close", callback: () => void): void;
     close(): void;
 }
+
+export type WarWithJoshMessage = 
+    web.AiDecidedMessage | 
+    web.EndSessionMessage | 
+    web.ErrorMessage | 
+    web.MoveMessage | 
+    web.PlayerDecidedMessage | 
+    web.ResultsMessage |
+    web.SetAiMessage |
+    web.StartGameMessage |
+    web.TrickCompletedMessage |
+    web.TrickDecidedMessage;
 
 @injectable()
 export class NetworkAPIClient implements IAPIClient {
@@ -60,24 +70,27 @@ export class NetworkAPIClient implements IAPIClient {
                 resolve(messagePump);
             });
             ws.addEventListener("close", (e) => {
-                const errorMessage = new ErrorMessage();
-                errorMessage.setMessage("Connection to server lost");
-                const any = new Any();
-                any.pack(errorMessage.serializeBinary(), "web.ErrorMessage", "proto")
-                const wrapper = new Wrapper();
-                wrapper.setPayload(any);
-                messagePump.enqueueNextMessage(wrapper.serializeBinary());
+                const errorMessage = web.ErrorMessage.create({
+                    Message: "Connection to server lost"
+                });
+                const any = google.protobuf.Any.create(
+                    {
+                        type_url: "proto/web.ErrorMessage",
+                        value: web.ErrorMessage.encode(errorMessage).finish()
+                    }
+                );
+                const wrapper = web.Wrapper.create()
+                wrapper.payload = any;
+                messagePump.enqueueNextMessage(web.Wrapper.encode(wrapper).finish());
             });
             ws.addEventListener("error", (e) => {
-                const wrapperMessage = new Wrapper();
-                const errorMessage = new ErrorMessage();
-                errorMessage.setMessage("Underlying connection to server closed");
-                var value = new Any();
-                value.setTypeUrl("web.ErrorMessage");
-                value.setValue(errorMessage.serializeBinary());
-
-                wrapperMessage.setPayload(value);
-                messagePump.enqueueNextMessage(value.serializeBinary());
+                var value = google.protobuf.Any.create(
+                    {
+                        type_url: "proto/web.ErrorMessage",
+                        value: web.ErrorMessage.encode({Message: "Underlying connection to server closed"}).finish()
+                    }
+                );
+                messagePump.enqueueNextMessage(web.Wrapper.encode({ payload: value}).finish());
             });
             ws.addEventListener("message", (e) => {
                 messagePump.enqueueNextMessage(e.data);
@@ -86,25 +99,23 @@ export class NetworkAPIClient implements IAPIClient {
     }    
     
     SetPlayerDecided(value: number, session: ISessionMessagePump): void {
-        const playerDecidedMessage = new PlayerDecidedMessage();
-        playerDecidedMessage.setValue(value);
-        session.send(playerDecidedMessage, "web.PlayerDecidedMessage");
+        const message = web.PlayerDecidedMessage.create({Value: value});
+        session.send(web.PlayerDecidedMessage.encode(message).finish(), "web.PlayerDecidedMessage");
     }
 
     SetAiType(aiType: string, session: ISessionMessagePump): void {
-        const setAiMessage = new SetAiMessage();
-        setAiMessage.setAiname(aiType)
-        session.send(setAiMessage, "web.SetAiMessage");
+        const message = web.SetAiMessage.create({AiName: aiType});
+        session.send(web.SetAiMessage.encode(message).finish(), "web.SetAiMessage");
     }
 
     StartGame(session: ISessionMessagePump): void {
-        const startGameMessage = new StartGameMessage();
-        session.send(startGameMessage, "web.StartGameMessage");
+        const startGameMessage = new web.StartGameMessage();
+        session.send(web.StartGameMessage.encode(startGameMessage).finish(), "web.StartGameMessage");
     }
     
     EndSession(session: ISessionMessagePump): void {
-        const endMessage = new EndSessionMessage();
-        session.send(endMessage, "web.EndSessionMessage");
+        const endMessage = new web.EndSessionMessage();
+        session.send(web.EndSessionMessage.encode(endMessage).finish(), "web.EndSessionMessage");
         session.close();
     }
 
@@ -180,10 +191,10 @@ export class NetworkAPIClient implements IAPIClient {
 }
 
 export class MessagePump implements ISessionMessagePump {
-    private _nextMessageResolve: undefined | ((message: Wrapper) => void);
+    private _nextMessageResolve: undefined | ((message: web.Wrapper) => void);
     private readonly _emitter: EventEmitter = new EventEmitter();
     private readonly _close: () => void;
-    private readonly _messages: Wrapper[] = [];
+    private readonly _messages: web.Wrapper[] = [];
     private readonly _forward: (message: Uint8Array) => void;
 
     constructor(forward: (message: Uint8Array) => void, close: () => void) {
@@ -191,13 +202,13 @@ export class MessagePump implements ISessionMessagePump {
         this._close = close;
     }
 
-    nextMessage(): Promise<Wrapper> {
+    nextMessage(): Promise<web.Wrapper> {
         const firstMessage = this._messages.shift();
         if (firstMessage !== undefined) {
-            return Promise.resolve<Wrapper>(firstMessage);
+            return Promise.resolve<web.Wrapper>(firstMessage);
         }
         
-        const promise = new Promise<Wrapper>((resolve) => {
+        const promise = new Promise<web.Wrapper>((resolve) => {
             // When entering the promise we need to first check that there is no pending resolve.
             // Since this will happen after the current event loop is cleared, it is a message could
             // have been enqueued while the previous stack was completing.
@@ -211,23 +222,30 @@ export class MessagePump implements ISessionMessagePump {
         return promise;
     }    
     
-    enqueueNextMessage(data: Uint8Array): void {
-        const wrapper = Wrapper.deserializeBinary(data);
-        if (this._nextMessageResolve) {
-            const resolve = this._nextMessageResolve;
-            this._nextMessageResolve = undefined;
-            resolve(wrapper);
-        } else {
-            this._messages.push(wrapper);
+    enqueueNextMessage(data: ArrayBuffer): void {
+        try {
+            const dataFrame = new Uint8Array(data);
+            const wrapper = web.Wrapper.decode(dataFrame);
+            if (this._nextMessageResolve) {
+                const resolve = this._nextMessageResolve;
+                this._nextMessageResolve = undefined;
+                resolve(wrapper);
+            } else {
+                this._messages.push(wrapper);
+            }
+        }
+        catch (e) {
+            console.log(e);
         }
     }
 
-    send(message: Message, type: string): void {
-        const any = new Any();
-        any.pack(message.serializeBinary(), type, "proto")
-        const wrapper = new Wrapper();
-        wrapper.setPayload(any);
-        this._forward(wrapper.serializeBinary());
+    send(message: Uint8Array, type: string): void {
+        const any = google.protobuf.Any.create({
+            type_url: "proto/"+type,
+            value: message
+        });
+        const wrapper = web.Wrapper.create({payload: any});
+        this._forward(web.Wrapper.encode(wrapper).finish());
     }
 
     on(event: "close", callback: () => void) {

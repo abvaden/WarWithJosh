@@ -15,11 +15,8 @@ apiPath="$basePath/api"
 
 # Due to a limitation with proto-gen-ts plugin the current directory must be set to the node project root directory for the .d.ts file to be generated properly
 cd $wwwPath
-protoc -I $basePath \
-       --plugin="protoc-gen-ts=$tsPluginPath" \
-       --js_out=import_style=commonjs,binary:$tsOutDir \
-       --ts_out="$tsOutDir" \
-       $protoFile
+./node_modules/.bin/pbjs -t static-module -w es6 -o $tsOutDir/WarWithJoshMessages.js $protoFile
+./node_modules/.bin/pbts -t static-module -w es6 -o $tsOutDir/WarWithJoshMessages.d.ts $tsOutDir/WarWithJoshMessages.js
 
 cd $basePath
 

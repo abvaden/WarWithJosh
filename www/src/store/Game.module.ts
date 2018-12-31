@@ -253,8 +253,6 @@ export const GameModule: Module<GameState, RootState> = game;
 
 const { commit, read, dispatch} = getStoreAccessors<GameState, RootState>("Game");
 
-// Getters
-
 // Actions
 export const startTutorial = dispatch(game.actions.startTutorial);
 export const advanceTutorial = dispatch(game.actions.advanceTutorial);

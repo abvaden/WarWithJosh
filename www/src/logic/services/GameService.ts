@@ -3,7 +3,7 @@ import { IGameService, Callbacks, IConnectionService_IOC_Key, IConnectionService
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
 import { playerFactory, PlayerType, IPlayerFactoryInputs, InteractivePlayer } from '@/gops/player';
 import { IAPIClient_IOC_KEY, IAPIClient, ISessionMessagePump } from '@/logic/api/api-client';
-import { TrickDecidedMessage, AiDecidedMessage, TrickCompletedMessage, ErrorMessage, ResultsMessage, EndSessionMessage } from '../api/WarWithJoshAPIMessages_pb';
+import { web } from "../api/WarWithJoshMessages";
 
 
 @injectable()
@@ -134,7 +134,7 @@ export class GameService implements IGameService {
         let loop = true;
         while (loop) {
             const message = await messagePump.nextMessage();
-            const payload = message.getPayload();
+            const payload = message.payload;
             if (!payload) {
                 loop = false;
                 if (handlers.onError) {
@@ -144,30 +144,34 @@ export class GameService implements IGameService {
                 break;
             }
 
-            const value = payload.getValue() as Uint8Array;
-            switch (payload.getTypeName()){
+            const value = payload.value as Uint8Array;
+            if ((value === null) || (value === undefined)) {
+                continue;
+            }
+            const typeUrl = payload.type_url ? payload.type_url.replace("type.googleapis.com/", "") : "";
+            switch (typeUrl) {
                 case "web.TrickDecidedMessage": {
-                    this.handleTrickDecidedMessage(TrickDecidedMessage.deserializeBinary(value), handlers);
+                    this.handleTrickDecidedMessage(web.TrickDecidedMessage.decode(value), handlers);
                     break;
                 }
                 case "web.AiDecidedMessage": {
-                    this.handleAIDecidedMessage(AiDecidedMessage.deserializeBinary(value), handlers);
+                    this.handleAIDecidedMessage(web.AiDecidedMessage.decode(value), handlers);
                     break;
                 }
                 case "web.TrickCompletedMessage": {
-                    this.handleTrickCompletedMessage(TrickCompletedMessage.deserializeBinary(value), handlers);
+                    this.handleTrickCompletedMessage(web.TrickCompletedMessage.decode(value), handlers);
                     break;
                 }
                 case "web.ResultsMessage": {
-                    this.handleGameResultsMessage(ResultsMessage.deserializeBinary(value), handlers);
+                    this.handleGameResultsMessage(web.ResultsMessage.decode(value), handlers);
                     break;
                 }
                 case "web.EndSessionMessage": {
-                    this.handleEndSessionMessage(EndSessionMessage.deserializeBinary(value), handlers);
+                    this.handleEndSessionMessage(web.EndSessionMessage.decode(value), handlers);
                     break;
                 }
                 case "web.ErrorMessage": {
-                    const errorMessage = ErrorMessage.deserializeBinary(value);
+                    const errorMessage = web.ErrorMessage.decode(value);
                     this.handleErrorMessage(errorMessage, handlers);
                     this._apiClient.EndSession(this._session);
                     break;
@@ -176,59 +180,59 @@ export class GameService implements IGameService {
         }
     }
 
-    private handleTrickDecidedMessage(message: TrickDecidedMessage, handlers: Callbacks): void {
+    private handleTrickDecidedMessage(message: web.TrickDecidedMessage, handlers: Callbacks): void {
         if (!handlers.onTrickPointsDecided) {
             return;
         }
-        handlers.onTrickPointsDecided(message.getTrickpoints());
+        handlers.onTrickPointsDecided(message.TrickPoints);
     }
 
-    private handleAIDecidedMessage(message: AiDecidedMessage, handlers: Callbacks): void {
+    private handleAIDecidedMessage(message: web.AiDecidedMessage, handlers: Callbacks): void {
         if (!handlers.onAiDecided) {
             return;
         }
         handlers.onAiDecided();
     }
 
-    private handleTrickCompletedMessage(message: TrickCompletedMessage, handlers: Callbacks): void {
+    private handleTrickCompletedMessage(message: web.TrickCompletedMessage, handlers: Callbacks): void {
         if (!handlers.onTrickCompleted) {
             return;
         }
-        const move = message.getMove();
+        const move = message.Move;
         if (!move) {
             // Should do some kind of error here
             return 
         }
         const trickResults: TrickResults = {
-            player1_value: move.getAibid(),
-            player2_value: move.getPlayerbid(),
-            trickPoints: move.getHandvalue(),
-            player1_score: move.getAiscore(),
-            player2_score: move.getPlayerscore(),
-            trickNumber: 13 - message.getTricksremaining()
+            player1_value: move.AiBid ? move.AiBid : 0,
+            player2_value: move.PlayerBid ? move.PlayerBid : 0,
+            trickPoints: move.HandValue ? move.HandValue : 0,
+            player1_score: move.AiScore ? move.AiScore : 0,
+            player2_score: move.PlayerScore ? move.PlayerScore : 0,
+            trickNumber: 13 - message.TricksRemaining
         }
         handlers.onTrickCompleted(trickResults);
     }
 
-    private handleGameResultsMessage(message: ResultsMessage, handlers: Callbacks): void {
+    private handleGameResultsMessage(message: web.ResultsMessage, handlers: Callbacks): void {
         if (!handlers.onGameCompleted) {
             return;
         }
 
-        const player1Score = message.getAiscore();
-        const player2Score = message.getPlayerscore();
+        const player1Score = message.AiScore;
+        const player2Score = message.PlayerScore;
         handlers.onGameCompleted(player1Score, player2Score);
     }
 
-    private handleEndSessionMessage(message: EndSessionMessage, handlers: Callbacks): void {
+    private handleEndSessionMessage(message: web.EndSessionMessage, handlers: Callbacks): void {
     }
 
-    private handleErrorMessage(message: ErrorMessage, handlers: Callbacks): void {
+    private handleErrorMessage(message: web.ErrorMessage, handlers: Callbacks): void {
         if (!handlers.onError) {
             return;
         }
 
-        const errorMessage = message.getMessage();
+        const errorMessage = message.Message;
         handlers.onError(errorMessage);
     }
 }
