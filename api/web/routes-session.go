@@ -69,7 +69,7 @@ func readPump(sessionService *SessionService, ws *websocket.Conn, recChan chan *
 
 		if messageType == websocket.BinaryMessage {
 			wrapper := new(Wrapper)
-			err = wrapper.XXX_Unmarshal(data)
+			err = proto.Unmarshal(data, wrapper)
 			recChan <- wrapper
 		} else if messageType == websocket.PongMessage {
 			continue
