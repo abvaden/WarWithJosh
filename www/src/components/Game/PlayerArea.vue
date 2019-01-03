@@ -56,11 +56,6 @@ export default Vue.extend({
   padding-bottom: 2.5%;
   background: rgba(0, 0, 0, .1);
 
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 

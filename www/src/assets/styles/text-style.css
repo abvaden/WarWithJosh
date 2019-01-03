@@ -1,0 +1,33 @@
+.popup-title-text {
+    color: black;
+    margin-left: 25px;
+    font-weight: bold;
+    font-size: 1.6em;
+    padding-top: 15px;
+}
+
+.font-size-extra-large {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.font-size-large {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.font-size-medium {
+    font-size: 1.5em;
+}
+
+.font-size-small {
+    font-size: 1em;
+}
+
+.font-color-primary {
+    color: var(--text-primary);
+}
+
+.font-color-secondary {
+    color: var(--text-secondary);
+}

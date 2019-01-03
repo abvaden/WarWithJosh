@@ -81,7 +81,7 @@ export class NetworkAPIClient implements IAPIClient {
                 );
                 const wrapper = web.Wrapper.create()
                 wrapper.payload = any;
-                messagePump.enqueueNextMessage(web.Wrapper.encode(wrapper).finish());
+                messagePump.enqueueNextMessage(web.Wrapper.encode(wrapper).finish().buffer as ArrayBuffer);
             });
             ws.addEventListener("error", (e) => {
                 var value = google.protobuf.Any.create(
@@ -90,7 +90,7 @@ export class NetworkAPIClient implements IAPIClient {
                         value: web.ErrorMessage.encode({Message: "Underlying connection to server closed"}).finish()
                     }
                 );
-                messagePump.enqueueNextMessage(web.Wrapper.encode({ payload: value}).finish());
+                messagePump.enqueueNextMessage(web.Wrapper.encode({ payload: value}).finish().buffer as ArrayBuffer);
             });
             ws.addEventListener("message", (e) => {
                 messagePump.enqueueNextMessage(e.data);

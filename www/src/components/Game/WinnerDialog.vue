@@ -1,21 +1,26 @@
 <template>
-    <div v-bind:class="['modal', {'modal-open': isOpen}]">
-        <div class="modal-content">
-            <div class="name-row" v-if="player1_winner">
-                <h5>{{player1_name}} wins</h5>
+    <popup :popup_open="isOpen" background-color="#30312F">
+        <template slot="header">
+            <div>
+                <div class="name-row" v-if="player1_winner">
+                    <div class="popup-title-text">{{player1_name}} wins</div>
+                </div>
+                <div class="name-row" v-if="player2_winner">
+                    <div class="popup-title-text">{{player2_name}} wins</div>
+                </div>
+                <div class="name-row" v-if="tie">
+                    <div class="popup-title-text">Tie</div>
+                </div>
             </div>
-            <div class="name-row" v-if="player2_winner">
-                <h5>{{player2_name}} wins</h5>
-            </div>
-            <div class="name-row" v-if="tie">
-                <h5>Tie</h5>
-            </div>
-
+        </template>
+        <template slot="body">
             <!-- Win Graph -->
             <div class="win-graph"> 
                 <h3>Joshua's is currently in a learning mode. Once Joshua learns to play the game by himself his win rate over time will appear here.</h3>
             </div>
+        </template>
 
+        <template slot="footer">
             <div id="button-row"> 
                 <div class="button" v-on:click="resetButtonClick();">
                     <h1>Reset</h1>
@@ -25,17 +30,21 @@
                     <h1>Home</h1>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </popup>
 </template>
 
 <script lang="ts">
 import Vue, {VNode} from "vue";
-import { reset, startGame} from "../store/Game.module";
-import { winnerDialogOpen, winnerState } from "../store/Dialog.module";
-import { player2_name, player1_name, resetGame } from "../store/GameBoard.module";
+import Popup from "../Popup.vue";
+import { reset, startGame} from "../../store/Game.module";
+import { winnerDialogOpen, winnerState } from "../../store/Dialog.module";
+import { player2_name, player1_name, resetGame } from "../../store/GameBoard.module";
 
 export default Vue.extend({
+    components: {
+        Popup
+    },
     methods: {
         resetButtonClick(): void {
             reset(this.$store);
@@ -72,25 +81,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    max-width: 100%;
-    height: 100%; 
-    max-height: 100%;
-    overflow: auto; 
-    background: transparent;
-}
-
-.modal-open {
-    display: block;
-    background-color: rgba(0, 0, 0, .75);
-}
-
 .name-row {
     display: inline-block;
     width: 100%;
@@ -148,14 +138,5 @@ export default Vue.extend({
 .button > h1 {
     color: var(--light-shades-color);
     font-size: 1.5em;
-}
-
-.modal-content { 
-    background-color: #30312F;
-    margin-top: 15%;
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-bottom: 15%;
-    max-height: 70%;
 }
 </style>

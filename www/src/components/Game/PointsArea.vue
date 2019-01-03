@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import * as ScoreboardModule from "../store/Scoreboard.module";
+import * as ScoreboardModule from "../../store/Scoreboard.module";
 
 export default Vue.extend({
   methods: {

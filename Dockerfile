@@ -1,5 +1,5 @@
 FROM golang AS api-build
-WORKDIR /go/src/WarWithJosh
+WORKDIR /go/src/github.com/abvaden/WarWithJosh
 COPY . .
 RUN go get -d -v ./...
 RUN go install -v ./...

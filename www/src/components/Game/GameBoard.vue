@@ -1,7 +1,7 @@
 <template>
   <div class="fullscreen-game">
     <!-- Player 1 Area -->
-    <div id="menu-button" class="player-area-top" v-on:click.stop="menu_button_click">&equiv;</div>
+    <menu-button v-on:button-click="menu_button_click" class="player-area-top" v-if="ShowMenuButton"/>
     <PlayerArea id="plyer-area-top" class="player-area player-area-top" v-bind:player_name="player1_name" v-bind:cards="player1_cards" />
     
     <!-- Points Columns -->
@@ -68,16 +68,39 @@ import PlayerArea from "./PlayerArea.vue";
 import NextButton from "./NextButton.vue";
 import PlayerHandCard from "./PlayerHandCard.vue";
 import PlayerHandCardBottom from "./PlayerHandCardBottom.vue";
+import MenuButton from "../MenuButton.vue";
 
-import { playCard, endGame, advanceTutorial } from "../store/Game.module";
-import { is_running as TutorialIsRunning, stage as TutorialStage } from "../store/Tutorial.module";
-import { player1_handValue, player2_handValue, player1_handReady, player2_handReady, player1_name, player2_name, player1_cards, INumberOption, player2_cards } from "../store/GameBoard.module";
+import { playCard, endGame, advanceTutorial } from "../../store/Game.module";
+import { is_running as TutorialIsRunning, stage as TutorialStage } from "../../store/Tutorial.module";
+import { player1_handValue, 
+         player2_handValue, 
+         player1_handReady, 
+         player2_handReady, 
+         player1_name, 
+         player2_name, 
+         player1_cards, 
+         INumberOption, 
+         player2_cards } from "../../store/GameBoard.module";
 
-import { openDialog, DialogType } from "../store/Dialog.module";
+import { openDialog, DialogType } from "../../store/Dialog.module";
 import { mapState } from 'vuex';
 
 export default Vue.extend({
-  components: { PointsArea, PointCards, PlayerHandCard, PlayerHandCardBottom, PlayerArea, NextButton },
+  components: { 
+    PointsArea, 
+    PointCards, 
+    PlayerHandCard, 
+    PlayerHandCardBottom, 
+    PlayerArea, 
+    NextButton, 
+    MenuButton 
+  },
+  props: {
+    ShowMenuButton: {
+      Type: Boolean,
+      default: false,
+    }
+  },
   methods: {
     cardSelected(value: number) {
       playCard(this.$store, value);
@@ -155,41 +178,9 @@ export default Vue.extend({
 </script>
 
 <!-- Import the shared layout of the game -->
-<style src="../assets/styles/game-layout.css"></style>
+<style src="./game-layout.css"></style>
+
 <style scoped>
-#menu-button {
-  grid-row: 1;
-  grid-column-start: 1;
-  grid-column-end: 3;
-
-  position: absolute;
-  left: 10px;
-  align-self: flex-start;
-
-  color: black;
-  font-weight: bold;
-  user-select: none;
-
-  font-size: 50px;
-}
-
-#menu-button:hover{
-  color: white;
-}
-
-.player-area {
-  border-style: solid;
-  border-color: black;
-  border-width: 0px;
-}
-
-.player-area-top {
-  border-bottom-width: 2px;
-}
-.player-area-bottom {
-  border-top-width: 2px;
-}
-
 .hidden-area {
     background-color: black;
     opacity: .5;

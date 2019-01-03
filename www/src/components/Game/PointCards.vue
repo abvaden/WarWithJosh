@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import Vue, { VNode } from "vue";
-import { hasBegun, remainingTricks, trickPoints} from "../store/GameBoard.module";
+import { hasBegun, remainingTricks, trickPoints} from "../../store/GameBoard.module";
 
 export default Vue.extend({
     computed: {
