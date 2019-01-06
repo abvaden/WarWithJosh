@@ -1,30 +1,6 @@
 <template>
   <div id="app" class="app-layout">
-    <div id="navigation">
-      <router-link to="/home" 
-                   class="font-size-medium margin-top-small navigation-parent-item" 
-                   active-class="navigation-item-selected"
-                   tag="div">
-        Home
-        <router-link to="/home#what"
-                   class="font-size-small font-color-secondary navigation-child-item" 
-                   active-class="navigation-item-selected"
-                   tag="div">What</router-link>
-        <router-link to="/home#what"
-                   class="font-size-small font-color-secondary navigation-child-item" 
-                   active-class="navigation-item-selected"
-                   tag="div">How</router-link>
-        <router-link to="/home#what"
-                   class="font-size-small font-color-secondary navigation-child-item" 
-                   active-class="navigation-item-selected"
-                   tag="div">Why</router-link>
-      </router-link>
-      
-      <router-link to="/game" 
-                   class="font-size-medium margin-top-small navigation-parent-item" 
-                   active-class="navigation-item-selected"
-                   tag="div">Game</router-link>
-    </div>
+    <navigation id="navigation" />
     <div id="content">
       <router-view />
     </div>
@@ -33,11 +9,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Navigation from "@/components/Navigation.vue"
 
 
 export default Vue.extend({
   name: "App",
   components: { 
+    Navigation
   },
   computed: {
   },
@@ -84,26 +62,4 @@ export default Vue.extend({
   grid-column:  2;
 }
 
-.navigation-item-selected {
-  color: var(--blue-5);
-}
-
-.navigation-parent-item {
-  margin-left: var(--margin-small);
-  cursor: pointer;
-}
-
-.navigation-child-item {
-  margin-left: var(--margin-medium);
-}
-
-.navigation-child-item:hover {
-  margin-left: var(--margin-medium);
-  text-decoration: none;
-}
-
-.navigation-item:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--blue-5);
-}
 </style>

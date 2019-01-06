@@ -1,0 +1,30 @@
+.text-page-container {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+
+    padding-left: 15px;
+    padding-right: 15px;
+    min-width: 350px;
+    max-width: 500px;
+}
+
+.vertical-seperator {
+    background-color: gray;
+    height: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.title {
+    text-align: center;
+    color: var(--blue-5);
+}
+
+.secondary-title {
+    color: var(--blue-4);
+}

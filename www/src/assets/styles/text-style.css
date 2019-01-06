@@ -20,6 +20,18 @@
     font-size: 1.5em;
 }
 
+.font-weight-normal {
+    font-weight: normal;
+}
+
+.font-weight-heavy {
+    font-weight: bold;
+}
+
+.font-weight-extra-heavy {
+    font-weight: bolder;
+}
+
 .font-size-small {
     font-size: 1em;
 }
@@ -31,3 +43,4 @@
 .font-color-secondary {
     color: var(--text-secondary);
 }
+

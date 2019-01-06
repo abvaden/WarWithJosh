@@ -1,3 +1,25 @@
 body { 
     margin:0;
 }
+
+a:link {
+    text-decoration: none;
+    color: var(--blue-4);
+    font-weight: bolder;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+a:visited {
+    color: var(--blue-4);
+}
+
+p {
+    line-height: 2.0;
+}
+
+br {
+    line-height: 3.5;
+}

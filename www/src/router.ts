@@ -16,7 +16,20 @@ export const router = new VueRouter({
             component: () => import('@/views/Game.vue')
         },
         {
-            // will match everything
+            path: '/design',
+            component: () => import("@/views/AIDesign.vue")
+        },
+        {
+            path: '/glossary',
+            component: () => import("@/views/Glossary.vue")
+        },
+        {
+            path: '/glossary/:CurrentWord',
+            component: () => import("@/views/Glossary.vue"),
+            props: true
+        },
+        {
+            // Default if no other routes are matched then return back to the home page
             path: '*',
             redirect: 'home'
         }

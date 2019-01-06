@@ -22,7 +22,7 @@ export default Vue.extend({
     },
     mounted(): void {
         this.$nextTick(() => {
-            this.$router.push("home");
+            this.$router.push("/home");
         });
     }
 });
