@@ -5,7 +5,10 @@
                    class="fullArea" 
                    v-on:play-clicked="tutorial_play_clicked"
                    v-on:tutorial-clicked="tutorial_start_clicked"/>
-    <game-board class="fullArea" />
+    <div class="fullArea">
+      <game-board />
+    </div>
+    
     <winner-dialog class="fullArea"/>
     
     <error-popup id="error-popup" class="fullArea"/>
@@ -85,8 +88,8 @@ export default Vue.extend({
   --render-break-width: 600px;
 
   display: grid;
-  width: calc(100% - 2px);
   height: 100%;
+  box-sizing: border-box;
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-right-width: 0px;
@@ -96,4 +99,7 @@ export default Vue.extend({
   
   background-color: var(--primary-background-color);
 }
+
+
+
 </style>

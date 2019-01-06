@@ -1,6 +1,7 @@
 .fullscreen-game {
   display: grid;
   width: 100%;
+  height: 100%;
   grid-template-columns: 1fr 250px;
   grid-template-rows: min-content minmax(300px, auto) min-content;
 }

@@ -16,9 +16,7 @@ export default Vue.extend({
 
 <style scoped>
 #menu-button {
-  position: relative;
-  left: 10px;
-  align-self: flex-start;
+  padding-left: 10px;
 
   color: black;
   font-weight: bold;
@@ -27,9 +25,5 @@ export default Vue.extend({
   font-size: 50px;
   width: 30px;
   height: 50px;
-}
-
-#menu-button:hover{
-  color: white;
 }
 </style>

@@ -1,43 +1,43 @@
 <template>
     <div :class="['navigation-container']">
         <router-link to="/home" 
-                   class="font-size-medium navigation-item" 
+                   class="font-size-medium navigation-item navigation-text-color" 
                    active-class="navigation-item-selected font-weight-extra-heavy"
+                   @click.native="RouteClick"
                    tag="div">Home</router-link>
       
         <router-link to="/design" 
-                    class="font-size-medium navigation-item" 
+                    class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
+                    @click.native="RouteClick"
                     tag="div">AI Design</router-link>
         <router-link to="/game" 
-                    class="font-size-medium navigation-item" 
+                    class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
+                    @click.native="RouteClick"
                     tag="div">Game</router-link>
         <router-link to="/glossary" 
-                    class="font-size-medium navigation-item" 
+                    class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
+                    @click.native="RouteClick"
                     tag="div">Glossary</router-link>
     </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-
+    methods: {
+        RouteClick(): void {
+            this.$emit("routeChanged");
+        }
+    }
 })
 </script>
 
 <style scoped>
-.navigation-item-selected {
-  color: var(--blue-5);
-}
-
 .navigation-container {
     display: flex;
     flex-direction: column;
-}
-
-.navigation-container-alt-background {
-    background-color: var(--blue-2);
 }
 
 .navigation-container:first-child {
@@ -75,6 +75,10 @@ export default Vue.extend({
 .navigation-item:hover {
   text-decoration: underline;
   text-decoration-color: var(--blue-5);
+}
+
+.navigation-item-selected:hover {
+    text-decoration: none;
 }
 </style>
 
