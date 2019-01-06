@@ -73,6 +73,7 @@ export default Vue.extend({
                 case 0: {
                     this.matrix_data[0][1] = "-1";
                     this.knc_state = "0--------";
+                    this.annotation = ""
                     this.play_number = 1;
                     break;
                 }

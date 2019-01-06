@@ -1,5 +1,5 @@
 <template>
-    <div class="navigation-container">
+    <div :class="['navigation-container']">
         <router-link to="/home" 
                    class="font-size-medium navigation-item" 
                    active-class="navigation-item-selected font-weight-extra-heavy"
@@ -22,7 +22,7 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-    
+
 })
 </script>
 
@@ -34,6 +34,10 @@ export default Vue.extend({
 .navigation-container {
     display: flex;
     flex-direction: column;
+}
+
+.navigation-container-alt-background {
+    background-color: var(--blue-2);
 }
 
 .navigation-container:first-child {
