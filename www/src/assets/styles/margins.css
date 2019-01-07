@@ -1,0 +1,29 @@
+:root {
+    --margin-small: 15px;
+    --margin-medium: 25px;
+    --margin-large: 50px;
+}
+
+.margin-top-small {
+    margin-top: var(--margin-small, 15px);
+}
+
+.margin-top-medium {
+    margin-top: var(--margin-medium, 25px);
+}
+
+.margin-top-large {
+    margin-top: var(--margin-large, 50px);
+}
+
+.margin-bottom-small {
+    margin-bottom: var(--margin-small, 15px);
+}
+
+.margin-bottom-medium {
+    margin-bottom: var(--margin-medium, 25px);
+}
+
+.margin-bottom-large {
+    margin-bottom: var(--margin-large, 50px);
+}

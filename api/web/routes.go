@@ -1,8 +1,9 @@
 package web
 
 import (
-	"WarWithJosh/api/services"
 	"net/http"
+
+	"github.com/abvaden/WarWithJosh/api/services"
 )
 
 const baseRoute = "/api/v1/"
@@ -12,16 +13,14 @@ const sessionBaseRoute = "session/"
 func Routes(engine *services.GameEngine) {
 	newSessionRoute := baseRoute + sessionBaseRoute + "new"
 	http.Handle(newSessionRoute, createHandleFunc(newSessionRoute, NewSessionHandler, engine))
-	addMoveRoute := baseRoute + sessionBaseRoute + "add-move"
-	http.Handle(addMoveRoute, createHandleFunc(addMoveRoute, SessionAddMoveHandler, engine))
-	endSessionRoute := baseRoute + sessionBaseRoute + "end"
-	http.Handle(endSessionRoute, createHandleFunc(endSessionRoute, SessionEndHandler, engine))
+	pingRoute := baseRoute + "ping"
+	http.Handle(pingRoute, createHandleFunc(pingRoute, PingHandler, engine))
 }
 
 type gameRouteHandler func(w http.ResponseWriter, r *http.Request, engine *services.GameEngine)
 
 func createHandleFunc(route string, handleFunc gameRouteHandler, engine *services.GameEngine) http.Handler {
-	finalHandler := makeHttpHandler(handleFunc, engine)
+	finalHandler := makeHTTPHandler(handleFunc, engine)
 	loggingMiddleWare := MakeLoggingMiddleware(route, finalHandler)
 	corsMiddleWare := AddCORSMiddleWare(loggingMiddleWare)
 	return corsMiddleWare
@@ -36,7 +35,7 @@ func (handler internalHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	handler.handleFunc(w, r, handler.engine)
 }
 
-func makeHttpHandler(routeHandler gameRouteHandler, gameEngine *services.GameEngine) http.Handler {
+func makeHTTPHandler(routeHandler gameRouteHandler, gameEngine *services.GameEngine) http.Handler {
 	engine := gameEngine
 
 	handler := internalHandler{engine, routeHandler}

@@ -20,39 +20,21 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { StaticGameState } from "@/logic/models/gamestate"
-import { ICommandPublisher, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { container } from '@/main';
-import { RequestStartGameCommand } from "@/logic/commands/request-start-game.command";
-import { ToggleDialogCommand } from "@/logic/commands/toggle-dialog.command";
-import { ChangeTutorialPopupPersistanceCommand } from '@/logic/commands/change-tutorial-popup-persistance.command';
-import { StartTutorialCommand } from '@/logic/commands/start-tutorial.command';
-import { ResetGameCommand } from '@/logic/commands/reset-game.command';
-
-let commandPublisher: ICommandPublisher;
+import { errorDialogOpen, errorMessage, openDialog, DialogType } from "../store/Dialog.module";
 
 export default Vue.extend({
-  beforeCreate: () => {
-      commandPublisher = container.get<ICommandPublisher>(ICommandPublisher_IOC_Key);
-  },
-  data() {
-    return StaticGameState.ErrorDialog;
-  },
   methods: {
-      dismiss_click: () => {
-          const resetGameCommand = new ResetGameCommand();
-          commandPublisher.publish(resetGameCommand);
-
-          const closeDialogCommand = new ToggleDialogCommand();
-          closeDialogCommand.open = true;
-          closeDialogCommand.tutorialDialog = true;
-          commandPublisher.publish(closeDialogCommand);
-      }
+      dismiss_click() {
+        openDialog(this.$store, DialogType.Tutorial);
+      },
   },
   computed: {
       popup_open(): boolean {
-          return this.is_open;
+          return errorDialogOpen(this.$store);
       },
+      error_message(): string {
+          return errorMessage(this.$store);
+      }
   }
 });
 </script>

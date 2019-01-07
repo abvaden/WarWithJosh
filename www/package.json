@@ -6,19 +6,25 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "codegen": "node codegen.js"
   },
   "dependencies": {
-    "@tweenjs/tween.js": "^17.2.0",
     "inversify": "^4.13.0",
+    "protobufjs": "^6.8.8",
     "reflect-metadata": "^0.1.12",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0"
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.2",
+    "vue-scrollactive": "^0.8.0",
+    "vuex": "^3.0.1",
+    "vuex-typescript": "^3.0.2"
   },
   "devDependencies": {
     "@types/chai": "^4.1.0",
+    "@types/google-protobuf": "^3.2.7",
     "@types/mocha": "^5.2.4",
     "@vue/cli-plugin-babel": "^3.0.3",
     "@vue/cli-plugin-pwa": "^3.0.3",

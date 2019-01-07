@@ -12,3 +12,6 @@
 *.out
 
 **/node_modules/
+api/debug
+
+npm-debug\.log

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Note the proto definitions for the WarWithJoshAPIMessages require the wellknown 
+# types messages to be included in your path
+
+basePath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+tsPluginPath="$basePath/www/node_modules/.bin/protoc-gen-ts"
+
+protoFile="$basePath/WarWithJoshAPIMessages.proto"
+tsOutDir="$basePath/www/src/logic/api"
+goOutDir="$basePath/api/web"
+
+wwwPath="$basePath/www/"
+apiPath="$basePath/api"
+
+# Due to a limitation with proto-gen-ts plugin the current directory must be set to the node project root directory for the .d.ts file to be generated properly
+cd $wwwPath
+./node_modules/.bin/pbjs -t static-module -w es6 -o $tsOutDir/WarWithJoshMessages.js $protoFile
+./node_modules/.bin/pbts -t static-module -w es6 -o $tsOutDir/WarWithJoshMessages.d.ts $tsOutDir/WarWithJoshMessages.js
+
+cd $basePath
+
+protoc -I $basePath \
+       --go_out=$goOutDir \
+       $protoFile

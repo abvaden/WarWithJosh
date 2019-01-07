@@ -1,127 +1,238 @@
 import { injectable, inject } from 'inversify';
-import { IGameService } from '@/logic/services/Interfaces';
+import { IGameService, Callbacks, IConnectionService_IOC_Key, IConnectionService, ILogger, ILogger_IOC_Key, TrickResults } from '@/logic/services/Interfaces';
 import { gameFactory, IGameFactoryInputs } from "../../gops/game";
-import { playerFactory, PlayerType } from '@/gops/player';
-import { ICommandPublisher, ICommand, ICommandPublisher_IOC_Key } from '@/logic/commanding';
-import { NextTrickCommandDecided } from '@/logic/commands/next-trick-decided.command';
-import { RecordTrickScoreCommand } from '@/logic/commands/record-trick-score.command';
-import { PlayCardCommand } from '@/logic/commands/play-card.command';
-import { PlayerDecidedCommand } from '@/logic/commands/player-decided.command';
-import { RevealHandCommand } from '../commands/reveal-hand.command';
-import { RevealWinnerCommand } from '../commands/reveal-winner.command';
+import { playerFactory, PlayerType, IPlayerFactoryInputs, InteractivePlayer } from '@/gops/player';
+import { IAPIClient_IOC_KEY, IAPIClient, ISessionMessagePump } from '@/logic/api/api-client';
+import { web } from "../api/WarWithJoshMessages";
 
 
 @injectable()
 export class GameService implements IGameService {
-    private _interactivePlayerDecideMove: ((x: number) => void) | undefined;
-    private _gameActive: boolean = false;
-    private _trickNumber: number = 0;
-    private readonly _commandPublisher: ICommandPublisher;
+    private readonly _logger: ILogger;
+    private readonly _apiClient: IAPIClient;
+    private readonly _connectionService: IConnectionService;
+    
+    private _interactivePlayer: InteractivePlayer | undefined;
+    private _session: ISessionMessagePump | undefined;
 
-    constructor(@inject(ICommandPublisher_IOC_Key)commandPublisher: ICommandPublisher) {
-        this._commandPublisher = commandPublisher;
+    constructor(@inject(IConnectionService_IOC_Key)connectionService: IConnectionService,
+                @inject(IAPIClient_IOC_KEY) apiClient: IAPIClient,
+                @inject(ILogger_IOC_Key)logger: ILogger) {
+        this._connectionService = connectionService;
+        this._apiClient = apiClient;
+        this._logger = logger;
     }
 
-    createPlayer(): void {
-
+    startGame(handlers: Callbacks, aiType: string): void {
+        var isOnline = this._connectionService.Online();
+        if (isOnline) {
+            this.startOnlineGame(handlers)
+        } else {
+            this.startOfflineGame(handlers);
+        }
     }
 
     interactivePlayerDecideMove(value: number): void {
-        if (!this._interactivePlayerDecideMove) {
-            throw new Error("");
+        if (this._interactivePlayer) {
+            this._interactivePlayer.decideNextMove(value);
         }
-
-        this._interactivePlayerDecideMove(value);
+        else if (this._session) {
+            this._apiClient.SetPlayerDecided(value, this._session);
+        } else {
+            return;
+        }
     }
 
-    async startGame(onGameCompleted: (p1: number, p2: number) => void): Promise<void> {
+    endGame(): void {
+        this._interactivePlayer = undefined;
+        if (this._session !== undefined) {
+            this._apiClient.EndSession(this._session);
+        }
+    }
+
+    async validPlayerTypes(): Promise<string[]> {
+        if (this._connectionService.Online()) {
+            return this._apiClient.ValidPlayerTypes();
+        } else {
+            return [
+                "Random"
+            ];
+        }
+    }
+
+    private async startOfflineGame(handlers: Callbacks): Promise<void> {
         const player1 = await playerFactory({
             PlayerType: PlayerType.Random,
             Callbacks: {
                 afterMove: (value: number) => {
-                    this.afterPlayerDecided(true, value);
+                    if (handlers.onAiDecided) {
+                        handlers.onAiDecided();
+                    }
                 }
             }
         });
-        const player2Params = {
+
+        const player2Params: IPlayerFactoryInputs = {
             PlayerType: PlayerType.CallbackPlayer,
-            nextMoveCallback: this._interactivePlayerDecideMove,
+            nextMoveCallback: () => {},
             Callbacks: {
                 afterMove: (value: number) => {
                 }
             }
         };
-        const player2 = await playerFactory(player2Params);
-        this._interactivePlayerDecideMove = player2Params.nextMoveCallback;
+        const player2 = await playerFactory<InteractivePlayer>(player2Params);
+        this._interactivePlayer = player2;
+
         const gameInputs: IGameFactoryInputs = {
             player1: player1,
             player2: player2,
 
             callbacks: {
                 afterPointsDecided: (x) => { 
-                    // call a function that is scoped on the class so that 
-                    this.trickPointsDecided(x); 
+                    if (handlers.onTrickPointsDecided) {
+                        handlers.onTrickPointsDecided(x);
+                    }
                 },
-                afterTrickFinished: (w, x, y, z) => {
-                    this.trickCompleted(w, x, y, z);
+                afterTrickFinished: (trickNumber, trickPoints, player1Value, player2Value, player1Score, player2Score) => {
+                    if (handlers.onTrickCompleted) {
+                        handlers.onTrickCompleted({
+                            trickNumber: trickNumber,
+                            trickPoints: trickPoints,
+                            player1_value: player1Value,
+                            player1_score: player1Score,
+                            player2_value: player2Value,
+                            player2_score: player2Score 
+                        })
+                    }
                 }
             }
         }
 
         const internalGame = await gameFactory(gameInputs);
-
+        if (handlers.onGameStarted) {
+            handlers.onGameStarted();
+        }
+        
         const gameResults = await internalGame();
-        onGameCompleted(gameResults.player1, gameResults.player2);
+        if (handlers.onGameCompleted) {
+            handlers.onGameCompleted(gameResults.player1, gameResults.player2);
+        }
     }
 
-    async stopGame(): Promise<void> {
+    private async startOnlineGame(handlers: Callbacks): Promise<void> {
+        const messagePump = await this._apiClient.StartNewSession();
+        this._session = messagePump;
 
+        this._apiClient.SetAiType("Random", this._session);
+        this._apiClient.StartGame(this._session);
+
+        if (handlers.onGameStarted) {
+            handlers.onGameStarted();
+        }
+
+
+        let loop = true;
+        while (loop) {
+            const message = await messagePump.nextMessage();
+            const payload = message.payload;
+            if (!payload) {
+                loop = false;
+                if (handlers.onError) {
+                    handlers.onError("Error while communicating with the server");
+                }
+                messagePump.close();
+                break;
+            }
+
+            const value = payload.value as Uint8Array;
+            if ((value === null) || (value === undefined)) {
+                continue;
+            }
+            const typeUrl = payload.type_url ? payload.type_url.replace("type.googleapis.com/", "") : "";
+            switch (typeUrl) {
+                case "web.TrickDecidedMessage": {
+                    this.handleTrickDecidedMessage(web.TrickDecidedMessage.decode(value), handlers);
+                    break;
+                }
+                case "web.AiDecidedMessage": {
+                    this.handleAIDecidedMessage(web.AiDecidedMessage.decode(value), handlers);
+                    break;
+                }
+                case "web.TrickCompletedMessage": {
+                    this.handleTrickCompletedMessage(web.TrickCompletedMessage.decode(value), handlers);
+                    break;
+                }
+                case "web.ResultsMessage": {
+                    this.handleGameResultsMessage(web.ResultsMessage.decode(value), handlers);
+                    break;
+                }
+                case "web.EndSessionMessage": {
+                    this.handleEndSessionMessage(web.EndSessionMessage.decode(value), handlers);
+                    break;
+                }
+                case "web.ErrorMessage": {
+                    const errorMessage = web.ErrorMessage.decode(value);
+                    this.handleErrorMessage(errorMessage, handlers);
+                    this._apiClient.EndSession(this._session);
+                    break;
+                }
+            }
+        }
     }
 
-    private trickPointsDecided(value: number) {
-        const nextTrickCommand = new NextTrickCommandDecided();
-        nextTrickCommand.TrickPoints = value;
-        this._commandPublisher.publish(nextTrickCommand);
+    private handleTrickDecidedMessage(message: web.TrickDecidedMessage, handlers: Callbacks): void {
+        if (!handlers.onTrickPointsDecided) {
+            return;
+        }
+        handlers.onTrickPointsDecided(message.TrickPoints);
     }
 
-    private trickCompleted(
-        player1Value: number, 
-        player2Value: number,
-        player1Score: number,
-        player2Score: number): void {
-
-        const player1PlayCardCommand = new PlayCardCommand();
-        player1PlayCardCommand.player1 = true;
-        player1PlayCardCommand.number = player1Value;
-
-        const player2PlayCardCommand = new PlayCardCommand();
-        player2PlayCardCommand.player1 = false;
-        player2PlayCardCommand.number = player2Value;
-
-        this._commandPublisher.publish(player1PlayCardCommand);
-        this._commandPublisher.publish(player2PlayCardCommand);
-
-        this._trickNumber += 1;
-        const revealHandCommand = new RevealHandCommand();
-        revealHandCommand.Player1_Value = player1Value;
-        revealHandCommand.Player2_Value = player2Value;
-        this._commandPublisher.publish(revealHandCommand);
-
-
-        const recordScoreCommand = new RecordTrickScoreCommand();
-        recordScoreCommand.trickNumber = this._trickNumber;
-        recordScoreCommand.player1_score = player1Score;
-        recordScoreCommand.player2_score = player2Score;
-        recordScoreCommand.player1_value = player1Value;
-        recordScoreCommand.player2_value = player2Value;
-        this._commandPublisher.publish(recordScoreCommand);
+    private handleAIDecidedMessage(message: web.AiDecidedMessage, handlers: Callbacks): void {
+        if (!handlers.onAiDecided) {
+            return;
+        }
+        handlers.onAiDecided();
     }
 
-    private afterPlayerDecided(player1: boolean, value: number): void {
-        const playerDecidedCommand = new PlayerDecidedCommand();
-        playerDecidedCommand.Player1 = player1;
-        playerDecidedCommand.Value = value;
+    private handleTrickCompletedMessage(message: web.TrickCompletedMessage, handlers: Callbacks): void {
+        if (!handlers.onTrickCompleted) {
+            return;
+        }
+        const move = message.Move;
+        if (!move) {
+            // Should do some kind of error here
+            return 
+        }
+        const trickResults: TrickResults = {
+            player1_value: move.AiBid ? move.AiBid : 0,
+            player2_value: move.PlayerBid ? move.PlayerBid : 0,
+            trickPoints: move.HandValue ? move.HandValue : 0,
+            player1_score: move.AiScore ? move.AiScore : 0,
+            player2_score: move.PlayerScore ? move.PlayerScore : 0,
+            trickNumber: 13 - message.TricksRemaining
+        }
+        handlers.onTrickCompleted(trickResults);
+    }
 
-        this._commandPublisher.publish(playerDecidedCommand);
+    private handleGameResultsMessage(message: web.ResultsMessage, handlers: Callbacks): void {
+        if (!handlers.onGameCompleted) {
+            return;
+        }
+
+        const player1Score = message.AiScore;
+        const player2Score = message.PlayerScore;
+        handlers.onGameCompleted(player1Score, player2Score);
+    }
+
+    private handleEndSessionMessage(message: web.EndSessionMessage, handlers: Callbacks): void {
+    }
+
+    private handleErrorMessage(message: web.ErrorMessage, handlers: Callbacks): void {
+        if (!handlers.onError) {
+            return;
+        }
+
+        const errorMessage = message.Message;
+        handlers.onError(errorMessage);
     }
 }
