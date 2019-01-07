@@ -27,19 +27,20 @@
             the AI will be playing as a state, with possible state transitions representing moves that a player can take.
             Defining the game in this way lets us build what is called a <router-link to="/glossary/Decision Tree">Decision Tree</router-link>.<br />
 
-            Before diving into creating the decision tree for GOPS let us first consider a more trivial game, Knots &amp; Crosses (Tic-Tac-Toe). 
-            To define our decision tree for Knots &amp; Crosses we first need to define the state for our game. To represent the state of the game
+            Before diving into creating the decision tree for GOPS let us first consider a more trivial game, Noughts &amp; Crosses (Tic-Tac-Toe). 
+            To define our decision tree for Noughts &amp; Crosses we first need to define the state for our game. To represent the state of the game
             at any given point in time we will use a 3x3 matrix. Each cell of the matrix will represent a square on the board in which a player may
             place their respective glyph ("X" or "O"). The state will start as an array of all 0's indicating that the corresponding box is empty. 
             As players fill in their glyps we will update the corresponding matrix element with either a -1 indicating a O has been played in that box
             or 1 if a X has been placed in that cell. Lets take the following example where the players have made 2 moves each.
-            
-            <div style="display: grid; width: 100%; height: 250px; grid-template-columns: 50% 50%">
-                <knots-and-crosses :state="knc_state"></knots-and-crosses>
-                <matrix :elements="matrix_data"></matrix>
-                <div style="grid-row: 2; grid-column-start: 1; grid-column-end: 2;">{{annotation}}</div>
-            </div>
         </p>
+
+        <div style="text-align: center;">
+            <h3>Noughts and Crosses State Demo</h3>
+            <div id="nc-state-demo">
+                <NoughtsAndCrossesStateDemo />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -48,19 +49,18 @@ import Vue from 'vue'
 import { setTimeout } from 'timers';
 
 import Matrix from "@/components/Matrix.vue";
-import KnotsAndCrosses from "@/components/KnotsAndCrosses.vue";
+import NoughtsAndCrossesStateDemo from "@/components/NoughtsAndCrossesStateDemo.vue";
 
 export default Vue.extend({
     components: {
-        KnotsAndCrosses,
-        Matrix
+        NoughtsAndCrossesStateDemo
     },
     data() {
         return {
             matrix_data: [
-                ["-1", "0", "1"],
-                ["-1", "0", "0"],
-                ["1", "0", "0"],
+                ["0", "0", "0"],
+                ["0", "0", "0"],
+                ["0", "0", "0"],
             ],
             knc_state: "---------",
             annotation: "The beginning of the game is called the initial state. In this state no players have made a move and all elements of the matrix are 0",
@@ -68,20 +68,6 @@ export default Vue.extend({
         };
     },
     methods: {
-        AdvancePlayNumber(): void {
-            switch(this.play_number) {
-                case 0: {
-                    this.matrix_data[0][1] = "-1";
-                    this.knc_state = "0--------";
-                    this.annotation = ""
-                    this.play_number = 1;
-                    break;
-                }
-                case 1: {
-                    break;
-                }
-            }
-        }
     }
 })
 </script>
@@ -92,4 +78,7 @@ export default Vue.extend({
 <style src="../assets/styles/text-page-base.css"></style>
 <style scoped>
 
+#nc-state-demo {
+    width: 100%;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="matrix-container">
-       <svg style="height: 85%; width: 100%; transform: rotateY(180deg);">
-            <g transform="translate(0 25)">
+       <svg style="height: 100%; width: 100%; transform: rotateY(180deg);" reserveAspectRatio="none slice" viewBox="0 -5 50 175" >
+            <g transform="translate(0 0)">
                 <path d="M 19.8,25.8 C 19.8,11.2 15.6,2.2 0,0.4 L 0.4,0 C 23,0.4 29.2,7.2 29.2,29 L 29.2,59.2 C 29.2,72.6 30.6,79 45.2,82.6 L 45.2,83 C 30.8,86.6 29.2,93 29.2,106.2 L 29.2,138.4 C 29.2,159.4 21.4,165.4 0.4,166 L 0,165.601 C 16,163.201 19.8,155.201 19.8,140 L 19.8,107.8 C 19.8,94.2 21.6,86.4 36.6,83 L 36.6,82.6 C 21.4,79 19.8,70.6 19.8,57 L 19.8,25.8 z "/>
            </g>
         </svg>
@@ -10,8 +10,8 @@
                 {{element.value}}
             </div>
         </div>
-       <svg style="height: 85%; width: 100%;" >
-           <g transform="translate(0 25)">
+       <svg style="height: 100%; width: 100%;" reserveAspectRatio="none slice" viewBox="0 -5 50 175">
+           <g transform="">
                 <path d="M 19.8,25.8 C 19.8,11.2 15.6,2.2 0,0.4 L 0.4,0 C 23,0.4 29.2,7.2 29.2,29 L 29.2,59.2 C 29.2,72.6 30.6,79 45.2,82.6 L 45.2,83 C 30.8,86.6 29.2,93 29.2,106.2 L 29.2,138.4 C 29.2,159.4 21.4,165.4 0.4,166 L 0,165.601 C 16,163.201 19.8,155.201 19.8,140 L 19.8,107.8 C 19.8,94.2 21.6,86.4 36.6,83 L 36.6,82.6 C 21.4,79 19.8,70.6 19.8,57 L 19.8,25.8 z "/>
            </g>
         </svg>
@@ -71,8 +71,12 @@ export default Vue.extend({
 .matrix-container {
     display: grid;
     align-items: center;
-    grid-template-columns: 75px auto 75px;
+    grid-template-columns: 25px auto 25px;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
 }
+
 .matrix-area {
     display: grid;
     flex-direction: row;
@@ -84,7 +88,7 @@ export default Vue.extend({
     text-align: center;
     margin: auto;
     font-size: 1em;
-    padding: 15px;
+    padding: 5px;
 }
 </style>
 

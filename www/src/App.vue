@@ -1,5 +1,5 @@
 <template>
-  <div style="maring: 0; padding: 0;">
+  <div>
     <div id="app" class="app-layout">
 
       <div class="content">
@@ -72,8 +72,8 @@ export default Vue.extend({
 @media only screen and (max-width: 813px) {
   .app-layout {
     display: grid;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
   }
@@ -84,13 +84,13 @@ export default Vue.extend({
     left: -150px;
 
     width: 150px;
-    height: 100vh;
+    height: 100%;
 
     background-color: var(--blue-2);
   }
 
   #navigation {
-    margin-top: 50px;
+    margin-top: 65px;
   }
 
   .navigation-open {
@@ -118,6 +118,9 @@ export default Vue.extend({
   .content {
     grid-column: 1;
     grid-row: 1;
+
+    width: 100%;
+    height: 100%;
   }
 
   .navigation-text-color {

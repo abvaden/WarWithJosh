@@ -1,8 +1,7 @@
 <template>
-    <div class="knc-container">
-        <div class="knc-box" v-for="(contents, i) in CellContents" :key="i">
+    <div class="nc-container">
+        <div class="nc-box" v-for="(contents, i) in CellContents" :key="i">
             <template v-if="contents !== '-'">{{contents}}</template>
-            
         </div>
     </div>
 </template>
@@ -26,7 +25,7 @@ export default Vue.extend({
 
 
 <style scoped>
-.knc-container {
+.nc-container {
     box-sizing: border-box;
     height: 100%;
     width: 100%;
@@ -39,7 +38,7 @@ export default Vue.extend({
     padding: 2px;
 }
 
-.knc-box {
+.nc-box {
     width: 100%;
     display: flex;
     justify-content: center;

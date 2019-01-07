@@ -1,25 +1,25 @@
 <template>
-    <div :class="['navigation-container']">
+    <div class="navigation-container">
         <router-link to="/home" 
                    class="font-size-medium navigation-item navigation-text-color" 
                    active-class="navigation-item-selected font-weight-extra-heavy"
-                   @click.native="RouteClick"
+                   @click.native.stop="RouteClick"
                    tag="div">Home</router-link>
       
         <router-link to="/design" 
                     class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
-                    @click.native="RouteClick"
+                    @click.native.stop="RouteClick"
                     tag="div">AI Design</router-link>
         <router-link to="/game" 
                     class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
-                    @click.native="RouteClick"
+                    @click.native.capture="RouteClick"
                     tag="div">Game</router-link>
         <router-link to="/glossary" 
                     class="font-size-medium navigation-item navigation-text-color" 
                     active-class="navigation-item-selected font-weight-extra-heavy"
-                    @click.native="RouteClick"
+                    @click.native.capture="RouteClick"
                     tag="div">Glossary</router-link>
     </div>
 </template>
@@ -38,6 +38,7 @@ export default Vue.extend({
 .navigation-container {
     display: flex;
     flex-direction: column;
+    user-select: none;
 }
 
 .navigation-container:first-child {
