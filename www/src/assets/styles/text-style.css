@@ -43,3 +43,7 @@
 .font-color-secondary {
     color: var(--text-secondary);
 }
+
+.font-color-alt-primary {
+    color: var(--text-alt-primary);
+}

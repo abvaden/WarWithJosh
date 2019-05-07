@@ -10,7 +10,7 @@
         <p clas="font-size-large font-color-secondary margin-bottom-large">
             To understand what an AI is and how they are built it is important to know what they are made to do.
             A definition of a game playing AI that will help us understand how they are built can be given by, <em>
-            An algorithm which given a state determines a permutation to that state in order to each a target 
+            An algorithm which given a state determines a permutation to that state in order to achieve a target 
             state.</em> Simply put this means when given a game an AI can perform the same function as a player, 
             select a moves which advances the game to a desired goal or outcome.<br />
         </p>
@@ -23,9 +23,11 @@
         <div class="vertical-seperator"></div>
         <p clas="font-size-large font-color-secondary margin-bottom-large">
             One of first and most important steps in designing a game playing AI is to understand the game that the AI 
-            will be playing. For the AI's we will be exploring it is important to be able to define the game on which 
-            the AI will be playing as a state, with possible state transitions representing moves that a player can take.
-            Defining the game in this way lets us build what is called a <router-link to="/glossary/Decision Tree">Decision Tree</router-link>.<br />
+            will be playing. For the AI's we will be exploring it is important to be able to define all the information about the game for discrete moment in time in a way the AI can understand.
+            This representation is called a Game State, or state for short. Each state of the game has set of transitions, state transisions, which correspond to moves that a player can make.
+            When a player performs their move, they perform a state transition which changes the current state of the game. 
+            Defining the game as a set of states and state transitions build a <router-link to="/glossary/Decision Tree">Decision Tree</router-link>, which is a map of all the possible moves
+            which can be made in a given game.<br />
 
             Before diving into creating the decision tree for GOPS let us first consider a more trivial game, Noughts &amp; Crosses (Tic-Tac-Toe). 
             To define our decision tree for Noughts &amp; Crosses we first need to define the state for our game. To represent the state of the game
